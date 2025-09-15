@@ -3,16 +3,16 @@ Algoritmo biblioteca
 	definir credencial, credencialAdmin Como caracter
 	credencialAdmin <- "1234"
 	
-	//Variables de Libros
-	definir libros como Cadena //nombre, editorial, autor, anoPublicacion,
+	
+	definir libros como Cadena 
 	Definir resp Como Caracter
-	Definir op, modulo, opLibros, i, j Como Entero //idLibro, stockLibro,
+	Definir op, modulo, opLibros, i, j Como Entero 
 	Definir disponible, camposLibros Como Entero
 	camposLibros <- 6
 	Dimension libros[200, camposLibros]
 	i<- 0
 	
-	//Inicializo matriz de libros
+	//Inicializo matriz de libros 
 	Para i <- 0 Hasta 199 Hacer		
 		Para j <- 0 Hasta 4 Hacer
 			libros[i, j] <- ""
@@ -41,7 +41,7 @@ Algoritmo biblioteca
 							Repetir
 								crearLibro(libros)
 								Repetir
-									Escribir "Desea agregar otro libro? (s/n)"
+									Escribir "Desea agregar otro libro? (S/N)"
 									Leer resp
 									resp<-Mayusculas(resp)	
 									si resp<>"S" y resp<>"N" Entonces
@@ -60,7 +60,7 @@ Algoritmo biblioteca
 									1:
 										buscarLibro(libros)
 									2:
-										//modificar los datos que quiera (menos idLibro)
+										modificarLibro(libros)
 									3:
 										//validar que hayan disponibles para hacer el prestamo
 										//pedir los datos del libro y del usuario
@@ -91,7 +91,7 @@ Algoritmo biblioteca
 					
 				Mientras que (opLibros<>3)
 			2:
-				Escribir "En proceso"
+				Escribir "En proceso - Modulo Socios"
 			0:
 				Escribir "Saliendo del sistema..."
 			De Otro Modo:
@@ -125,7 +125,7 @@ Funcion mostrarSubMenuConsultaLibros
 	Escribir ""
 	Escribir "1. Buscar Libro"
 	Escribir "2. Modificar datos de libro"
-	Escribir "3. Resgistrar Préstamo"
+	Escribir "3. Registrar Préstamo"
 	Escribir "4. Registrar Devolución"
 	Escribir "5. Volver"
 	Escribir "Elija la opcion: "
@@ -147,7 +147,6 @@ Funcion posicion<-buscarUltimo(libros)
 FinFuncion
 
 
-
 //Valido Texto
 Funcion esTextoValido <- ValidarTexto(cadenaAVerificar)
 	Definir i, esTextoValido Como Entero
@@ -165,6 +164,7 @@ Funcion esTextoValido <- ValidarTexto(cadenaAVerificar)
 		FinSi
 	Fin Para	
 FinFuncion
+
 
 //Pido Texto
 Funcion txt <- pedirTexto(mensaje)
@@ -186,6 +186,7 @@ Funcion txt <- pedirTexto(mensaje)
 	txt <- input
 FinFuncion
 
+
 //Valido Números
 Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
 	Definir i, esNumero Como Entero
@@ -198,6 +199,7 @@ Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
 		FinSi		
 	FinPara
 FinFuncion
+
 
 //Pido numeros
 Funcion num <- pedirNumero(mensaje)
@@ -216,33 +218,33 @@ Funcion num <- pedirNumero(mensaje)
 	num <- ConvertirANumero(input)
 FinFuncion
 
+
 //Genero Ids - sin Repetir
 Funcion idUnico <- generarId
-	Definir totalGenerados, i, j, nuevoID, repetido, generados Como Entero
+	Definir totalGenerados, i, j, nuevoId, repetido, generados Como Entero
 	Definir idUnico como Cadena
 	Dimension generados[200]
 	totalGenerados <- 0
 	
 	Repetir
-		nuevoID <- Aleatorio(10000, 99999) 
-		
-		// Verificar si ya existe
+		nuevoID <- Aleatorio(10000, 99999) 		
+		// Verifico si ya existe
 		repetido <- 0
 		si totalGenerados>0
 			Para j <- 1 Hasta totalGenerados
-				Si generados[j] = nuevoID Entonces
+				Si generados[j] = nuevoId Entonces
 					repetido <- 1
 				FinSi
 			FinPara
 		FinSi			
 	Hasta Que repetido = 0
 	
-	// Guardar el nuevo ID
+	// Guardo el nuevo id
 	totalGenerados <- totalGenerados + 1
-	generados[totalGenerados] <- nuevoID		
-	Escribir "Id generado para el nuevo libro: ", nuevoID
+	generados[totalGenerados] <- nuevoId		
+	Escribir "Id generado para el nuevo libro: ", nuevoId
 	
-	idUnico<-ConvertirATexto(nuevoID)
+	idUnico<-ConvertirATexto(nuevoId)
 FinFuncion
 
 
@@ -360,7 +362,7 @@ Funcion buscarLibro(libros Por Referencia)
 	
 	cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados)
 	
-		// Mostrar resultados solo si hay coincidencias
+	// Mostrar resultados si hay coincidencias
     Si cantidad = 0 Entonces
         Escribir "No se encontraron libros con ese criterio."
     Sino
@@ -375,9 +377,90 @@ Funcion buscarLibro(libros Por Referencia)
             Escribir "Disponible: ", libros[indice, 5]
             Escribir ""
         FinPara
-    FinSi
+    FinSi	
+FinFuncion
 
+//Modificar Libro
+Funcion modificarLibro(libros Por Referencia)
+    Definir i, idBuscado, indice, confirmar Como Entero
+    Definir opcionUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro Como Cadena
 	
+    // Pedir el ID del libro a modificar
+    Escribir "Ingrese el ID del libro a modificar: "
+    Leer idBuscado
+	
+    // Buscar el libro en la matriz
+    indice <- -1
+    Para i <- 0 Hasta 199
+        Si libros[i,0] = ConvertirATexto(idBuscado) Entonces
+            indice <- i
+        FinSi
+    FinPara
+	
+    // Verifico si se encontró el libro
+    Si indice = -1 Entonces
+        Escribir "Id de Libro no encontrado."
+    Sino
+        // Cargar datos actuales en variables temporales
+        tituloLibro <- libros[indice,1]
+        autorLibro <- libros[indice,2]
+        generoLibro <- libros[indice,3]
+        anoPublicacionLibro <- libros[indice,4]
+		
+        confirmar <- 0
+        Mientras confirmar = 0 Hacer
+            Limpiar Pantalla
+            Escribir "***DATOS ACTUALES DEL LIBRO***"
+            Escribir "ID: ", libros[indice,0]
+            Escribir "1. Titulo: ", tituloLibro
+            Escribir "2. Autor: ", autorLibro
+            Escribir "3. Genero: ", generoLibro
+            Escribir "4. Año de Publicacion: ", anoPublicacionLibro
+			
+            Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
+			
+            Escribir Sin Saltar "Nuevo Título: "
+            Leer nuevoDato
+            Si Longitud(nuevoDato) > 0 Entonces
+                tituloLibro <- nuevoDato
+            FinSi			
+            Escribir Sin Saltar "Nuevo Autor: "
+			Leer nuevoDato
+            Si Longitud(nuevoDato) > 0 Entonces
+                autorLibro <- nuevoDato
+            FinSi			
+            Escribir Sin Saltar "Nuevo Género: "
+			Leer nuevoDato
+            Si Longitud(nuevoDato) > 0 Entonces
+                generoLibro <- nuevoDato
+            FinSi			
+            Escribir Sin Saltar "Nuevo Año de Publicacion: "
+			Leer nuevoDato
+            Si Longitud(nuevoDato) > 0 Entonces
+                anoPublicacionLibro <- nuevoDato
+            FinSi
+			
+            Limpiar Pantalla
+            Escribir "***DATOS DEL LIBRO MODIFICADOS***"
+            Escribir "ID: ", libros[indice,0]
+            Escribir "Titulo: ", tituloLibro
+            Escribir "Autor: ", autorLibro
+            Escribir "Genero: ", generoLibro
+            Escribir "Año de Publicacion: ", anoPublicacionLibro
+			
+            Escribir "Confirma los cambios? (s/n)"
+            Leer opcionUsuario
+            Si Mayusculas(opcionUsuario) = "S" Entonces
+                confirmar <- 1
+            FinSi
+        FinMientras
+		
+        // Guardar cambios en la matriz
+        libros[indice,1] <- tituloLibro
+        libros[indice,2] <- autorLibro
+        libros[indice,3] <- generoLibro
+        libros[indice,4] <- anoPublicacionLibro
+    FinSi
 FinFuncion
 
 
