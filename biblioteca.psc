@@ -61,25 +61,27 @@ Algoritmo biblioteca
 										buscarLibro(libros)
 									2:
 										modificarLibro(libros)
-									3:
+									3:	
+										mostrarLibros(libros)
+									4:
 										//validar que hayan disponibles para hacer el prestamo
 										//pedir los datos del libro y del usuario
 										//generar fecha de inicio y de fin 
 										//sumarle 1 a los libros prestados y restarle -1 a los disponibles
-									4:
+									5:
 										//validar que hayan prestamos para hacer la devolucion
 										//pedir los datos del libro y del usuario
 										//verificar que el fecha fin dado sea igual a la fecha de devolucion
 										//si hay castigo, se deben sumar los dias atrasados y multarlo (si intenta sacar algun libro y no pasaron esos dias, que le informe que no puede)
 										//sumarle 1 a los libros disponibles y restarle -1 a los disponibles
-									5:	
+									6:	
 										Escribir "Volviendo a menu anterior..."
 										Esperar 1 segundos 
 									De Otro Modo:
 										Escribir "Eligió una opción inválida."
 								Fin Segun
 								
-							Hasta Que (op=5)
+							Hasta Que (op=6)
 							
 							
 						3:
@@ -125,9 +127,10 @@ Funcion mostrarSubMenuConsultaLibros
 	Escribir ""
 	Escribir "1. Buscar Libro"
 	Escribir "2. Modificar datos de libro"
-	Escribir "3. Registrar Préstamo"
-	Escribir "4. Registrar Devolución"
-	Escribir "5. Volver"
+	Escribir "3. Listado de Libros"
+	Escribir "4. Registrar Préstamo"
+	Escribir "5. Registrar Devolución"
+	Escribir "6. Volver"
 	Escribir "Elija la opcion: "
 FinFuncion
 
@@ -463,5 +466,25 @@ Funcion modificarLibro(libros Por Referencia)
     FinSi
 FinFuncion
 
+
+//Mostrar libros cargados
+Funcion mostrarLibros(libros Por Referencia)
+	
+	Definir i Como Entero
+	
+	Escribir "*** LISTA DE LIBROS CARGADOS ***"	
+	Para i <- 0 Hasta 199   
+		Si libros[i,0] <> "" Entonces
+			Escribir "----------------------------------------"
+			Escribir "ID: ", libros[i,0]
+			Escribir "Titulo: ", libros[i,1]
+			Escribir "Autor: ", libros[i,2]
+			Escribir "Genero: ", libros[i,3]
+			Escribir "Año de Publicacion: ", libros[i,4]
+			Escribir "Disponible: ", libros[i,5]
+		FinSi
+	FinPara
+	
+FinFuncion
 
 
