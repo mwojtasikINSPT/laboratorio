@@ -20,7 +20,7 @@ Algoritmo biblioteca
 	FinPara
 
 	
-	Escribir "***Bienvenido al Sistema de Gestion de Biblioteca***" 
+	Escribir "****Bienvenido al Sistema de Gestion de Biblioteca****" 
 	Repetir
 		Escribir "Ingrese la clave de acceso: " 
 		Leer credencial
@@ -125,6 +125,7 @@ FinFuncion
 
 Funcion mostrarSubMenuConsultaLibros
 	Escribir ""
+	Escribir "***Sub Menu Consulta de Libros***"
 	Escribir "1. Buscar Libro"
 	Escribir "2. Modificar datos de libro"
 	Escribir "3. Listado de Libros"
@@ -139,7 +140,7 @@ FinFuncion
 Funcion posicion<-buscarUltimo(libros) 
     Definir i, posicion Como Entero
     i <- 0	
-    Mientras i < 199 Y libros[i, 0] <> "" Hacer
+    Mientras i < 200 Y libros[i, 0] <> "" Hacer
         i <- i + 1
     FinMientras	
     Si i < 199 Entonces
@@ -258,6 +259,8 @@ funcion crearLibro(libros Por Referencia)
 	confirmar <- 0
 	indice <- buscarUltimo(libros)
 	Mientras confirmar = 0 Hacer
+		Escribir ""
+		Escribir "***INGRESO DE NUEVO LIBRO***"
 		idLibro<-generarId
 		tituloLibro<-pedirTexto("Ingrese Nombre del libro: ")
 		autorLibro<-pedirTexto("Ingrese Autor: ")
@@ -279,7 +282,7 @@ funcion crearLibro(libros Por Referencia)
 		Escribir generoLibro
 		Escribir sin saltar "Año de publicacion: "
 		Escribir anoPublicacionLibro
-		Escribir "Confirma ingreso? (s/n)"
+		Escribir "Confirma ingreso? (S/N)"
 		leer opcionUsuario
 		si Mayusculas(opcionUsuario) == "S" Entonces
 			confirmar <- 1
@@ -321,7 +324,8 @@ Funcion buscarLibro(libros Por Referencia)
 	Para i <- 0 Hasta 199 Hacer		
 		resultados[i] <- -1
 	FinPara
-	
+	Escribir ""
+	Escribir "**BÚSQUEDA DE LIBRO**"
 	Escribir "Elija un criterio de búsqueda"
 	Escribir "1. Id"
 	Escribir "2. Título"
@@ -389,6 +393,8 @@ Funcion modificarLibro(libros Por Referencia)
     Definir opcionUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro Como Cadena
 	
     // Pedir el ID del libro a modificar
+	Escribir ""
+	Escribir "**MODIFICACIÓN DE LIBRO**"
     Escribir "Ingrese el ID del libro a modificar: "
     Leer idBuscado
 	
