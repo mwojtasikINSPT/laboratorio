@@ -17,7 +17,7 @@ Algoritmo biblioteca
 		Para j <- 0 Hasta 4 Hacer
 			libros[i, j] <- ""
 		FinPara
-	FinPara
+	FinPara	
 
 	
 	Escribir "****Bienvenido al Sistema de Gestion de Biblioteca****" 
@@ -25,6 +25,20 @@ Algoritmo biblioteca
 		Escribir "Ingrese la clave de acceso: " 
 		Leer credencial
 	Hasta Que credencial == credencialAdmin
+	
+	//Precargo Libros para pruebas
+	libros[0, 0] <- "10000"
+	libros[0, 1] <- "DON QUIJOTE"
+	libros[0, 2] <- "MIGUEL DE CERVANTES"
+	libros[0, 3] <- "NOVELA"
+	libros[0, 4] <- "1605" 
+	libros[0, 5] <- "1" 
+	libros[1, 0] <- "10001"
+	libros[1, 1] <- "HAMLET"
+	libros[1, 2] <- "WILLIAN SHAKESPEARE"
+	libros[1, 3] <- "TRAGEDIA"
+	libros[1, 4] <- "1603" 
+	libros[1, 5] <- "1" 
 	
 	Repetir
 		mostrarMenuPpal
@@ -64,10 +78,8 @@ Algoritmo biblioteca
 									3:	
 										mostrarLibros(libros)
 									4:
-										//validar que hayan disponibles para hacer el prestamo
-										//pedir los datos del libro y del usuario
+										registrarPrestamo(libros)
 										//generar fecha de inicio y de fin 
-										//sumarle 1 a los libros prestados y restarle -1 a los disponibles
 									5:
 										//validar que hayan prestamos para hacer la devolucion
 										//pedir los datos del libro y del usuario
@@ -107,6 +119,7 @@ Algoritmo biblioteca
 
 FinAlgoritmo
 
+//Menues para mostrar
 Funcion mostrarMenuPpal
 	Escribir "Elija el módulo al que quiere acceder (0 para Salir): "
 	Escribir "1. LIBROS"
@@ -493,4 +506,60 @@ Funcion mostrarLibros(libros Por Referencia)
 	
 FinFuncion
 
+//Registrar préstamo
+Funcion registrarPrestamo(libros Por Referencia)
 
+	Definir i, disponible, indiceLibro Como Entero
+	Definir idBuscado, op Como Cadena
+	disponible <- -1
+	
+	Escribir ""
+	Escribir "REGISTRAR PRÉSTAMO DE LIBRO"
+	Escribir Sin Saltar "Ingrese id del libro a prestar:"
+	Leer idBuscado
+	
+	Para i <- 0 hasta 199 Con Paso 1 Hacer
+		si libros[i,0] = idBuscado Entonces
+			indiceLibro <- i
+			si libros[i,5] = "1" Entonces
+				disponible <- 1
+			SiNo
+				disponible <- 0
+			FinSi			
+		FinSi		
+	FinPara
+	
+	Si disponible = 1 Entonces
+		Escribir "El libro se encuentra Disponible para préstamo"
+		Escribir "Desea registrar préstamo (S-N)?"
+		Leer op
+		op <- Mayusculas(op)
+		//Registrar préstamo y Cambiar el estado
+		Segun op Hacer
+			"S":
+				Escribir "Registrando Prestamo "
+				Si indiceLibro <> -1 Entonces
+					libros[indiceLibro,5] <- "0"			
+				FinSi
+				//Pedir datos del socio, validar - Falta ver modulo socios
+				
+			"N":
+				Escribir "Volviendo a consultas..."
+			De Otro Modo:
+				Escribir "Opción inválida"
+				Repetir
+					Escribir "Desea registrar préstamo (S-N)?"
+					Leer op
+					op <- Mayusculas(op)
+				Hasta Que (op="S" o op="N")
+		Fin Segun
+	Sino Si disponible = 0 Entonces
+			Escribir "El libro NO se encuentra Disponible para préstamo"
+		Sino
+			Escribir "ID no encontrado"
+		FinSi
+	FinSi	
+	//ver si puedo combinar con buscarLibros()
+
+	
+FinFuncion
