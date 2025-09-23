@@ -79,7 +79,7 @@ Algoritmo biblioteca
 										mostrarLibros(libros)
 									4:
 										registrarPrestamo(libros)
-										//generar fecha de inicio y de fin 
+										
 									5:
 										//validar que hayan prestamos para hacer la devolucion
 										//pedir los datos del libro y del usuario
@@ -270,7 +270,7 @@ funcion crearLibro(libros Por Referencia)
 	Definir idLibro, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, opcionUsuario como caracter
 	Definir confirmar, indice, numTemporal Como Entero
 	confirmar <- 0
-	indice <- buscarUltimo(libros)
+	indice <- buscarUltimo(libros) 
 	Mientras confirmar = 0 Hacer
 		Escribir ""
 		Escribir "***INGRESO DE NUEVO LIBRO***"
@@ -506,6 +506,57 @@ Funcion mostrarLibros(libros Por Referencia)
 	
 FinFuncion
 
+//Fecha préstamo
+SubProceso fechasPrestamo
+	//Funcion fechaDev<-fechasPrestamo
+	Definir fecha, anio, mes, dia, diasASumar, diasMes, diasRestantesMes Como Entero
+	
+	
+    fecha <- FechaActual() 
+    anio <- trunc(fecha / 10000)
+    mes <- trunc((fecha MOD 10000) / 100)
+    dia <- fecha MOD 100
+	
+	Escribir "Fecha de inicio del préstamo: ", dia, "/", mes, "/", anio
+	
+    // Días de validez del préstamo (una semana)
+    diasASumar <- 7
+	
+    Mientras diasASumar > 0 Hacer
+        Segun mes Hacer
+            1,3,5,7,8,10,12:
+                diasMes <- 31
+            4,6,9,11:
+                diasMes <- 30
+            2:
+                Si (anio MOD 4 = 0 Y anio MOD 100 <> 0) O (anio MOD 400 = 0) Entonces
+                    diasMes <- 29
+                Sino
+                    diasMes <- 28
+                FinSi
+        FinSegun
+		
+        diasRestantesMes <- diasMes - dia
+		
+        Si diasASumar <= diasRestantesMes Entonces
+            dia <- dia + diasASumar
+            diasASumar <- 0
+        Sino
+            diasASumar <- diasASumar - diasRestantesMes - 1
+            dia <- 1
+            mes <- mes + 1
+            Si mes > 12 Entonces
+                mes <- 1
+                anio <- anio + 1
+            FinSi
+        FinSi
+    FinMientras
+	
+    Escribir "Fecha de finalización del préstamo: ", dia, "/", mes, "/", anio
+	//fechaDev<-ConvertirATexto()
+FinSubProceso
+
+
 //Registrar préstamo
 Funcion registrarPrestamo(libros Por Referencia)
 
@@ -537,11 +588,14 @@ Funcion registrarPrestamo(libros Por Referencia)
 		//Registrar préstamo y Cambiar el estado
 		Segun op Hacer
 			"S":
-				Escribir "Registrando Prestamo "
+				Escribir "Registrando Prestamo..."
+				Esperar 1 segundo
 				Si indiceLibro <> -1 Entonces
 					libros[indiceLibro,5] <- "0"			
 				FinSi
-				//Pedir datos del socio, validar - Falta ver modulo socios
+				//Pedir datos del socio, validar - Falta ver modulo socios!!!
+				
+				fechasPrestamo
 				
 			"N":
 				Escribir "Volviendo a consultas..."
