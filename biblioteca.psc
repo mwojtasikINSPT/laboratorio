@@ -567,6 +567,7 @@ Funcion fechaFinPrestamo<-fechasPrestamo
     FinSi
 	
 	fechaFinPrestamo<-diaTemp+"/"+mesTemp+"/"+ConvertirATexto(anio) 
+	//Escribir "Fecha de fin: ", fechaFinPrestamo
 FinFuncion
 
 
@@ -632,11 +633,44 @@ Funcion registrarPrestamo(libros Por Referencia)
 	//ver si puedo combinar con buscarLibros()	
 FinFuncion
 
+
+//Calculo atraso - penalidad
+Funcion diasAtraso <- chequearPenalidad(fechaFinPrestamo)
+    Definir diasAtraso, fechaAct, fechaFin Como Entero
+    Definir diaCad, mesCad, anioCad, fechaCad Como Cadena
+    
+    fechaAct <- FechaActual()
+    
+    fechaCad <- fechaFinPrestamo
+    
+    Si fechaCad <> "" Y Longitud(fechaCad) >= 10 Entonces
+        diaCad <- Subcadena(fechaCad, 0, 1)    
+        mesCad <- Subcadena(fechaCad, 3,4)    
+        anioCad <- Subcadena(fechaCad, 6, 9) 
+        
+		fechaFin <- ConvertirANumero(anioCad) * 10000 + ConvertirANumero(mesCad) * 100 + ConvertirANumero(diaCad)
+		
+		// Calcular días de atraso
+		Si fechaActual > fechaFin Entonces
+			diasAtraso <- fechaActual - fechaFin
+			Escribir "Días de atraso: ", diasAtraso
+		Sino
+			diasAtraso <- 0
+			Escribir "Devolución a tiempo"
+		FinSi
+    Sino
+        diasAtraso <- -1
+        Escribir "Error en la fecha: ", fechaCad //ver q hacer
+    FinSi
+FinFuncion
+
+
+
 //Gestionar devolucion
 Funcion registrarDevolucion(libros Por Referencia)
 	
-	Definir i, prestado, indiceLibro Como Entero
-	Definir idBuscado, op Como Cadena
+	Definir i, prestado, indiceLibro, diasAtraso Como Entero
+	Definir idBuscado, op, fechaFinPrestamo Como Cadena
 	prestado <- -1
 	
 	Escribir ""
@@ -672,7 +706,9 @@ Funcion registrarDevolucion(libros Por Referencia)
 						libros[indiceLibro,5] <- "1"			
 					FinSi
 					//Pedir datos del socio, validar	
-					//Ver si devuelve en fecha prevista o corresponde multa
+					//Ajustar para ingresar fecha manual y validar ese ingreso (asi probamos penalidades)
+					fechaFinPrestamo<-libros[indiceLibro,6]
+					diasAtraso<-chequearPenalidad(fechaFinPrestamo)
 				"N":
 					Escribir "Volviendo a consultas..."
 				De Otro Modo:
