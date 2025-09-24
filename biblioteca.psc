@@ -8,13 +8,13 @@ Algoritmo biblioteca
 	Definir resp Como Caracter
 	Definir op, modulo, opLibros, i, j Como Entero 
 	Definir disponible, camposLibros Como Entero
-	camposLibros <- 6
+	camposLibros <- 7 //id, titulo, autor, genero, anio, disponible, fecha devolucion
 	Dimension libros[200, camposLibros]
 	i<- 0
 	
 	//Inicializo matriz de libros 
 	Para i <- 0 Hasta 199 Hacer		
-		Para j <- 0 Hasta 4 Hacer
+		Para j <- 0 Hasta 6 Hacer
 			libros[i, j] <- ""
 		FinPara
 	FinPara	
@@ -502,16 +502,16 @@ Funcion mostrarLibros(libros Por Referencia)
 			Escribir "Genero: ", libros[i,3]
 			Escribir "Año de Publicacion: ", libros[i,4]
 			Escribir "Disponible: ", libros[i,5]
+			Escribir "Fecha prevista de devolucion: ", libros[i,6]
 		FinSi
 	FinPara
 	
 FinFuncion
 
 //Fecha préstamo
-SubProceso fechasPrestamo
-	//Funcion fechaDev<-fechasPrestamo
+Funcion fechaFinPrestamo<-fechasPrestamo	
 	Definir fecha, anio, mes, dia, diasASumar, diasMes, diasRestantesMes Como Entero
-	
+	Definir fechaFinPrestamo, diaTemp, mesTemp, anioTemp como CAdena
 	
     fecha <- FechaActual() 
     anio <- trunc(fecha / 10000)
@@ -554,15 +554,27 @@ SubProceso fechasPrestamo
     FinMientras
 	
     Escribir "Fecha de finalización del préstamo: ", dia, "/", mes, "/", anio
-	//fechaDev<-ConvertirATexto()
-FinSubProceso
+	//Convierto fechas numericas a texto
+	si (dia<10) Entonces
+		diaTemp <- "0"+ConvertirATexto(dia)
+	SiNo
+		diaTemp <- ConvertirATexto(dia)
+	FinSi
+	Si mes < 10 Entonces
+        mesTemp <- "0" + ConvertirATexto(mes)
+    Sino
+        mesTemp <- ConvertirATexto(mes)
+    FinSi
+	
+	fechaFinPrestamo<-diaTemp+"/"+mesTemp+"/"+ConvertirATexto(anio) 
+FinFuncion
 
 
 //Registrar préstamo
 Funcion registrarPrestamo(libros Por Referencia)
 
 	Definir i, disponible, indiceLibro Como Entero
-	Definir idBuscado, op Como Cadena
+	Definir idBuscado, op, fechaFinPrestamo Como Cadena
 	disponible <- -1
 	
 	Escribir ""
@@ -598,7 +610,8 @@ Funcion registrarPrestamo(libros Por Referencia)
 						libros[indiceLibro,5] <- "0"			
 					FinSi
 					//Pedir datos del socio, validar - Falta ver modulo socios!!!				
-					fechasPrestamo
+					fechaFinPrestamo<-fechasPrestamo
+					libros[indiceLibro,6]<-fechaFinPrestamo
 					
 				"N":
 					Escribir "Volviendo a consultas..."
@@ -658,7 +671,8 @@ Funcion registrarDevolucion(libros Por Referencia)
 					Si indiceLibro <> -1 Entonces
 						libros[indiceLibro,5] <- "1"			
 					FinSi
-					//Pedir datos del socio, validar					
+					//Pedir datos del socio, validar	
+					//Ver si devuelve en fecha prevista o corresponde multa
 				"N":
 					Escribir "Volviendo a consultas..."
 				De Otro Modo:
