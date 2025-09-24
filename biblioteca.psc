@@ -78,14 +78,11 @@ Algoritmo biblioteca
 									3:	
 										mostrarLibros(libros)
 									4:
-										registrarPrestamo(libros)
-										
+										registrarPrestamo(libros)										
 									5:
-										//validar que hayan prestamos para hacer la devolucion
-										//pedir los datos del libro y del usuario
+										registrarDevolucion(libros)
 										//verificar que el fecha fin dado sea igual a la fecha de devolucion
 										//si hay castigo, se deben sumar los dias atrasados y multarlo (si intenta sacar algun libro y no pasaron esos dias, que le informe que no puede)
-										//sumarle 1 a los libros disponibles y restarle -1 a los disponibles
 									6:	
 										Escribir "Volviendo a menu anterior..."
 										Esperar 1 segundos 
@@ -120,23 +117,26 @@ Algoritmo biblioteca
 FinAlgoritmo
 
 //Menues para mostrar
-Funcion mostrarMenuPpal
+SubProceso mostrarMenuPpal
+	Escribir ""
 	Escribir "Elija el módulo al que quiere acceder (0 para Salir): "
-	Escribir "1. LIBROS"
-	Escribir "2. SOCIOS"
-	Escribir "0. Salir"
-FinFuncion
+	Escribir ""
+	Escribir "	1. LIBROS"
+	Escribir "	2. SOCIOS"
+	Escribir "	0. Salir"
+	Escribir ""
+FinSubProceso
 
-Funcion mostrarMenuLibros
+SubProceso mostrarMenuLibros
 	Escribir ""
 	Escribir "**** MENU LIBROS ****"
 	Escribir "1. Agregar libros"		
 	Escribir "2. Consultar libros"
 	Escribir "3. Volver al menu principal"
 	Escribir "Elija la opcion: "	
-FinFuncion
+FinSubProceso
 
-Funcion mostrarSubMenuConsultaLibros
+SubProceso  mostrarSubMenuConsultaLibros
 	Escribir ""
 	Escribir "***Sub Menu Consulta de Libros***"
 	Escribir "1. Buscar Libro"
@@ -146,7 +146,7 @@ Funcion mostrarSubMenuConsultaLibros
 	Escribir "5. Registrar Devolución"
 	Escribir "6. Volver"
 	Escribir "Elija la opcion: "
-FinFuncion
+FinSubProceso
 
 
 //Asigno posición a cada libro ingresado
@@ -311,15 +311,16 @@ funcion crearLibro(libros Por Referencia)
 FinFuncion
 
 
-Funcion posicionResultado<-filtrarPorCriterio(libros, columna, filtro, resultados)
-    Definir i, posicionResultado Como Entero
+//Cuenta coincidencias segun filtro
+Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados)
+    Definir i, cantResultados Como Entero
     i <- 0
-    posicionResultado <- 0	
+    cantResultados <- 0	
     Mientras i < 200 Hacer
         Si libros[i, 0] <> "" Entonces
             Si libros[i, columna] = filtro Entonces
-                resultados[posicionResultado] <- i
-                posicionResultado <- posicionResultado + 1
+                resultados[cantResultados] <- i
+                cantResultados <- cantResultados + 1
             FinSi
         FinSi
         i <- i + 1
@@ -580,40 +581,99 @@ Funcion registrarPrestamo(libros Por Referencia)
 		FinSi		
 	FinPara
 	
-	Si disponible = 1 Entonces
-		Escribir "El libro se encuentra Disponible para préstamo"
-		Escribir "Desea registrar préstamo (S-N)?"
-		Leer op
-		op <- Mayusculas(op)
-		//Registrar préstamo y Cambiar el estado
-		Segun op Hacer
-			"S":
-				Escribir "Registrando Prestamo..."
-				Esperar 1 segundo
-				Si indiceLibro <> -1 Entonces
-					libros[indiceLibro,5] <- "0"			
-				FinSi
-				//Pedir datos del socio, validar - Falta ver modulo socios!!!
-				
-				fechasPrestamo
-				
-			"N":
-				Escribir "Volviendo a consultas..."
-			De Otro Modo:
-				Escribir "Opción inválida"
-				Repetir
-					Escribir "Desea registrar préstamo (S-N)?"
-					Leer op
-					op <- Mayusculas(op)
-				Hasta Que (op="S" o op="N")
-		Fin Segun
-	Sino Si disponible = 0 Entonces
-			Escribir "El libro NO se encuentra Disponible para préstamo"
-		Sino
-			Escribir "ID no encontrado"
-		FinSi
-	FinSi	
-	//ver si puedo combinar con buscarLibros()
-
+	Si disponible = -1 Entonces
+		Escribir "ID no encontrado"
+	SiNo
+		Si disponible = 1 Entonces
+			Escribir "El libro se encuentra Disponible para préstamo"
+			Escribir "Desea registrar préstamo (S-N)?"
+			Leer op
+			op <- Mayusculas(op)
+			//Registrar préstamo y Cambiar el estado
+			Segun op Hacer
+				"S":
+					Escribir "Registrando Prestamo..."
+					Esperar 1 segundo
+					Si indiceLibro <> -1 Entonces
+						libros[indiceLibro,5] <- "0"			
+					FinSi
+					//Pedir datos del socio, validar - Falta ver modulo socios!!!				
+					fechasPrestamo
+					
+				"N":
+					Escribir "Volviendo a consultas..."
+				De Otro Modo:
+					Escribir "Opción inválida"
+					Repetir
+						Escribir "Desea registrar préstamo (S-N)?"
+						Leer op
+						op <- Mayusculas(op)
+					Hasta Que (op="S" o op="N")
+			Fin Segun
+		Sino Si disponible = 0 Entonces
+				Escribir "El libro NO se encuentra Disponible para préstamo"
+			FinSi
+		FinSi	
+	FinSi
 	
+	//ver si puedo combinar con buscarLibros()	
+FinFuncion
+
+//Gestionar devolucion
+Funcion registrarDevolucion(libros Por Referencia)
+	
+	Definir i, prestado, indiceLibro Como Entero
+	Definir idBuscado, op Como Cadena
+	prestado <- -1
+	
+	Escribir ""
+	Escribir "REGISTRAR DEVOLUCIÓN DE LIBRO"
+	Escribir Sin Saltar "Ingrese id del libro a devolver:"
+	Leer idBuscado
+	
+	Para i <- 0 hasta 199 Con Paso 1 Hacer
+		si libros[i,0] = idBuscado Entonces
+			indiceLibro <- i
+			si libros[i,5] = "0" Entonces
+				prestado <- 1
+			SiNo
+				prestado <- 0
+			FinSi			
+		FinSi		
+	FinPara
+	
+	Si prestado = -1 Entonces
+		Escribir "Id No encontrado"
+	SiNo
+		Si prestado = 1 Entonces
+			Escribir "El libro se encuentra en préstamo"
+			Escribir "Desea registrar devolución (S-N)?"
+			Leer op
+			op <- Mayusculas(op)
+			//Registrar devolución y Cambiar estado
+			Segun op Hacer
+				"S":
+					Escribir "Registrando Devolución..."
+					Esperar 1 segundo
+					Si indiceLibro <> -1 Entonces
+						libros[indiceLibro,5] <- "1"			
+					FinSi
+					//Pedir datos del socio, validar					
+				"N":
+					Escribir "Volviendo a consultas..."
+				De Otro Modo:
+					Escribir "Opción inválida"
+					Repetir
+						Escribir "Desea registrar devolución (S-N)?"
+						Leer op
+						op <- Mayusculas(op)
+					Hasta Que (op="S" o op="N")
+			Fin Segun
+		SiNo
+			Si prestado = 0 Entonces
+				Escribir "El libro NO se encuentra en préstamo"
+			FinSi			
+		FinSi		
+	FinSi
+
 FinFuncion
