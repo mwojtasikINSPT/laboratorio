@@ -81,8 +81,6 @@ Algoritmo biblioteca
 										registrarPrestamo(libros)										
 									5:
 										registrarDevolucion(libros)
-										//verificar que el fecha fin dado sea igual a la fecha de devolucion
-										//si hay castigo, se deben sumar los dias atrasados y multarlo (si intenta sacar algun libro y no pasaron esos dias, que le informe que no puede)
 									6:	
 										Escribir "Volviendo a menu anterior..."
 										Esperar 1 segundos 
@@ -90,8 +88,7 @@ Algoritmo biblioteca
 										Escribir "Eligió una opción inválida."
 								Fin Segun
 								
-							Hasta Que (op=6)
-							
+							Hasta Que (op=6)							
 							
 						3:
 							Escribir "Volviendo al menu principal..."
@@ -109,14 +106,12 @@ Algoritmo biblioteca
 				Escribir "Opción inválida"
 		Fin Segun
 		
-	Hasta Que (modulo==0)
-
-
-	
+	Hasta Que (modulo==0)	
 
 FinAlgoritmo
 
-//Menues para mostrar
+
+//Menúes para mostrar
 SubProceso mostrarMenuPpal
 	Escribir ""
 	Escribir "Elija el módulo al que quiere acceder (0 para Salir): "
@@ -130,10 +125,11 @@ FinSubProceso
 SubProceso mostrarMenuLibros
 	Escribir ""
 	Escribir "**** MENU LIBROS ****"
-	Escribir "1. Agregar libros"		
-	Escribir "2. Consultar libros"
+	Escribir "1. Agregar nuevos libros"		
+	Escribir "2. Gestionar libros"
 	Escribir "3. Volver al menu principal"
-	Escribir "Elija la opcion: "	
+	Escribir Sin Saltar "Elija la opcion: "	
+	Escribir ""
 FinSubProceso
 
 SubProceso  mostrarSubMenuConsultaLibros
@@ -145,11 +141,12 @@ SubProceso  mostrarSubMenuConsultaLibros
 	Escribir "4. Registrar Préstamo"
 	Escribir "5. Registrar Devolución"
 	Escribir "6. Volver"
-	Escribir "Elija la opcion: "
+	Escribir Sin Saltar "Elija la opcion: "
+	Escribir ""
 FinSubProceso
 
 
-//Asigno posición a cada libro ingresado
+//Asigno posición en la matriz a cada libro ingresado
 Funcion posicion<-buscarUltimo(libros) 
     Definir i, posicion Como Entero
     i <- 0	
@@ -164,12 +161,12 @@ Funcion posicion<-buscarUltimo(libros)
 FinFuncion
 
 
-//Valido Texto
+//Valido Texto ingresado
 Funcion esTextoValido <- ValidarTexto(cadenaAVerificar)
 	Definir i, esTextoValido Como Entero
 	Definir letra Como Caracter
 	esTextoValido <-  1
-	//verifico que no ingrese vacio
+	//verifico que no ingrese vacío
 	Si Longitud(cadenaAVerificar) = 0 Entonces
         esTextoValido <- 0        
     FinSi
@@ -204,7 +201,7 @@ Funcion txt <- pedirTexto(mensaje)
 FinFuncion
 
 
-//Valido Números
+//Valido Números ingresados
 Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
 	Definir i, esNumero Como Entero
 	Definir letra Como Caracter
@@ -218,7 +215,7 @@ Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
 FinFuncion
 
 
-//Pido numeros
+//Pido números
 Funcion num <- pedirNumero(mensaje)
 	definir esNumero, num Como Entero
 	definir input como cadena
@@ -265,12 +262,13 @@ Funcion idUnico <- generarId
 FinFuncion
 
 
-//Crear libro
+//Creación de Libro
 funcion crearLibro(libros Por Referencia)
 	Definir idLibro, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, opcionUsuario como caracter
 	Definir confirmar, indice, numTemporal Como Entero
 	confirmar <- 0
 	indice <- buscarUltimo(libros) 
+	
 	Mientras confirmar = 0 Hacer
 		Escribir ""
 		Escribir "***INGRESO DE NUEVO LIBRO***"
@@ -295,7 +293,7 @@ funcion crearLibro(libros Por Referencia)
 		Escribir generoLibro
 		Escribir sin saltar "Año de publicacion: "
 		Escribir anoPublicacionLibro
-		Escribir "Confirma ingreso? (S/N)"
+		Escribir Sin Saltar "Confirma ingreso? (S/N)"
 		leer opcionUsuario
 		si Mayusculas(opcionUsuario) == "S" Entonces
 			confirmar <- 1
@@ -311,7 +309,7 @@ funcion crearLibro(libros Por Referencia)
 FinFuncion
 
 
-//Cuenta coincidencias segun filtro
+//Cuento coincidencias segun filtro
 Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados)
     Definir i, cantResultados Como Entero
     i <- 0
@@ -328,7 +326,7 @@ Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados)
 FinFuncion
 
 
-//Buscar Libros
+//Busco Libros
 Funcion buscarLibro(libros Por Referencia)
 	Definir tituloLibro, autorLibro, generoLibro, anoPublicacionLibro como caracter
 	Definir opcionUsuario, columna, resultados, i, indice, cantidad Como Entero
@@ -347,7 +345,7 @@ Funcion buscarLibro(libros Por Referencia)
 	Escribir "4. Género"
 	Escribir "5. Año de publicación"
 	Escribir "6. Volver"
-	Escribir "Ingrese una opción (1-6): "
+	Escribir Sin Saltar "Ingrese una opción (1-6): "
 	Leer opcionUsuario
 	
 	Segun opcionUsuario Hacer
@@ -379,11 +377,10 @@ Funcion buscarLibro(libros Por Referencia)
 		De Otro Modo:
 			Escribir "Eligió una opción inválida."
 	Fin Segun
-	
-	
+		
 	cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados)
 	
-	// Mostrar resultados si hay coincidencias
+	// Muestro resultados 
     Si cantidad = 0 Entonces
         Escribir "No se encontraron libros con ese criterio."
     Sino
@@ -401,18 +398,18 @@ Funcion buscarLibro(libros Por Referencia)
     FinSi	
 FinFuncion
 
-//Modificar Libro
+//Modificación de Libro
 Funcion modificarLibro(libros Por Referencia)
     Definir i, idBuscado, indice, confirmar Como Entero
     Definir opcionUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro Como Cadena
 	
-    // Pedir el ID del libro a modificar
+    // Pido el ID del libro a modificar
 	Escribir ""
 	Escribir "**MODIFICACIÓN DE LIBRO**"
-    Escribir "Ingrese el ID del libro a modificar: "
+    Escribir Sin Saltar "Ingrese el ID del libro a modificar: "
     Leer idBuscado
 	
-    // Buscar el libro en la matriz
+    // Busco el libro en la matriz
     indice <- -1
     Para i <- 0 Hasta 199
         Si libros[i,0] = ConvertirATexto(idBuscado) Entonces
@@ -424,7 +421,7 @@ Funcion modificarLibro(libros Por Referencia)
     Si indice = -1 Entonces
         Escribir "Id de Libro no encontrado."
     Sino
-        // Cargar datos actuales en variables temporales
+        // Cargo datos actuales en variables temporales
         tituloLibro <- libros[indice,1]
         autorLibro <- libros[indice,2]
         generoLibro <- libros[indice,3]
@@ -478,7 +475,7 @@ Funcion modificarLibro(libros Por Referencia)
             FinSi
         FinMientras
 		
-        // Guardar cambios en la matriz
+        // Guardo cambios en la matriz
         libros[indice,1] <- tituloLibro
         libros[indice,2] <- autorLibro
         libros[indice,3] <- generoLibro
@@ -487,7 +484,7 @@ Funcion modificarLibro(libros Por Referencia)
 FinFuncion
 
 
-//Mostrar libros cargados
+//Muestro todos los libros cargados
 Funcion mostrarLibros(libros Por Referencia)
 	
 	Definir i Como Entero
@@ -508,7 +505,7 @@ Funcion mostrarLibros(libros Por Referencia)
 	
 FinFuncion
 
-//Fecha préstamo
+//Determino Fecha fin préstamo
 Funcion fechaFinPrestamo<-fechasPrestamo	
 	Definir fecha, anio, mes, dia, diasASumar, diasMes, diasRestantesMes Como Entero
 	Definir fechaFinPrestamo, diaTemp, mesTemp, anioTemp como CAdena
@@ -567,11 +564,23 @@ Funcion fechaFinPrestamo<-fechasPrestamo
     FinSi
 	
 	fechaFinPrestamo<-diaTemp+"/"+mesTemp+"/"+ConvertirATexto(anio) 
-	//Escribir "Fecha de fin: ", fechaFinPrestamo
 FinFuncion
 
+//Muestro Libro - para préstamos y devoluciones
+SubProceso mostrarLibroEncontrado(libros Por Referencia, indiceLibro)
+	
+	Escribir ""
+	Escribir "-------------Datos del Libro---------------"
+	Escribir "ID: ", libros[indiceLibro,0]
+	Escribir "Titulo: ", libros[indiceLibro,1]
+	Escribir "Autor: ", libros[indiceLibro,2]
+	Escribir "Genero: ", libros[indiceLibro,3]
+	Escribir "Año de Publicacion: ", libros[indiceLibro,4]
+	Escribir ""
+FinSubProceso
 
-//Registrar préstamo
+
+//Registro préstamo
 Funcion registrarPrestamo(libros Por Referencia)
 
 	Definir i, disponible, indiceLibro Como Entero
@@ -599,13 +608,14 @@ Funcion registrarPrestamo(libros Por Referencia)
 	SiNo
 		Si disponible = 1 Entonces
 			Escribir "El libro se encuentra Disponible para préstamo"
+			mostrarLibroEncontrado(libros, indiceLibro)
 			Escribir "Desea registrar préstamo (S-N)?"
 			Leer op
 			op <- Mayusculas(op)
-			//Registrar préstamo y Cambiar el estado
+			//Registro préstamo y Cambio estado
 			Segun op Hacer
 				"S":
-					Escribir "Registrando Prestamo..."
+					Escribir "Registrando Préstamo..."
 					Esperar 1 segundo
 					Si indiceLibro <> -1 Entonces
 						libros[indiceLibro,5] <- "0"			
@@ -634,14 +644,21 @@ Funcion registrarPrestamo(libros Por Referencia)
 FinFuncion
 
 
-//Calculo atraso - penalidad
+//Calculo atraso 
 Funcion diasAtraso <- chequearPenalidad(fechaFinPrestamo)
     Definir diasAtraso, fechaAct, fechaFin Como Entero
+	definir fechaDevolucion, fechaFinPenalidad Como Entero 
     Definir diaCad, mesCad, anioCad, fechaCad Como Cadena
     
-    fechaAct <- FechaActual()
-    
+    fechaAct <- FechaActual()    
     fechaCad <- fechaFinPrestamo
+	
+	Escribir "Ingrese la fecha de devolución AAAAMMDD" //ARREGLAR!!!! forma de pedir 
+	Leer fechaDevolucion
+	Mientras fechaDevolucion<fechaAct Hacer
+		Escribir "No puede ingresar fecha pasada. Ingrese fecha válida"
+		Leer fechaDevolucion
+	Fin Mientras
     
     Si fechaCad <> "" Y Longitud(fechaCad) >= 10 Entonces
         diaCad <- Subcadena(fechaCad, 0, 1)    
@@ -650,23 +667,83 @@ Funcion diasAtraso <- chequearPenalidad(fechaFinPrestamo)
         
 		fechaFin <- ConvertirANumero(anioCad) * 10000 + ConvertirANumero(mesCad) * 100 + ConvertirANumero(diaCad)
 		
-		// Calcular días de atraso
-		Si fechaActual > fechaFin Entonces
-			diasAtraso <- fechaActual - fechaFin
+		Si fechaDevolucion > fechaFin Entonces
+			diasAtraso <- fechaDevolucion - fechaFin
 			Escribir "Días de atraso: ", diasAtraso
+			fechaFinPenalidad <-calcularPenalidad(diasAtraso, fechaDevolucion)
 		Sino
 			diasAtraso <- 0
-			Escribir "Devolución a tiempo"
+			Escribir  "No hay penalidad - Devolución a tiempo"
 		FinSi
     Sino
         diasAtraso <- -1
-        Escribir "Error en la fecha: ", fechaCad //ver q hacer
+        Escribir "Error en la fecha: ", fechaCad //En teoría, no debería pasar 
     FinSi
 FinFuncion
 
 
+//Calculo penalidad
+Funcion fechaFinPenalidad <- calcularPenalidad(diasAtraso, fechaDevolucion)
+    Definir fechaFinPenalidad Como Entero
+    Definir diasPenalidad, diasMes, diasRestantesMes Como Entero
+	Definir anio, mes, dia Como Entero
+    
+    Si diasAtraso > 0 Entonces
+        diasPenalidad <- diasAtraso * 2
+        
+        Escribir "=== PENALIDAD POR DEVOLUCIÓN TARDÍA ==="
+        Escribir "Días de atraso: ", diasAtraso
+        Escribir "Penalidad: No puede retirar libros por ", diasPenalidad, " días"        
 
-//Gestionar devolucion
+        anio <- trunc(fechaDevolucion / 10000)
+        mes <- trunc((fechaDevolucion % 10000) / 100)
+        dia <- fechaDevolucion % 100          
+        
+        Mientras diasPenalidad > 0 Hacer
+			Segun mes Hacer
+				1,3,5,7,8,10,12:
+					diasMes <- 31
+				4,6,9,11:
+					diasMes <- 30
+				2:
+					Si (anio MOD 4 = 0 Y anio MOD 100 <> 0) O (anio MOD 400 = 0) Entonces
+						diasMes <- 29
+					Sino
+						diasMes <- 28
+					FinSi
+			FinSegun
+			
+			diasRestantesMes <- diasMes - dia
+			
+			Si diasPenalidad <= diasRestantesMes Entonces
+				dia <- dia + diasPenalidad
+				diasPenalidad <- 0
+			Sino
+				diasPenalidad <- diasPenalidad - diasRestantesMes - 1
+				dia <- 1
+				mes <- mes + 1
+				Si mes > 12 Entonces
+					mes <- 1
+					anio <- anio + 1
+				FinSi
+			FinSi
+		FinMientras
+		        
+        fechaFinPenalidad <- anio * 10000 + mes * 100 + dia
+        
+        Escribir "Fin de penalidad: ", dia, "/", mes, "/", anio
+        Escribir "Podrá retirar libros nuevamente a partir de esta fecha"
+        Escribir ""
+        
+//    Sino
+//        fechaFinPenalidad <- fechaDevolucion
+//        Escribir "No hay penalidad - Devolución a tiempo"
+    FinSi
+    
+FinFuncion
+
+
+//Gestiono devolución
 Funcion registrarDevolucion(libros Por Referencia)
 	
 	Definir i, prestado, indiceLibro, diasAtraso Como Entero
@@ -694,6 +771,7 @@ Funcion registrarDevolucion(libros Por Referencia)
 	SiNo
 		Si prestado = 1 Entonces
 			Escribir "El libro se encuentra en préstamo"
+			mostrarLibroEncontrado(libros, indiceLibro)
 			Escribir "Desea registrar devolución (S-N)?"
 			Leer op
 			op <- Mayusculas(op)
@@ -706,7 +784,6 @@ Funcion registrarDevolucion(libros Por Referencia)
 						libros[indiceLibro,5] <- "1"			
 					FinSi
 					//Pedir datos del socio, validar	
-					//Ajustar para ingresar fecha manual y validar ese ingreso (asi probamos penalidades)
 					fechaFinPrestamo<-libros[indiceLibro,6]
 					diasAtraso<-chequearPenalidad(fechaFinPrestamo)
 				"N":
