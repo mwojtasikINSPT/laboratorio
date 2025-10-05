@@ -1,12 +1,13 @@
 Algoritmo biblioteca
 	
-	definir credencial, credencialAdmin Como caracter
+	definir credencial, credencialAdmin, credencialBibliotecario Como caracter
 	credencialAdmin <- "1234"
+	credencialBibliotecario <- "5678"
 	
 	
 	definir libros, socios, prestamos como Cadena 
 	Definir resp Como Caracter
-	Definir op, modulo, opLibros, i, j, opSocios,  l, m, n,c Como Entero 
+	Definir op, modulo, opLibros, opSocios, opAcceso, i, j, l, m, n, c Como Entero 
 	Definir disponible, camposLibros, camposSocios,camposPrestamo Como Entero
 	camposLibros <- 7 //id, titulo, autor, genero, anio, disponible, fecha devolucion
 	Dimension libros[200, camposLibros]
@@ -36,12 +37,6 @@ Algoritmo biblioteca
 			prestamos[n, c] <- ""
 		FinPara
 	FinPara
-	
-	Escribir "****Bienvenido al Sistema de Gestion de Biblioteca****" 
-	Repetir
-		Escribir "Ingrese la clave de acceso: " 
-		Leer credencial
-	Hasta Que credencial == credencialAdmin
 	
 	//Precargo Libros para pruebas
 	libros[0, 0] <- "10000"
@@ -78,132 +73,185 @@ Algoritmo biblioteca
 	socios[2, 4] <- ""
 	
 	
+	Escribir "****Bienvenido al Sistema de Gestion de Biblioteca****" 
+	
+	
+	
+	//Acceso diferenciado por tipo de usuario: Admin, Bibliotecario, Socio
 	Repetir
-		mostrarMenuPpal
-		Leer modulo
+		mostrarMenuAcceso
+		Leer opAcceso
 		
-		Segun modulo Hacer
-			1:
+		Segun opAcceso Hacer
+			1:	//Admin			
 				Repetir
-					mostrarMenuLibros
-					Leer opLibros
+					Escribir "Ingrese la clave de acceso: " 
+					Leer credencial
+				Hasta Que credencial == credencialAdmin
+				Escribir "Acceso admin (en proceso...)" 
+			2:  //Bibliotecario				
+				Repetir
+					Escribir "Ingrese la clave de acceso: " 
+					Leer credencial
+				Hasta Que credencial == credencialBibliotecario
+				
+				//Menu Bibliotecario
+				
+				Repetir
+					mostrarMenuPpalBibliotecario
+					Leer modulo
 					
-					Segun opLibros Hacer
-						1: //Agregar Libros
+					Segun modulo Hacer
+						1:
 							Repetir
-								crearLibro(libros)
-								Repetir
-									Escribir "Desea agregar otro libro? (S/N)"
-									Leer resp
-									resp<-Mayusculas(resp)	
-									si resp<>"S" y resp<>"N" Entonces
-										Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
-										Leer resp
-										resp<-Mayusculas(resp)	
-									FinSi
-								Hasta Que (resp = "S" o resp = "N")				
-							Mientras Que (resp<>"N")	
-						2: //Consultar Libros
-							Repetir
-								mostrarSubMenuConsultaLibros
-								Leer op 
+								mostrarMenuLibros
+								Leer opLibros
 								
-								Segun op Hacer
-									1:
-										buscarLibro(libros)
-									2:
-										modificarLibro(libros)
-									3:	
-										mostrarLibros(libros)
-									4:
-										registrarPrestamo(libros, socios, prestamos)		
-									5:	
-										mostrarPrestamos(prestamos)
-									6:
-										registrarDevolucion(libros, socios, prestamos)
-										Escribir ""
-										//verificar que el fecha fin dado sea igual a la fecha de devolucion
-										//si hay castigo, se deben sumar los dias atrasados y multarlo (si intenta sacar algun libro y no pasaron esos dias, que le informe que no puede)
-									7:
-										Escribir "Volviendo a menu anterior..."
-										Esperar 1 segundos 
+								Segun opLibros Hacer
+									1: //Agregar Libros
+										Repetir
+											crearLibro(libros)
+											Repetir
+												Escribir "Desea agregar otro libro? (S/N)"
+												Leer resp
+												resp<-Mayusculas(resp)	
+												si resp<>"S" y resp<>"N" Entonces
+													Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
+													Leer resp
+													resp<-Mayusculas(resp)	
+												FinSi
+											Hasta Que (resp = "S" o resp = "N")				
+										Mientras Que (resp<>"N")	
+									2: //Consultar Libros
+										Repetir
+											mostrarSubMenuConsultaLibros
+											Leer op 
+											
+											Segun op Hacer
+												1:
+													buscarLibro(libros)
+												2:
+													modificarLibro(libros)
+												3:	
+													Limpiar Pantalla
+													mostrarLibros(libros)
+												4:
+													registrarPrestamo(libros, socios, prestamos)		
+												5:	
+													mostrarPrestamos(prestamos)
+												6:
+													registrarDevolucion(libros, socios, prestamos)
+													Escribir ""
+												7:
+													Escribir "Volviendo a menu anterior..."
+													Esperar 1 segundos 
+													Limpiar Pantalla
+												De Otro Modo:
+													Escribir "Eligió una opción inválida."
+											Fin Segun
+										Hasta Que (op=7)
+									3:
+										Escribir "Volviendo al menu principal..."
+										Esperar 1 segundo
+										Limpiar Pantalla
 									De Otro Modo:
 										Escribir "Eligió una opción inválida."
 								Fin Segun
-							Hasta Que (op=7)
+								
+							Mientras que (opLibros<>3)
+						2:
+							Repetir
+								mostrarMenuSocios
+								Leer opSocios
+								
+								Segun opSocios Hacer
+									1: //Agregar Socios
+										Repetir
+											crearSocio(socios)
+											Repetir
+												Escribir "¿Desea agregar otro socio? (S/N)"
+												Leer resp
+												resp <- Mayusculas(resp)	
+												Si resp <> "S" Y resp <> "N" Entonces
+													Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
+													Leer resp
+													resp <- Mayusculas(resp)	
+												FinSi
+											Hasta Que (resp = "S" O resp = "N")				
+										Mientras Que (resp <> "N")
+										
+									2: //Consultar Socios
+										Repetir
+											mostrarSubMenuConsultaSocios
+											Leer op 
+											Segun op Hacer
+												1:
+													buscarSocio(socios)
+												2:
+													modificarSocio(socios)
+												3:	
+													Limpiar Pantalla
+													mostrarSocios(socios)
+												4:	
+													Escribir "Volviendo a menú anterior..."
+													Esperar 1 segundos 
+													Limpiar Pantalla
+												De Otro Modo:
+													Escribir "Eligió una opción inválida."
+											Fin Segun
+										Hasta Que (op = 4)
+										
+									3: 
+										Escribir "Volviendo al menú principal..."
+										Esperar 1 segundos
+										Limpiar Pantalla
+										
+									De Otro Modo:
+										Escribir "Eligió una opción inválida."
+								Fin Segun
+								
+							Hasta Que (opSocios = 3) 
 						3:
-							Escribir "Volviendo al menu principal..."
-							Esperar 1 segundo
+							Escribir "Volviendo..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
 						De Otro Modo:
-							Escribir "Eligió una opción inválida."
+							Escribir "Opción inválida"
 					Fin Segun
-					
-				Mientras que (opLibros<>3)
-			2:
-				Repetir
-					mostrarMenuSocios
-					Leer opSocios
-					
-					Segun opSocios Hacer
-						1: //Agregar Socios
-							Repetir
-								crearSocio(socios)
-								Repetir
-									Escribir "¿Desea agregar otro socio? (S/N)"
-									Leer resp
-									resp <- Mayusculas(resp)	
-									Si resp <> "S" Y resp <> "N" Entonces
-										Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
-										Leer resp
-										resp <- Mayusculas(resp)	
-									FinSi
-								Hasta Que (resp = "S" O resp = "N")				
-							Mientras Que (resp <> "N")
-							
-						2: //Consultar Socios
-							Repetir
-								mostrarSubMenuConsultaSocios
-								Leer op 
-								Segun op Hacer
-									1:
-										buscarSocio(socios)
-									2:
-										modificarSocio(socios)
-									3:	
-										mostrarSocios(socios)
-									4:	
-										Escribir "Volviendo a menú anterior..."
-										Esperar 1 segundos 
-									De Otro Modo:
-										Escribir "Eligió una opción inválida."
-								Fin Segun
-							Hasta Que (op = 4)
-							
-						3: 
-							Escribir "Volviendo al menú principal..."
-							Esperar 1 segundos
-							
-						De Otro Modo:
-							Escribir "Eligió una opción inválida."
-					Fin Segun
-					
-				Hasta Que (opSocios = 3) 
+				Hasta Que (modulo==3)
+				
+			3:
+				//Acceso Socio -  HAY Q HACER
 			0:
-				Escribir "Saliendo del sistema..."
+				Escribir "Saliendo del Sistema..."
+				Esperar 1 segundo
 			De Otro Modo:
-				Escribir "Opción inválida"
+				Escribir "Eligió una opción inválida."
 		Fin Segun
-	Hasta Que (modulo==0)
+		
+	Hasta Que opAcceso == 0
+	
 FinAlgoritmo
 
 //Menues para mostrar
-SubProceso mostrarMenuPpal
+SubProceso  mostrarMenuAcceso
 	Escribir ""
-	Escribir "Elija el módulo al que quiere acceder (0 para Salir): "
+	Escribir "Indique su tipo de usuario (0 para Salir): "
+	Escribir ""
+	Escribir "	1. ADMIN"
+	Escribir "	2. BIBLIOTECARIO"
+	Escribir "	2. SOCIO"
+	Escribir "	0. Salir"
+	Escribir ""
+FinSubProceso
+
+SubProceso mostrarMenuPpalBibliotecario
+	Escribir ""
+	Escribir "Elija el módulo al que quiere acceder (3 para Volver): "
 	Escribir ""
 	Escribir "	1. LIBROS"
 	Escribir "	2. SOCIOS"
-	Escribir "	0. Salir"
+	Escribir "	3. Volver"
 	Escribir ""
 FinSubProceso
 
@@ -539,71 +587,77 @@ Funcion buscarLibro(libros Por Referencia)
 	Definir opcionUsuario, columna, resultados, i, indice, cantidad Como Entero
 	Definir criterio como Cadena
 	Dimension resultados[200]
+	
 	//Inicializo resultados
 	Para i <- 0 Hasta 199 Hacer		
 		resultados[i] <- -1
 	FinPara
-	Escribir ""
-	Escribir "**BÚSQUEDA DE LIBRO**"
-	Escribir "Elija un criterio de búsqueda"
-	Escribir "1. Id"
-	Escribir "2. Título"
-	Escribir "3. Autor"
-	Escribir "4. Género"
-	Escribir "5. Año de publicación"
-	Escribir "6. Volver"
-	Escribir "Ingrese una opción (1-6): "
-	Leer opcionUsuario
 	
-	Segun opcionUsuario Hacer
-		1:
-			columna<-0
-			Escribir Sin Saltar "Ingrese id a buscar: "
-			Leer criterio
-		2:
-			columna<-1
-			Escribir Sin Saltar "Ingrese título a buscar: "
-			Leer criterio			
-			criterio<-Mayusculas(criterio)
-		3:
-			columna<-2
-			Escribir Sin Saltar "Ingrese autor a buscar: "
-			Leer criterio			
-			criterio<-Mayusculas(criterio)
-		4:
-			columna<-3
-			Escribir Sin Saltar "Ingrese género a buscar: "
-			Leer criterio			
-			criterio<-Mayusculas(criterio)
-		5:
-			columna<-4
-			Escribir Sin Saltar "Ingrese año de publicación a buscar: "
-			Leer criterio
-		6:
-			Escribir "Volviendo al menú de Libros"
-		De Otro Modo:
-			Escribir "Eligió una opción inválida."
-	Fin Segun
+	Repetir
+		Escribir ""
+		Escribir "**BÚSQUEDA DE LIBRO**"
+		Escribir "Elija un criterio de búsqueda"
+		Escribir "1. Id"
+		Escribir "2. Título"
+		Escribir "3. Autor"
+		Escribir "4. Género"
+		Escribir "5. Año de publicación"
+		Escribir "6. Volver"
+		Escribir "Ingrese una opción (1-6): "
+		Leer opcionUsuario
+		
+		Segun opcionUsuario Hacer
+			1:
+				columna<-0
+				Escribir Sin Saltar "Ingrese id a buscar: "
+				Leer criterio
+			2:
+				columna<-1
+				Escribir Sin Saltar "Ingrese título a buscar: "
+				Leer criterio			
+				criterio<-Mayusculas(criterio)
+			3:
+				columna<-2
+				Escribir Sin Saltar "Ingrese autor a buscar: "
+				Leer criterio			
+				criterio<-Mayusculas(criterio)
+			4:
+				columna<-3
+				Escribir Sin Saltar "Ingrese género a buscar: "
+				Leer criterio			
+				criterio<-Mayusculas(criterio)
+			5:
+				columna<-4
+				Escribir Sin Saltar "Ingrese año de publicación a buscar: "
+				Leer criterio
+			6:
+				Escribir "Volviendo al menú de Libros"
+			De Otro Modo:
+				Escribir "Eligió una opción inválida."
+		Fin Segun
+	Hasta Que opcionUsuario>=1 y opcionUsuario<=6
 	
 	
-	cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados)
-	
-	// Mostrar resultados si hay coincidencias
-    Si cantidad = 0 Entonces
-        Escribir "No se encontraron libros con ese criterio."
-    Sino
-        Para i <- 0 Hasta cantidad - 1 Hacer
-            indice <- resultados[i]
-            Escribir "Libro encontrado:"
-			Escribir "Id: ", libros[indice, 0]
-            Escribir "Título: ", libros[indice, 1]
-            Escribir "Autor: ", libros[indice, 2]
-            Escribir "Género: ", libros[indice, 3]
-            Escribir "Año: ", libros[indice, 4]
-            Escribir "Disponible: ", libros[indice, 5]
-            Escribir ""
-        FinPara
-    FinSi	
+	Si opcionUsuario >=1 y opcionUsuario <=5 Entonces
+		cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados)	
+		
+		// Mostrar resultados si hay coincidencias
+		Si cantidad = 0 Entonces
+			Escribir "No se encontraron libros con ese criterio."
+		Sino
+			Para i <- 0 Hasta cantidad - 1 Hacer
+				indice <- resultados[i]
+				Escribir "Libro encontrado:"
+				Escribir "Id: ", libros[indice, 0]
+				Escribir "Título: ", libros[indice, 1]
+				Escribir "Autor: ", libros[indice, 2]
+				Escribir "Género: ", libros[indice, 3]
+				Escribir "Año: ", libros[indice, 4]
+				Escribir "Disponible: ", libros[indice, 5]
+				Escribir ""
+			FinPara
+		FinSi			
+	FinSi  
 FinFuncion
 
 //Modificar Libro
@@ -759,56 +813,63 @@ Funcion buscarSocio(socios Por Referencia)
 	Para i <- 0 Hasta 199 Hacer		
 		resultados[i] <- -1
 	FinPara
-	Escribir ""
-	Escribir "**BÚSQUEDA DE SOCIO**"
-	Escribir "Elija un criterio de búsqueda"
-	Escribir "1. DNI"
-	Escribir "2. Estado:"
-	Escribir "3. Volver"
-	Escribir "Ingrese una opción (1-3): "
-	Leer opcionUsuario
 	
-	Segun opcionUsuario Hacer
-		1:
-			columna<-0
-			criterio <- pedirNumeroComoTexto("Ingrese DNI a buscar: ")
-		2:
-			columna <- 3
-			Repetir
-				Escribir "Ingrese Estado a buscar (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
-				Leer criterio
-				criterio <- Mayusculas(criterio)
-			Hasta Que (criterio = "H" O criterio = "I" O criterio = "M")
+	Repetir
+		Escribir ""
+		Escribir "**BÚSQUEDA DE SOCIO**"
+		Escribir "Elija un criterio de búsqueda"
+		Escribir "1. DNI"
+		Escribir "2. Estado:"
+		Escribir "3. Volver"
+		Escribir "Ingrese una opción (1-3): "
+		Leer opcionUsuario
+		
+		Segun opcionUsuario Hacer
+			1:
+				columna<-0
+				criterio <- pedirNumeroComoTexto("Ingrese DNI a buscar: ")
+			2:
+				columna <- 3
+				Repetir
+					Escribir "Ingrese Estado a buscar (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
+					Leer criterio
+					criterio <- Mayusculas(criterio)
+				Hasta Que (criterio = "H" O criterio = "I" O criterio = "M")
+				
+				Segun criterio Hacer
+					"H":
+						criterio <- "HABILITADO"
+					"I":
+						criterio <- "INHABILITADO"
+					De Otro Modo:
+						criterio <- "MULTADO"
+				Fin Segun
+			3:
+				Escribir "Volviendo al menú de Socios"
+			De Otro Modo:
+				Escribir "Eligió una opción inválida."
+				
+		Fin Segun	
+	Hasta Que opcionUsuario >= 1 Y opcionUsuario <= 3
+	
+	Si opcionUsuario >= 1 Y opcionUsuario <= 2 Entonces
+		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados)
+		// Mostrar resultados si hay coincidencias
+		Si cantidad = 0 Entonces
+			Escribir "No se encontraron socios con ese criterio."
+		Sino
+			Para i <- 0 Hasta cantidad - 1 Hacer
+				indice <- resultados[i]
+				Escribir "Socio encontrado:"
+				Escribir "DNI: ", socios[indice, 0]
+				Escribir "Nombre y apellido: ", socios[indice, 1]
+				Escribir "Telefono: ", socios[indice, 2]
+				Escribir "Estado: ", socios[indice, 3]
+				Escribir ""
+			FinPara
+		FinSi	
+	FinSi
 			
-			Segun criterio Hacer
-				"H":
-					criterio <- "HABILITADO"
-				"I":
-					criterio <- "INHABILITADO"
-				De Otro Modo:
-					criterio <- "MULTADO"
-			Fin Segun
-		3:
-			Escribir "Volviendo al menú de Socios"
-		De Otro Modo:
-			Escribir "Eligió una opción inválida."
-	Fin Segun
-	
-	cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados)	
-	// Mostrar resultados si hay coincidencias
-    Si cantidad = 0 Entonces
-        Escribir "No se encontraron socios con ese criterio."
-    Sino
-        Para i <- 0 Hasta cantidad - 1 Hacer
-            indice <- resultados[i]
-            Escribir "Socio encontrado:"
-			Escribir "DNI: ", socios[indice, 0]
-            Escribir "Nombre y apellido: ", socios[indice, 1]
-            Escribir "Telefono: ", socios[indice, 2]
-            Escribir "Estado: ", socios[indice, 3]
-            Escribir ""
-        FinPara
-    FinSi	
 FinFuncion
 
 //Modificar Socio
