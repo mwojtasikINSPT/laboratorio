@@ -57,9 +57,9 @@ Algoritmo biblioteca
 	FinPara	
 	
 	//Inicializo matriz de socios 
-	Para l <- 0 Hasta cantSocios-1 Hacer		
-		Para m <- 0 Hasta camposSocios - 1 Hacer
-			socios[l, m] <- ""
+	Para i <- 0 Hasta cantSocios-1 Hacer		
+		Para j <- 0 Hasta camposSocios - 1 Hacer
+			socios[i, j] <- ""
 		FinPara
 	FinPara
 	
@@ -273,7 +273,7 @@ Algoritmo biblioteca
 	socios[2, 3] <- "HABILITADO"
 	socios[2, 4] <- ""
 	
-	socios[3, 0] <- "07062019"
+	socios[3, 0] <- "7062019"
 	socios[3, 1] <- "COPITO WOJTASIK"
 	socios[3, 2] <- "1141686306" 
 	socios[3, 3] <- "HABILITADO"
@@ -326,6 +326,37 @@ Algoritmo biblioteca
 		
 		Segun opAcceso Hacer
 			1:	//Acceso Admin	
+				Mientras intentos < 3 Y accesoValido = 0 Hacer
+					Escribir "*** ACCESO ADMINISTRADOR ***"					
+					Escribir Sin Saltar "Nombre: "
+					Leer nombreIngresado
+					nombreIngresado <- Mayusculas(nombreIngresado)
+					Escribir Sin Saltar "Clave: "
+					Leer claveIngresada
+					Escribir "Intento ", intentos + 1, " de 3"
+					
+					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
+						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
+						accesoValido <- 1
+						Esperar 1 Segundos
+						Limpiar Pantalla
+						//mostrarMenuPpalAdmin
+						//administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores)
+					Sino
+						Escribir "Nombre o clave incorrectos."
+						intentos <- intentos + 1
+						Esperar 2 Segundos
+						Limpiar Pantalla
+					FinSi
+				FinMientras
+				
+				Si accesoValido = 0 Entonces
+					Escribir "Demasiados intentos fallidos. Volviendo al menú principal."
+					Esperar 2 Segundos
+				FinSi
+				
+				
+				
 				//mostrarMenuPpalAdmin
 				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores) 		
 				
@@ -369,11 +400,13 @@ Algoritmo biblioteca
 						Repetir
 							mostrarMenuLibros
 							Leer opLibros
+							Esperar 2 Segundos
+							Limpiar Pantalla
 							
 							Segun opLibros Hacer
 								1: //Agregar Libros
 									Repetir
-										crearLibro(libros)
+										crearLibro(libros, cantLibros)
 										Repetir
 											Escribir "Desea agregar otro libro? (S/N)"
 											Leer resp
@@ -383,7 +416,9 @@ Algoritmo biblioteca
 												Leer resp
 												resp<-Mayusculas(resp)	
 											FinSi
-										Hasta Que (resp = "S" o resp = "N")				
+										Hasta Que (resp = "S" o resp = "N")		
+										Esperar 1 Segundos
+										Limpiar Pantalla
 									Mientras Que (resp<>"N")	
 								2: //Consultar Libros
 									Repetir
@@ -426,11 +461,12 @@ Algoritmo biblioteca
 						Repetir
 							mostrarMenuSocios
 							Leer opSocios
+							Esperar 1 segundos
 							
 							Segun opSocios Hacer
 								1: //Agregar Socios
 									Repetir
-										crearSocio(socios)
+										crearSocio(socios, cantSocios)
 										Repetir
 											Escribir "¿Desea agregar otro socio? (S/N)"
 											Leer resp
@@ -548,6 +584,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
         Escribir "Elija una opción (1-4): "
         Leer opAdmin
 		
+				
 		Segun opAdmin Hacer
 			1:
 				//Gestiono Bibliotecarios
@@ -709,38 +746,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					
 				Hasta Que opGestion == 4
 			2: //Gestiono Socios
-				Escribir "En proceso"
-			3:
-				// Acceso Admins			
-				Mientras intentos < 3 Y accesoValido = 0 Hacer
-					Escribir "*** ACCESO ADMINISTRADOR ***"					
-					Escribir Sin Saltar "Nombre: "
-					Leer nombreIngresado
-					nombreIngresado <- Mayusculas(nombreIngresado)
-					Escribir Sin Saltar "Clave: "
-					Leer claveIngresada
-					Escribir "Intento ", intentos + 1, " de 3"
-					
-					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
-						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
-						accesoValido <- 1
-						Esperar 1 Segundos
-						Limpiar Pantalla
-						//mostrarMenuPpalAdmin
-						//administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores)
-					Sino
-						Escribir "Nombre o clave incorrectos."
-						intentos <- intentos + 1
-						Esperar 2 Segundos
-						Limpiar Pantalla
-					FinSi
-				FinMientras
-				
-				Si accesoValido = 0 Entonces
-					Escribir "Demasiados intentos fallidos. Volviendo al menú principal."
-					Esperar 2 Segundos
-				FinSi
-				
+				Escribir "Gestión de Socios En proceso..." //Hacer
+				Esperar 2 segundos
+			3:				
 				//Gestiono Admins
 				Repetir
 					Escribir ""
@@ -801,19 +809,26 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 												administradores[indice, 1] <- claveAdmin
 												Escribir "Administrador agregado exitosamente."
 												confirmar <- 1
+											SiNo
+												Escribir "Ingreso de administrador ", nombreAdmin " cancelado"
+												confirmar <- 1
 											FinSi
 										FinSi
 									FinMientras
 								FinSi
 								
+								Escribir ""
 								Escribir "¿Desea agregar otro administrador? (S/N)"
 								Leer opUsuario
+								Escribir "Volviendo a Gestión de Administradores..."
+								Esperar 2 segundo
+								Limpiar Pantalla
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
 						2:  // Eliminar Administrador  
 							Escribir ""
 							Escribir "*** ELIMINAR ADMINISTRADOR ***"
-							
+							Escribir ""
 							// Mostrar admins existentes
 							Escribir "Administradores registrados:"
 							hayAdministradores <- Falso
@@ -825,6 +840,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							FinPara
 							
 							Si hayAdministradores Entonces
+								Escribir ""
 								Escribir "Ingrese el nombre del Administrador a eliminar: "
 								Leer nombreAdmin
 								nombreAdmin <- Mayusculas(nombreAdmin)
@@ -841,7 +857,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									Escribir "No se encontró un Administrador con ese nombre."
 								Sino
 									Escribir "Administrador encontrado: ", administradores[indice, 0]
-									Escribir "¿Confirma que desea eliminar este administrador? (S/N)"
+									Escribir "¿Confirma que desea eliminar al administrador ", administradores[indice, 0], "? (S/N)"
 									Leer opUsuario
 									
 									Si Mayusculas(opUsuario) = "S" Entonces
@@ -883,8 +899,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Fin Segun
 				Hasta Que opGestion = 4
 			4:	
-				Escribir "Volviendo al menú principal..."
-				Esperar 1 Segundos
+				Escribir "Volviendo al Menú principal..."
+				Esperar 2 Segundos
 				Limpiar Pantalla
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
@@ -901,7 +917,7 @@ SubProceso  mostrarMenuAcceso
 	Escribir ""
 	Escribir "	1. ADMIN"
 	Escribir "	2. BIBLIOTECARIO"
-	Escribir "	2. SOCIO"
+	Escribir "	3. SOCIO"
 	Escribir "	0. Salir"
 	Escribir ""
 FinSubProceso
@@ -958,7 +974,7 @@ SubProceso mostrarMenuSocios
 	Escribir "Elija la opcion: "	
 FinSubProceso
 
-SubProceso  mostrarSubMenuConsultaSocios
+SubProceso  mostrarSubMenuConsultaSocios	
 	Escribir ""
 	Escribir "***Sub Menu Consulta de Socios***"
 	Escribir "1. Buscar Socio"
@@ -970,7 +986,7 @@ FinSubProceso
 
 //*******************************************FUNCIONES AUXILIARES*******************************************************
 //Asigno posición a cada libro ingresado
-Funcion posicion<-buscarUltimo(libros) 
+Funcion posicion<-buscarUltimo(libros, cantLibros) 
     Definir i, posicion Como Entero
     i <- 0	
     Mientras i < cantLibros Y libros[i, 0] <> "" Hacer
@@ -986,36 +1002,37 @@ FinFuncion
 
 //Valido Texto
 Funcion esTextoValido <- ValidarTexto(cadenaAVerificar)
-	Definir i, esTextoValido Como Entero
+	Definir i Como Entero
 	Definir letra Como Caracter
-	esTextoValido <-  1
-	//verifico que no ingrese vacio
+	Definir esTextoValido Como Logico
+	esTextoValido <-  Verdadero
+	
+	//Verifico que no ingrese vacio
 	Si Longitud(cadenaAVerificar) = 0 Entonces
-        esTextoValido <- 0        
+        esTextoValido <- Falso        
     FinSi
 	
 	Para i<-0 Hasta Longitud(cadenaAVerificar)-1 Con Paso 1 Hacer
 		letra <- Subcadena(cadenaAVerificar, i ,i)	
 		Si (letra < "A" o letra > "Z") y (letra < "a" o letra > "z") y (letra <> "á") y (letra <> "é") y (letra <> "í") y (letra <> "ó") y (letra <> "ú") y (letra <> "Á") y (letra <> "É") y (letra <> "Í") y (letra <> "Ó") y (letra <> "Ú") y (letra <> "ñ") y (letra <> "Ñ") y (letra <> " ") Entonces
-			esTextoValido <- 0            	
+			esTextoValido <- Falso            	
 		FinSi
 	Fin Para	
 FinFuncion
 
-
 //Pido Texto
 Funcion txt <- pedirTexto(mensaje)
 	Definir input, txt como Cadena
-	Definir esTextoValido Como Entero
-	esTextoValido <-  0
+	Definir esTextoValido Como Logico
+	esTextoValido <-  Falso
 	
-	Mientras esTextoValido=0 Hacer
+	Mientras !esTextoValido Hacer
 		Escribir Sin Saltar mensaje
 		Leer input
 		input<-Mayusculas(input)
 		
-		Si validarTexto(input)=1 Entonces
-			esTextoValido <- 1
+		Si validarTexto(input)=Verdadero Entonces
+			esTextoValido <- Verdadero
 		SiNo
 			Escribir "Ingrese un texto válido"
 		FinSi
@@ -1023,31 +1040,45 @@ Funcion txt <- pedirTexto(mensaje)
 	txt <- input
 FinFuncion
 
+//Pido Texto opcional (para modificaciones)
 
 //Valido Números
 Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
-	Definir i, esNumero Como Entero
+	Definir i, valorNum Como Entero
 	Definir letra Como Caracter
-	esNumero <-  1
+	Definir esNumero Como Logico
+	esNumero <- Verdadero
+	
 	Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer
 		letra <- Subcadena(cadenaAVerificar,i,i) //recorro x caracter
 		Si (letra > "9" o letra < "0") Entonces
-			esNumero <- 0
+			esNumero <- Falso		
 		FinSi		
 	FinPara
+	
+	Si esNumero Entonces
+		valorNum <- ConvertirANumero(cadenaAVerificar)
+		Si valorNum>=0
+			esNumero <- Verdadero
+		SiNo
+			esNumero <- Falso
+		FinSi	
+	FinSi
+	
 FinFuncion
 
 
 //Pido numeros
 Funcion num <- pedirNumero(mensaje)
-	definir esNumero, num Como Entero
+	definir num Como Entero
+	Definir esNumero Como Logico
 	definir input como cadena
-	esNumero <- 0
-	Mientras esNumero ==0 Hacer
+	esNumero <- Falso
+	Mientras !esNumero Hacer
 		Escribir Sin Saltar mensaje
 		leer input
-		Si (EsNumeroEnteroPositivo(input)=1) Entonces
-			esNumero <- 1
+		Si (EsNumeroEnteroPositivo(input)=Verdadero) Entonces
+			esNumero <- Verdadero
 		SiNo
 			Escribir "Ingrese un numero válido"
 		FinSi
@@ -1062,6 +1093,32 @@ Funcion numTexto <- pedirNumeroComoTexto(mensaje)
     numero <- pedirNumero(mensaje) // ya validado como número
     numTexto <- ConvertirATexto(numero)
 FinFuncion
+
+//Pido un número (opcional) y devuelvo como texto
+Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
+    Definir numero Como Entero
+    Definir numTexto, input Como Cadena
+    Definir esNumero Como Logico
+	
+    Escribir Sin Saltar mensaje
+    Leer input
+	
+    Si Longitud(input) = 0 Entonces
+        numTexto <- valorActual
+    Sino
+        esNumero <- EsNumeroEnteroPositivo(input)
+        Si esNumero Entonces
+            numero <- ConvertirANumero(input)
+            numTexto <- ConvertirATexto(numero)
+        Sino
+            Escribir "Entrada inválida. Ingrese un número entero mayor o igual a cero. "
+            numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
+        FinSi
+    FinSi
+FinFuncion
+
+
+// /////
 
 Funcion fechaDev <- pedirFechaDevolucion
     Definir anio, mes, dia Como Entero
@@ -1162,17 +1219,18 @@ FinFuncion
 
 
 //Genero Ids - sin Repetir
-Funcion idUnico <- generarId
+Funcion idUnico <- generarId(cantLibros)
 	Definir totalGenerados, i, j, nuevoId, repetido, generados Como Entero
 	Definir idUnico como Cadena
 	Dimension generados[cantLibros]
 	totalGenerados <- 0
 	
 	Repetir	
+		nuevoID <- Aleatorio(10000, 99999) 		
 		// Verifico si ya existe
 		repetido <- 0
 		si totalGenerados>0
-			Para j <- 1 Hasta totalGenerados
+			Para j <- 1 Hasta cantLibros
 				Si generados[j] = nuevoId Entonces
 					repetido <- 1
 				FinSi
@@ -1190,15 +1248,15 @@ FinFuncion
 
 //*******************************************LIBROS*******************************************************
 //Crear libro
-funcion crearLibro(libros Por Referencia)
-	Definir idLibro, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, stockLibro, opcionUsuario como caracter
+funcion crearLibro(libros Por Referencia, cantLibros)
+	Definir idLibro, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, stockLibro, opUsuario como caracter
 	Definir confirmar, indice, numTemporal, stockTemporal Como Entero
 	confirmar <- 0
-	indice <- buscarUltimo(libros) 
+	indice <- buscarUltimo(libros, cantLibros) 
 	Mientras confirmar = 0 Hacer
 		Escribir ""
 		Escribir "***INGRESO DE NUEVO LIBRO***"
-		idLibro<-generarId
+		idLibro<-generarId(cantLibros)
 		tituloLibro<-pedirTexto("Ingrese Nombre del libro: ")
 		autorLibro<-pedirTexto("Ingrese Autor: ")
 		generoLibro<-pedirTexto("Ingrese Género: ")
@@ -1227,11 +1285,27 @@ funcion crearLibro(libros Por Referencia)
 		Escribir anoPublicacionLibro
 		Escribir sin saltar "Stock: "
 		Escribir stockLibro 
-		Escribir "Confirma ingreso? (S/N)"
-		leer opcionUsuario
-		si Mayusculas(opcionUsuario) == "S" Entonces
+			
+		Repetir
+			Escribir ""
+			Escribir "Confirma ingreso? (S/N)"
+			Leer opUsuario
+			opUsuario <- Mayusculas(opUsuario)
+			Si (opUsuario <> "S" y opUsuario <> "N")
+				Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
+			FinSi
+		Hasta Que (opUsuario="S" o opUsuario="N")
+		
+		Esperar 1 segundo
+		Si Mayusculas(opUsuario) = "S" Entonces
+			confirmar <- 1
+			Escribir "Cambios confirmados"				
+		Sino	
+			Escribir "Cambios no confirmados"
 			confirmar <- 1
 		FinSi
+		Escribir""
+		Esperar 1 segundo
 	FinMientras
 	
 	libros[indice, 0] <- idLibro
@@ -1344,8 +1418,9 @@ FinFuncion
 
 //Modificar Libro
 Funcion modificarLibro(libros Por Referencia, cantLibros)
-    Definir i, idBuscado, indice, confirmar Como Entero
-    Definir opcionUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, stockLibro Como Cadena
+    Definir i, idBuscado, indice, confirmar, nuevoDatoNum Como Entero
+    Definir opUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, stockLibro Como Cadena
+	Definir datoValido Como Logico
 	
     // Pedir el ID del libro a modificar
 	Escribir ""
@@ -1387,30 +1462,30 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
 			
             Escribir Sin Saltar "Nuevo Título: "
             Leer nuevoDato
+			nuevoDato <- Mayusculas(nuevoDato)
             Si Longitud(nuevoDato) > 0 Entonces
                 tituloLibro <- nuevoDato
             FinSi			
+			
             Escribir Sin Saltar "Nuevo Autor: "
 			Leer nuevoDato
+			nuevoDato <- Mayusculas(nuevoDato)
             Si Longitud(nuevoDato) > 0 Entonces
                 autorLibro <- nuevoDato
             FinSi			
             Escribir Sin Saltar "Nuevo Género: "
 			Leer nuevoDato
+			nuevoDato <- Mayusculas(nuevoDato)
+			
             Si Longitud(nuevoDato) > 0 Entonces
                 generoLibro <- nuevoDato
             FinSi			
-            Escribir Sin Saltar "Nuevo Año de Publicacion: "
-			Leer nuevoDato
-            Si Longitud(nuevoDato) > 0 Entonces
-                anoPublicacionLibro <- nuevoDato
-            FinSi
-			Escribir Sin Saltar "Nueva cantidad de ejemplares: "
-			Leer nuevoDato
-            Si Longitud(nuevoDato) > 0 Entonces
-                stockLibro <- nuevoDato
-            FinSi
 			
+			anoPublicacionLibro <- pedirNumeroComoTextoOpcional("Nuevo Año de Publicacion: ", anoPublicacionLibro)
+			
+			stockLibro <- pedirNumeroComoTextoOpcional("Nueva cantidad de ejemplares: ", stockLibro)
+
+			Esperar 2 segundos
             Limpiar Pantalla
             Escribir "***DATOS DEL LIBRO MODIFICADOS***"
             Escribir "ID: ", libros[indice,0]
@@ -1419,11 +1494,29 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
             Escribir "Genero: ", generoLibro
             Escribir "Año de Publicacion: ", anoPublicacionLibro
 			Escribir "Stock: ", stockLibro
-            Escribir "Confirma los cambios? (s/n)"
-            Leer opcionUsuario
-            Si Mayusculas(opcionUsuario) = "S" Entonces
+			
+            Repetir
+				Escribir ""
+				Escribir "Confirma los cambios? (S/N)"
+				Leer opUsuario
+				opUsuario <- Mayusculas(opUsuario)
+				Si (opUsuario <> "S" y opUsuario <> "N")
+					Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
+				FinSi
+			Hasta Que (opUsuario="S" o opUsuario="N")
+            
+			Esperar 1 segundo
+            Si Mayusculas(opUsuario) = "S" Entonces
                 confirmar <- 1
+				Escribir "Cambios confirmados"				
+			Sino	
+				Escribir "Cambios no confirmados"
+				confirmar <- 1
             FinSi
+			Escribir""
+			Escribir"Volviendo a SubMenu Consulta de Libros"
+			Esperar 2 segundo
+			Limpiar Pantalla
         FinMientras
 		
         // Guardar cambios en la matriz
@@ -1459,11 +1552,11 @@ FinFuncion
 
 //*******************************************SOCIOS*******************************************************
 //Crear socio
-Funcion crearSocio(socios Por Referencia)
+Funcion crearSocio(socios Por Referencia, cantSocios)
 	Definir opcionUsuario, dniSocio, nombreSocio, telSocio, estadoSocio como caracter
 	Definir confirmar, indice, numTemporal Como Entero
 	confirmar <- 0
-	indice <- buscarUltimo(socios) 
+	indice <- buscarUltimo(socios, cantSocios) 
 	Mientras confirmar = 0 Hacer
 		Escribir ""
 		Escribir "***INGRESO DE NUEVO SOCIO***"
@@ -1552,7 +1645,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 	Hasta Que opUsuario >= 1 Y opUsuario <= 4
 	
 	Si opUsuario >= 1 Y opUsuario <= 3 Entonces
-		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados, cantLibros)
+		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados, cantSocios)
 		// Mostrar resultados si hay coincidencias
 		Si cantidad = 0 Entonces
 			Escribir "No se encontraron socios con ese criterio."
@@ -1567,14 +1660,13 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 				Escribir ""
 			FinPara
 		FinSi	
-	FinSi
-			
+	FinSi			
 FinFuncion
 
 //Modificar Socio
 Funcion modificarSocio(socios Por Referencia, cantSocios)
     Definir i, indice, confirmar Como Entero
-    Definir opcionUsuario, nuevoDato, nombreSocio,telSocio,estadoSocio, penalizacionSocio, idBuscado Como Cadena
+    Definir opUsuario, nuevoDato, nombreSocio,telSocio,estadoSocio, penalizacionSocio, idBuscado Como Cadena
 	
     // Pedir el dni del socio a modificar
 	Escribir ""
@@ -1596,50 +1688,52 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
         // Cargar datos actuales en variables temporales
         nombreSocio<- socios[indice,1]
         telSocio <- socios[indice,2]
-        estadoSocio <- socios[indice,3]
-		
+        estadoSocio <- socios[indice,3]		
         confirmar <- 0
+		
         Mientras confirmar = 0 Hacer
             Limpiar Pantalla
+			Escribir ""
             Escribir "***DATOS ACTUALES DEL SOCIO***"
             Escribir "DNI: ", socios[indice,0]
             Escribir "Nombre y apellido: ", nombreSocio
             Escribir "Telefono: ", telSocio
             Escribir "Estado: ", estadoSocio
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
-	
-            Escribir Sin Saltar "Nuevo Nombre y apellido: "
-            Leer nuevoDato
+			Escribir ""
+			
+            Escribir Sin Saltar "Nuevo Nombre y apellido: "            
+			Leer nuevoDato			
             Si Longitud(nuevoDato) > 0 Entonces
-				nuevoDato <- pedirTexto("Ingrese Nombre y Apellido del socio: ")
+				nuevoDato <- Mayusculas(nuevoDato)
 				nombreSocio <-  nuevoDato
             FinSi			
-            Escribir Sin Saltar "Nuevo Telefono: "
-			Leer nuevoDato
+			
+			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Telefono: ", telSocio)		
+			
+            Escribir Sin Saltar "Nuevo Estado (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
+			Leer nuevoDato	
+			nuevoDato <- Mayusculas(nuevoDato)
             Si Longitud(nuevoDato) > 0 Entonces
-                nuevoDato <- pedirNumeroComoTexto("Ingrese el teléfono: ")
-				telSocio <-  nuevoDato
-            FinSi			
-            Escribir Sin Saltar "Nuevo Estado: "
-			Leer nuevoDato
-            Si Longitud(nuevoDato) > 0 Entonces
-				Repetir
-					nuevoDato <- pedirTexto("Ingrese el Estado (H = HABILITADO / I = INHABILITADO / M = MULTADO): ")
+				Si (nuevoDato <> "H" y nuevoDato <> "I" y nuevoDato <> "M")
+					Escribir "Eligió un estado inválido, permanecerá el anterior"
+				SiNo					
 					estadoSocio <- nuevoDato
-					estadoSocio <- Mayusculas(estadoSocio)
-				Hasta Que (estadoSocio = "H" O estadoSocio = "I" O estadoSocio = "M")
+				FinSi
 				Segun estadoSocio Hacer
 					"H":
 						estadoSocio <- "HABILITADO"
 					"I":
 						estadoSocio <- "INHABILITADO"
-					De Otro Modo:
+					"M":
 						estadoSocio <- "MULTADO"
 						Escribir "Ingrese los dias de penalización: "
 						leer penalizacionSocio
+					De Otro Modo:
+						//nada, ya aviso antes q no cambia
 				Fin Segun
             FinSi			
-			
+			Esperar 2 segundos
             Limpiar Pantalla
             Escribir "***DATOS DEL SOCIO MODIFICADOS***"
             Escribir "DNI: ", socios[indice,0]
@@ -1647,11 +1741,26 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "2. Telefono: ", telSocio
             Escribir "3. Estado: ", estadoSocio
 			
-            Escribir "Confirma los cambios? (s/n)"
-            Leer opcionUsuario
-            Si Mayusculas(opcionUsuario) = "S" Entonces
+			Repetir
+				Escribir ""
+				Escribir "Confirma los cambios? (S/N)"
+				Leer opUsuario
+				opUsuario <- Mayusculas(opUsuario)
+				Si (opUsuario <> "S" y opUsuario <> "N")
+					Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
+				FinSi
+			Hasta Que (opUsuario="S" o opUsuario="N")
+            
+			Esperar 1 segundo
+            Si Mayusculas(opUsuario) = "S" Entonces
                 confirmar <- 1
+				Escribir "Cambios confirmados"				
+			Sino	
+				Escribir "Cambios no confirmados"
+				confirmar <- 1
             FinSi
+			Escribir""
+			Esperar 1 segundo
         FinMientras
 		
         // Guardar cambios en la matriz
@@ -1862,7 +1971,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
             FinSi
         Sino
 			Escribir "El libro ", libros[indiceLibro,1]  " No se encuentra disponible para préstamo"
-			
+			Esperar 2 Segundos
+			Limpiar Pantalla
 
         FinSi
     FinSi
@@ -1873,6 +1983,7 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	Definir i, totalPrestamos Como Entero
 	totalPrestamos <- 0
 	
+	Escribir ""
 	Escribir "*** LISTA DE PRÉSTAMOS ***"	
 		
 	Para i <- 0 Hasta cantPrestamos-1   
