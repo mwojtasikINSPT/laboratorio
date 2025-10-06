@@ -225,43 +225,43 @@ Algoritmo biblioteca
 	
 	//Precargo Socios para pruebas
 	socios[0, 0] <- "87562896"
-	socios[0, 1] <- "Jose Lopez"
+	socios[0, 1] <- "JOSE LOPEZ"
 	socios[0, 2] <- "1103160523"
 	socios[0, 3] <- "MULTADO"
 	socios[0, 4] <- "6"	
 	
 	socios[1, 0] <- "45263568"
-	socios[1, 1] <- "Mar Gomez"
+	socios[1, 1] <- "MAR GOMEZ"
 	socios[1, 2] <- "1161176033" 
 	socios[1, 3] <- "INHABILITADO" 
 	socios[1, 4] <- ""	
 	
 	socios[2, 0] <- "77463568"
-	socios[2, 1] <- "Martin Pix"
+	socios[2, 1] <- "MARTIN PIX"
 	socios[2, 2] <- "1101176033" 
 	socios[2, 3] <- "HABILITADO"
 	socios[2, 4] <- ""
 	
 	socios[3, 0] <- "07062019"
-	socios[3, 1] <- "Copito Wojtasik"
+	socios[3, 1] <- "COPITO WOJTASIK"
 	socios[3, 2] <- "1141686306" 
 	socios[3, 3] <- "HABILITADO"
 	socios[3, 4] <- ""
 	
 	socios[4, 0] <- "23122019"
-	socios[4, 1] <- "Tambor Mendez"
+	socios[4, 1] <- "TAMBOR MENDEZ"
 	socios[4, 2] <- "1139556061" 
 	socios[4, 3] <- "HABILITADO"
 	socios[4, 4] <- ""
 	
 	socios[5, 0] <- "26091984"
-	socios[5, 1] <- "Ema Ancans"
+	socios[5, 1] <- "EMA ANCANS"
 	socios[5, 2] <- "1163697899" 
 	socios[5, 3] <- "HABILITADO"
 	socios[5, 4] <- ""
 	
 	socios[5, 0] <- "13051985"
-	socios[5, 1] <- "Tota Bolla"
+	socios[5, 1] <- "TOTA BOLLA"
 	socios[5, 2] <- "1165218111" 
 	socios[5, 3] <- "HABILITADO"
 	socios[5, 4] <- ""
@@ -307,7 +307,7 @@ Algoritmo biblioteca
 					accesoValido <- 1
 					Esperar 1 Segundos
 					Limpiar Pantalla
-					Escribir "Aca va todo lo q hace el biblio..."
+					//sigue con lo que hace el biblio 
 				Sino
 					Escribir "Nombre o clave incorrectos."
 					intentos <- intentos + 1
@@ -319,6 +319,7 @@ Algoritmo biblioteca
 			Si accesoValido = 0 Entonces
 				Escribir "Demasiados intentos fallidos. Volviendo al menú principal..."
 				Esperar 2 Segundos
+				Limpiar Pantalla
 			FinSi
 								
 			//Menu Bibliotecario				
@@ -437,7 +438,7 @@ Algoritmo biblioteca
 							
 						Hasta Que (opSocios = 3) 
 					3:
-						Escribir "Volviendo..."
+						Escribir "Volviendo a Menu de Usuarios..."
 						Esperar 1 Segundos
 						Limpiar Pantalla
 					De Otro Modo:
@@ -1078,6 +1079,7 @@ Funcion buscarLibro(libros Por Referencia)
 				Leer criterio
 			6:
 				Escribir "Volviendo al menú de Libros..."
+				Limpiar Pantalla
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
 		Fin Segun
@@ -1275,9 +1277,10 @@ Funcion buscarSocio(socios Por Referencia)
 		Escribir "**BÚSQUEDA DE SOCIO**"
 		Escribir "Elija un criterio de búsqueda"
 		Escribir "1. DNI"
-		Escribir "2. Estado"
-		Escribir "3. Volver"
-		Escribir "Ingrese una opción (1-3): "
+		Escribir "2. Nombre"
+		Escribir "3. Estado"
+		Escribir "4. Volver"
+		Escribir "Ingrese una opción (1-4): "
 		Leer opcionUsuario
 		
 		Segun opcionUsuario Hacer
@@ -1285,6 +1288,12 @@ Funcion buscarSocio(socios Por Referencia)
 				columna<-0
 				criterio <- pedirNumeroComoTexto("Ingrese DNI a buscar: ")
 			2:
+				columna<-1
+				Escribir Sin Saltar "Ingrese nombre a buscar: "
+				Leer criterio				
+				criterio <- Mayusculas(criterio)
+				
+			3:
 				columna <- 3
 				Repetir
 					Escribir "Ingrese Estado a buscar (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
@@ -1300,16 +1309,16 @@ Funcion buscarSocio(socios Por Referencia)
 					De Otro Modo:
 						criterio <- "MULTADO"
 				Fin Segun
-			3:
+			4:	
 				Escribir "Volviendo al menú de Socios..."
 				Esperar 1 Segundos
+				Limpiar Pantalla
 			De Otro Modo:
-				Escribir "Eligió una opción inválida."
-				
+				Escribir "Eligió una opción inválida."				
 		Fin Segun	
-	Hasta Que opcionUsuario >= 1 Y opcionUsuario <= 3
+	Hasta Que opcionUsuario >= 1 Y opcionUsuario <= 4
 	
-	Si opcionUsuario >= 1 Y opcionUsuario <= 2 Entonces
+	Si opcionUsuario >= 1 Y opcionUsuario <= 3 Entonces
 		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados)
 		// Mostrar resultados si hay coincidencias
 		Si cantidad = 0 Entonces
@@ -1605,6 +1614,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 								Escribir "Stock restante del libro: ", stockActual
                             "N":
                                 Escribir "Volviendo a consultas..."
+								Esperar 1 Segundos
+								Limpiar Pantalla
                             De Otro Modo:
                                 Escribir "Opción inválida"
                         Fin Segun
@@ -1840,6 +1851,8 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                     Sino
                         Si op = "N" Entonces
                             Escribir "Volviendo a consultas..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
                         Sino
                             Escribir "Opción inválida"
                         FinSi
