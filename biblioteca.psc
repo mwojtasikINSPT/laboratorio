@@ -24,13 +24,13 @@ Algoritmo biblioteca
 	
 	//MATRICES
 	cantLibros <- 200
-	camposLibros <- 8 //id, titulo, autor, genero, anio, disponible, fecha devolucion, stock
+	camposLibros <- 9 //id, titulo, autor, genero, anio, disponible, fecha devolucion, stock, ejemplaresPrestados
 	Dimension libros[cantLibros, camposLibros]
 	cantSocios <- 200
 	camposSocios <- 5 //dni, nombre, telefono, estado, diasPenalizacion
 	Dimension socios[cantSocios, camposSocios]
 	cantPrestamos <- 200
-	camposPrestamos  <- 4 // dniSocio, idLibro, fechaPrestamo, fechaFin, 
+	camposPrestamos  <- 4 // dniSocio, idLibro, fechaPrestamo, fechaFin 
 	Dimension prestamos[cantPrestamos, camposPrestamos] 
 	camposBibliotecarios <- 2 //nombreBibliotecario, claveBibliotecario
 	cantBibliotecarios <- 50
@@ -1221,7 +1221,7 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 	Definir i Como Entero
 	
 	Escribir "*** LISTA DE LIBROS CARGADOS ***"	
-	Para i <- 0 Hasta cantLibros-1
+	Para i <- 0 Hasta cantLibros-1		
 		Si libros[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
 			Escribir "ID: ", libros[i,0]
@@ -1231,7 +1231,8 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 			Escribir "Año de Publicacion: ", libros[i,4]
 			Escribir "Disponible: ", libros[i,5]
 			//Escribir "Fecha prevista de devolucion: ", libros[i,6] //Ver sacar esta 
-			Escribir "Cantidad de ejemplares: ", libros[i,7]
+			Escribir "Cantidad de ejemplares disponibles para préstamo: ", libros[i,7]
+			Escribir "Cantidad de ejemplares en préstamo: ", libros[i,8]
 		FinSi
 	FinPara
 FinFuncion
@@ -1608,10 +1609,12 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 								//Actualizo stock
 								stockActual <- stockActual - 1
                                 libros[indiceLibro,7] <- ConvertirATexto(stockActual)
-								
+								//Cambio estado si no hay mas stock
 								Si stockActual == 0 Entonces
 									libros[indiceLibro,5] <- "0"											
 								FinSi
+								//Agrego cantidad de prestados a matriz libro
+								libros[indiceLibro,8] <- ConvertirATexto(ConvertirANumero(libros[indiceLibro,8]) + 1)
 								
                                 fechasPrestamo(fechaPrestamo, fechaFinPrestamo)
 								// Guardar en prestamos en la fila p
@@ -1647,17 +1650,28 @@ FinFuncion
 
 //Mostrar prestamos cargados
 Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)	
-	Definir i Como Entero
+	Definir i, totalPrestamos Como Entero
+	totalPrestamos <- 0
+	
 	Escribir "*** LISTA DE PRÉSTAMOS ***"	
+		
 	Para i <- 0 Hasta cantPrestamos-1   
 		Si prestamos[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
 			Escribir "ID LIBRO: ", prestamos[i,0]
 			Escribir "DNI SOCIO: ", prestamos[i,1]
 			Escribir "Fecha de inicio: ", prestamos[i,2]
-			Escribir "Fecha de devolucion pactada: ", prestamos[i,3]
+			Escribir "Fecha de devolucion pactada: ", prestamos[i,3]	
+			Escribir ""
+			totalPrestamos <- totalPrestamos + 1 
 		FinSi
 	FinPara
+	
+	Si totalPrestamos = 0 Entonces
+		Escribir ""
+		Escribir "No hay préstamos activos en este momento."
+	FinSi
+	
 FinFuncion
 
 
@@ -1757,7 +1771,7 @@ FinFuncion
 
 //Gestiono devolución
 Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios)
-    Definir i, j, prestado, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad Como Entero
+    Definir i, j, prestado, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad, stockActual Como Entero
     Definir idBuscado, dniSocio, op, fechaFinPrestamo, fechaDev Como Cadena
     Definir fechaValida Como Logico
     
@@ -1773,7 +1787,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
     Para i <- 0 Hasta cantLibros-1 Hacer
         Si libros[i,0] = idBuscado Entonces
             indiceLibro <- i
-            Si libros[i,5] = "0" Entonces //aca necesito q compare si fue prestado, no q no este disponible para prestamo. Al agregar stock puede ser libros[i,5]>0 y q se haya prestado otro ejemplar
+            Si libros[i,8] > "0" Entonces 
                 prestado <- 1
             Sino
                 prestado <- 0
@@ -1823,14 +1837,14 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                         // PEDIR FECHA DE DEVOLUCIÓN Y VALIDAR
                         fechaDev <- pedirFechaDevolucion()
                         
-                        // VERIFICAR QUE LA FECHA DE DEVOLUCIÓN NO SEA ANTERIOR AL PRÉSTAMO
+                        // Verifico que fecha devolucion no sea anterior a la del prestamo
                         fechaValida <- validarFechaDevolucion(prestamos[indicePrestamo,2], fechaDev)
                         
                         Si No fechaValida Entonces
                             Escribir "Error: La fecha de devolución no puede ser anterior a la fecha de préstamo."
                             Escribir "Fecha de préstamo: ", prestamos[indicePrestamo,2]
                         Sino
-                            // 1. MARCAR LIBRO COMO DISPONIBLE
+                            // 1. MARCAR LIBRO COMO DISPONIBLE //no, esto se hace con el stock - VER SACAR
                             libros[indiceLibro,5] <- "1"
                             
                             // 2. CALCULAR PENALIZACIÓN SI HAY ATRASO
@@ -1849,7 +1863,8 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                                 Escribir "Socio habilitado para nuevos préstamos"
                             FinSi
                             
-                            // 4. LIMPIAR FECHA DE DEVOLUCIÓN DEL LIBRO
+                            // 4. LIMPIAR FECHA DE DEVOLUCIÓN DEL LIBRO 
+							//VER!!! Puede haber mas de un ejemplar prestado... 
                             libros[indiceLibro,6] <- ""
                             
                             // 5. ELIMINAR EL PRÉSTAMO
@@ -1857,8 +1872,18 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                             prestamos[indicePrestamo,1] <- ""
                             prestamos[indicePrestamo,2] <- ""
                             prestamos[indicePrestamo,3] <- ""
+							
+							//Actualizo stock y ejemplaresPrestados		
+							stockActual <- ConvertirANumero(libros[indiceLibro,7])
+							stockActual <- stockActual + 1
+							libros[indiceLibro,7] <- ConvertirATexto(stockActual)
+							//Si no quedaban libros, actualizo dispo							
+							Si stockActual = 1 Entonces
+								libros[indiceLibro,5] <- "1"
+							FinSi
+							
+							Escribir "Devolución registrada con éxito. Stock actualizado: ", stockActual
                             
-                            Escribir "Devolución registrada con éxito"
                         FinSi
                     Sino
                         Si op = "N" Entonces
