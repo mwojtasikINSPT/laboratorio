@@ -5,7 +5,7 @@ Algoritmo biblioteca
 	
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp Como Caracter
-	Definir op, modulo, opLibros, opSocios, opAcceso, i, j, l, m, n, c Como Entero 
+	Definir op, modulo, opLibros, opSocios, opAcceso, i, j Como Entero 
 	
 	//VARIABLES PRESTAMOS
 	Definir cantPrestamos, camposPrestamos Como Entero
@@ -49,33 +49,14 @@ Algoritmo biblioteca
     Dimension administradores[cantAdministradores, camposAdministradores]
 	i<- 0
 	
-	//Inicializo matriz de libros 
-	Para i <- 0 Hasta cantLibros-1 Hacer		
-		Para j <- 0 Hasta camposLibros - 1 Hacer
-			libros[i, j] <- ""
-		FinPara
-	FinPara	
-	
-	//Inicializo matriz de socios 
-	Para i <- 0 Hasta cantSocios-1 Hacer		
-		Para j <- 0 Hasta camposSocios - 1 Hacer
-			socios[i, j] <- ""
-		FinPara
-	FinPara
-	
 	//Inicializo matriz de prestamos 
-	Para n <- 0 Hasta 199 Hacer		
-		Para c <- 0 Hasta camposPrestamos - 1 Hacer
-			prestamos[n, c] <- ""
+	Para i <- 0 Hasta 199 Hacer		
+		Para j <- 0 Hasta camposPrestamos - 1 Hacer
+			prestamos[i, j] <- ""
 		FinPara
 	FinPara
 	
-	// Inicializo matriz de bibliotecarios
-    Para i <- 0 Hasta cantBibliotecarios-1 Hacer
-		Para j <- 0 Hasta camposBibliotecarios - 1 Hacer
-			bibliotecarios[i, j] <- ""
-		FinPara
-    FinPara
+
 	
 	//Inicializo matriz de admins 
 	Para i <- 0 Hasta cantAdministradores-1 Hacer		
@@ -83,15 +64,16 @@ Algoritmo biblioteca
 			administradores[i, j] <- ""
 		FinPara
 	FinPara	
-    
+
+	
 	//Precargo Libros para pruebas
-	librosPrecargados(libros)
+	librosPrecargados(libros, cantLibros, camposLibros)
 	
 	//Precargo Socios para pruebas
-	sociosPrecargados(socios)
+	sociosPrecargados(socios, cantSocios, camposSocios)
 
 	// Precargo bibliotecarios para pruebas
-    bibliotecariosPrecargados(bibliotecarios)
+    bibliotecariosPrecargados(bibliotecarios, cantBibliotecarios, camposBibliotecarios)
 	
 	
 	Escribir "****Bienvenido al Sistema de Gestión de Biblioteca****" 	
@@ -1992,7 +1974,17 @@ FinFuncion
 
 
 //LIBROS PRECARGADOS
-Funcion librosPrecargados(libros Por Referencia)
+Funcion librosPrecargados(libros Por Referencia, cantLibros, camposLibros)
+	Definir i, j Como Entero
+	
+	//Inicializo matriz de libros 
+	Para i <- 0 Hasta cantLibros-1 Hacer		
+		Para j <- 0 Hasta camposLibros - 1 Hacer
+			libros[i, j] <- ""
+		FinPara
+	FinPara
+	
+	//Cargo libros
 	libros[0,0] <- "10000"
 	libros[0,1] <- "DON QUIJOTE"
 	libros[0,2] <- "MIGUEL DE CERVANTES"
@@ -2403,7 +2395,16 @@ Funcion librosPrecargados(libros Por Referencia)
 FinFuncion
 
 //SOCIOS PRECARGADOS
-Funcion sociosPrecargados(socios Por Referencia)
+Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
+	Definir i, j Como Entero
+	//Inicializo matriz de socios 
+	Para i <- 0 Hasta cantSocios-1 Hacer		
+		Para j <- 0 Hasta camposSocios - 1 Hacer
+			socios[i, j] <- ""
+		FinPara
+	FinPara
+	
+	//Cargo socios
 	socios[0, 0] <- "87562896"
 	socios[0, 1] <- "JOSE LOPEZ"
 	socios[0, 2] <- "1103160523"
@@ -2538,7 +2539,16 @@ Funcion sociosPrecargados(socios Por Referencia)
 FinFuncion
 
 //BIBLIOTECARIOS PRECARGADOS
-Funcion bibliotecariosPrecargados(bibliotecarios Por Referencia)
+Funcion bibliotecariosPrecargados(bibliotecarios Por Referencia, cantBibliotecarios, camposBibliotecarios)
+	Definir i, j Como Entero
+	// Inicializo matriz de bibliotecarios
+    Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+		Para j <- 0 Hasta camposBibliotecarios - 1 Hacer
+			bibliotecarios[i, j] <- ""
+		FinPara
+    FinPara
+	
+	//Cargo bibliotecarios
 	bibliotecarios[0, 0] <- "GUADIX"
     bibliotecarios[0, 1] <- "5678"
 	
