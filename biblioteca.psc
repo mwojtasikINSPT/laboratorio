@@ -22,19 +22,31 @@ Algoritmo biblioteca
     intentos <- 0
 	accesoValido <- 0
 	
+	//VARIABLES ADMINISTRADORES
+	Definir administradores Como Cadena
+    Definir cantAdministradores, camposAdministradores Como Entero
+    
+	
 	//MATRICES
 	cantLibros <- 200
 	camposLibros <- 9 //id, titulo, autor, genero, anio, disponible, fecha devolucion, stock, ejemplaresPrestados
 	Dimension libros[cantLibros, camposLibros]
+	
 	cantSocios <- 200
 	camposSocios <- 5 //dni, nombre, telefono, estado, diasPenalizacion
 	Dimension socios[cantSocios, camposSocios]
+	
 	cantPrestamos <- 200
 	camposPrestamos  <- 4 // dniSocio, idLibro, fechaPrestamo, fechaFin 
 	Dimension prestamos[cantPrestamos, camposPrestamos] 
+	
 	camposBibliotecarios <- 2 //nombreBibliotecario, claveBibliotecario
 	cantBibliotecarios <- 50
     Dimension bibliotecarios[cantBibliotecarios, camposBibliotecarios] 
+	
+	cantAdministradores <- 10
+	camposAdministradores <- 2 //NombreAdmin, clave
+    Dimension administradores[cantAdministradores, camposAdministradores]
 	i<- 0
 	
 	//Inicializo matriz de libros 
@@ -60,9 +72,17 @@ Algoritmo biblioteca
 	
 	// Inicializo matriz de bibliotecarios
     Para i <- 0 Hasta cantBibliotecarios-1 Hacer
-        bibliotecarios[i, 0] <- ""
-        bibliotecarios[i, 1] <- ""
+		Para j <- 0 Hasta camposBibliotecarios - 1 Hacer
+			bibliotecarios[i, j] <- ""
+		FinPara
     FinPara
+	
+	//Inicializo matriz de admins 
+	Para i <- 0 Hasta cantAdministradores-1 Hacer		
+		Para j <- 0 Hasta camposAdministradores - 1 Hacer
+			administradores[i, j] <- ""
+		FinPara
+	FinPara	
     
 	//Precargo Libros para pruebas
 	libros[0, 0] <- "10000"
@@ -287,6 +307,15 @@ Algoritmo biblioteca
 	bibliotecarios[2, 0] <- "MARCE"
     bibliotecarios[2, 1] <- "5678"
 	
+	//Precargo Administradores para pruebas
+	administradores[0, 0] <- "MARCE"
+    administradores[0, 1] <- "1234"
+	
+	administradores[1, 0] <- "GUADIX"
+    administradores[1, 1] <- "1234"
+	
+	administradores[2, 0] <- "FRANCO"
+    administradores[2, 1] <- "1234"
 	
 	Escribir "****Bienvenido al Sistema de Gestión de Biblioteca****" 	
 	
@@ -296,25 +325,19 @@ Algoritmo biblioteca
 		Leer opAcceso
 		
 		Segun opAcceso Hacer
-			1:	//Admin			
-				Repetir
-					Escribir "Ingrese la clave de acceso: " 
-					Leer credencial
-				Hasta Que credencial == credencialAdmin
-				
-				mostrarMenuPpalAdmin
-				administrador(bibliotecarios, cantBibliotecarios) 
+			1:	//Acceso Admin	
+				//mostrarMenuPpalAdmin
+				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores) 		
 				
 			2:  //Acceso Bibliotecario		
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
 				Escribir "*** ACCESO BIBLIOTECARIO ***"
-				Escribir "Intento ", intentos + 1, " de 3"
 				Escribir Sin Saltar "Indique su nombre: "
 				Leer nombreIngresado
 				nombreIngresado <- Mayusculas(nombreIngresado)
 				Escribir Sin Saltar "Ingrese su clave: "
-				Leer claveIngresada
-								
+				Leer claveIngresada		
+				Escribir "Intento ", intentos + 1, " de 3"
 				
 				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
 					Escribir "Acceso concedido. Bienvenido ", nombreIngresado
@@ -335,7 +358,7 @@ Algoritmo biblioteca
 				Esperar 2 Segundos
 				Limpiar Pantalla
 			FinSi
-								
+			
 			//Menu Bibliotecario				
 			Repetir
 				mostrarMenuPpalBibliotecario
@@ -474,6 +497,19 @@ Algoritmo biblioteca
 	
 FinAlgoritmo
 
+//*******************************************ADMINS*******************************************************
+Funcion esValido <- validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores)
+    Definir esValido Como Logico
+    Definir i Como Entero
+    esValido <- Falso
+    
+    Para i <- 0 Hasta cantAdministradores-1 Hacer
+        Si administradores[i, 0] = nombreIngresado Y administradores[i, 1] = claveIngresada Entonces
+            esValido <- Verdadero
+            i <- cantAdministradores 
+        FinSi
+    FinPara
+FinFuncion
 
 //Valido acceso Bibliotecario
 Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios)
@@ -490,9 +526,16 @@ Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, 
 FinFuncion
 
 //Vista Administrador
-SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios)
+SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, administradores Por Referencia, cantAdministradores)
+	//Bibliotecarios
 	Definir opAdmin, opGestion, i, indice, confirmar, totalBibliotecarios Como Entero	
     Definir nombreBibliotecario, claveBibliotecario, opUsuario Como Cadena
+	//Admins
+	Definir nombreIngresado, claveIngresada, nombreAdmin, claveAdmin Como Cadena
+	Definir intentos, accesoValido, totalAdministradores Como Entero
+	Definir administradorExiste, hayAdministradores Como Logico
+	intentos <- 0
+	accesoValido <- 0
 	
 	Repetir
 		Escribir ""
@@ -577,8 +620,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios)
 								Leer opUsuario
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
-						2:	//Elimino Bibliotecario
-							
+						2:	//Elimino Bibliotecario							
 							Escribir ""
                             Escribir "*** ELIMINAR BIBLIOTECARIO ***"
                             
@@ -657,10 +699,180 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios)
 					Fin Segun				
 					
 				Hasta Que opGestion == 4
-			2:
+			2: //Gestiono Socios
 				Escribir "En proceso"
 			3:
-				Escribir "En proceso"
+				// Acceso Admins			
+				Mientras intentos < 3 Y accesoValido = 0 Hacer
+					Escribir "*** ACCESO ADMINISTRADOR ***"					
+					Escribir Sin Saltar "Nombre: "
+					Leer nombreIngresado
+					nombreIngresado <- Mayusculas(nombreIngresado)
+					Escribir Sin Saltar "Clave: "
+					Leer claveIngresada
+					Escribir "Intento ", intentos + 1, " de 3"
+					
+					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
+						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
+						accesoValido <- 1
+						Esperar 1 Segundos
+						Limpiar Pantalla
+						//mostrarMenuPpalAdmin
+						//administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores)
+					Sino
+						Escribir "Nombre o clave incorrectos."
+						intentos <- intentos + 1
+						Esperar 2 Segundos
+						Limpiar Pantalla
+					FinSi
+				FinMientras
+				
+				Si accesoValido = 0 Entonces
+					Escribir "Demasiados intentos fallidos. Volviendo al menú principal."
+					Esperar 2 Segundos
+				FinSi
+				
+				//Gestiono Admins
+				Repetir
+					Escribir ""
+					Escribir "*** GESTIÓN DE ADMINISTRADORES ***"
+					Escribir "1. Agregar Administrador"
+					Escribir "2. Eliminar Administrador"
+					Escribir "3. Listar Administradores"
+					Escribir "4. Volver"
+					Escribir "Elija una opción (1-4): "
+					Leer opGestion
+					
+					Segun opGestion Hacer
+						1:  // Agregar Administrador							
+							Repetir
+								//Asigno posición en el array
+								indice <- -1
+								Para i <- 0 Hasta cantAdministradores -1 Hacer
+									Si administradores[i, 0] = "" Entonces
+										indice <- i
+										i <- cantAdministradores -1  
+									FinSi
+								FinPara
+								
+								Si indice = -1 Entonces
+									Escribir "No hay espacio disponible para agregar más administradores."
+								Sino
+									confirmar <- 0
+									Mientras confirmar = 0 Hacer
+										nombreAdmin <- pedirTexto("Ingrese nombre del administrador: ")
+										claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+										
+										Mientras Longitud(claveAdmin) <> 4
+											Escribir "La clave debe tener exactamente 4 dígitos."
+											claveAdministrador <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+										FinMientras
+										
+										// Verifico si el usuario ya existe
+										
+										administradorExiste <- Falso
+										Para i <- 0 Hasta cantAdministradores-1 Hacer
+											Si administradores[i, 0] = nombreAdmin Entonces
+												administradorExiste <- Verdadero
+											FinSi
+										FinPara
+										
+										Si administradorExiste Entonces
+											Escribir "Ese Administrador ya se encuentra registrado."
+										Sino
+											Limpiar Pantalla
+											Escribir "*** DATOS DEL NUEVO ADMINISTRADOR ***"
+											Escribir "Nombre: ", nombreAdmin
+											Escribir "Clave: ", claveAdmin
+											Escribir "Confirma el ingreso? (S/N)"
+											Leer opUsuario
+											
+											Si Mayusculas(opUsuario) = "S" Entonces
+												administradores[indice, 0] <- nombreAdmin
+												administradores[indice, 1] <- claveAdmin
+												Escribir "Administrador agregado exitosamente."
+												confirmar <- 1
+											FinSi
+										FinSi
+									FinMientras
+								FinSi
+								
+								Escribir "¿Desea agregar otro administrador? (S/N)"
+								Leer opUsuario
+							Hasta Que Mayusculas(opUsuario) = "N"
+							
+						2:  // Eliminar Administrador  
+							Escribir ""
+							Escribir "*** ELIMINAR ADMINISTRADOR ***"
+							
+							// Mostrar admins existentes
+							Escribir "Administradores registrados:"
+							hayAdministradores <- Falso
+							Para i <- 0 Hasta cantAdministradores-1 Hacer
+								Si administradores[i, 0] <> "" Entonces
+									Escribir i+1, ". ", administradores[i, 0], " - Clave: ", administradores[i, 1]
+									hayAdministradores <- Verdadero
+								FinSi
+							FinPara
+							
+							Si hayAdministradores Entonces
+								Escribir "Ingrese el nombre del Administrador a eliminar: "
+								Leer nombreAdmin
+								nombreAdmin <- Mayusculas(nombreAdmin)
+								
+								// Busco admin por nombre
+								indice <- -1
+								Para i <- 0 Hasta cantAdministradores-1  Hacer
+									Si administradores[i, 0] = nombreAdmin Entonces
+										indice <- i
+									FinSi
+								FinPara
+								
+								Si indice = -1 Entonces
+									Escribir "No se encontró un Administrador con ese nombre."
+								Sino
+									Escribir "Administrador encontrado: ", administradores[indice, 0]
+									Escribir "¿Confirma que desea eliminar este administrador? (S/N)"
+									Leer opUsuario
+									
+									Si Mayusculas(opUsuario) = "S" Entonces
+										administradores[indice, 0] <- ""
+										administradores[indice, 1] <- ""
+										Escribir "Administrador eliminado exitosamente."
+									Sino
+										Escribir "Eliminación cancelada."
+									FinSi
+								FinSi
+							Sino
+								Escribir "No hay administradores registrados."
+							FinSi
+						3:   // Listar Administradores
+							
+							Escribir ""
+							Escribir "*** LISTADO DE ADMINISTRADORES ***"                            
+							totalAdministradores <- 0
+							
+							Para i <- 0 Hasta cantAdministradores-1 Hacer
+								Si administradores[i, 0] <> "" Entonces
+									Escribir "----------------------------------------"
+									Escribir "Nombre: ", administradores[i, 0]
+									Escribir "Clave: ", administradores[i, 1]
+									totalAdministradores <- totalAdministradores + 1
+								FinSi
+							FinPara
+							
+							Si totalAdministradores = 0 Entonces
+								Escribir "No hay Administradores registrados."
+							Sino
+								Escribir "----------------------------------------"
+								Escribir "Total de Administradores registrados: ", totalAdministradores
+							FinSi
+						4:  
+							Escribir "Volviendo al menú de Administrador..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
+					Fin Segun
+				Hasta Que opGestion = 4
 			4:	
 				Escribir "Volviendo al menú principal..."
 				Esperar 1 Segundos
@@ -687,13 +899,12 @@ FinSubProceso
 
 SubProceso mostrarMenuPpalAdmin
 	Escribir ""
-	Escribir "Bienvenido, Admin!"
 	Escribir "Elija el módulo al que quiere acceder (4 para Volver): "
 	Escribir ""
 	Escribir "	1. ADMINs"
 	Escribir "	2. BIBLIOTECARIOS"
 	Escribir "	3. SOCIOS"
-	Escribir " 4. Volver"
+	Escribir "4. Volver"
 	Escribir ""
 FinSubProceso
 
@@ -1670,8 +1881,7 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	Si totalPrestamos = 0 Entonces
 		Escribir ""
 		Escribir "No hay préstamos activos en este momento."
-	FinSi
-	
+	FinSi	
 FinFuncion
 
 
@@ -1812,7 +2022,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
             FinPara
             
             Si indicePrestamo = -1 Entonces
-                Escribir "Error: No se encontró el préstamo asociado a este libro"
+                Escribir "Error: No se encontró un préstamo asociado a este libro"
             Sino
                 // BUSCAR EL SOCIO POR DNI
                 Para j <- 0 Hasta cantSocios-1 Hacer
@@ -1843,15 +2053,12 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                         Si No fechaValida Entonces
                             Escribir "Error: La fecha de devolución no puede ser anterior a la fecha de préstamo."
                             Escribir "Fecha de préstamo: ", prestamos[indicePrestamo,2]
-                        Sino
-                            // 1. MARCAR LIBRO COMO DISPONIBLE //no, esto se hace con el stock - VER SACAR
-                            libros[indiceLibro,5] <- "1"
-                            
-                            // 2. CALCULAR PENALIZACIÓN SI HAY ATRASO
+                        Sino                            
+                            //Calculo penalización si hay atraso
                             fechaFinPrestamo <- libros[indiceLibro,6]
                             diasAtraso <- chequearPenalidad(fechaFinPrestamo, fechaDev)
                             
-                            // 3. ACTUALIZAR ESTADO Y PENALIZACIÓN DEL SOCIO
+                            //Actualizo estado del socio
                             Si diasAtraso > 0 Entonces
                                 diasPenalidad <- diasAtraso * 2
                                 socios[indiceSocio,3] <- "MULTADO"
@@ -1867,7 +2074,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 							//VER!!! Puede haber mas de un ejemplar prestado... 
                             libros[indiceLibro,6] <- ""
                             
-                            // 5. ELIMINAR EL PRÉSTAMO
+                            // Elimino el préstamo
                             prestamos[indicePrestamo,0] <- ""
                             prestamos[indicePrestamo,1] <- ""
                             prestamos[indicePrestamo,2] <- ""
@@ -1901,3 +2108,4 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
         FinSi        
     FinSi
 FinFuncion
+
