@@ -1,20 +1,29 @@
 Algoritmo biblioteca
 	
-	definir credencial, credencialAdmin, credencialBibliotecario Como caracter
+	definir credencial, credencialAdmin Como caracter
 	credencialAdmin <- "1234"
-	credencialBibliotecario <- "5678"
 	
 	
-	definir libros, socios, prestamos como Cadena 
+	definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp Como Caracter
 	Definir op, modulo, opLibros, opSocios, opAcceso, i, j, l, m, n, c Como Entero 
-	Definir disponible, camposLibros, camposSocios,camposPrestamo Como Entero
+	Definir disponible, camposLibros, camposSocios, camposPrestamo Como Entero
+	//VARIABLES BIBLIOTECARIOS
+	Definir cantBibliotecarios, camposBibliotecarios, intentos, accesoValido Como Entero 
+	Definir nombreIngresado, claveIngresada Como CAdena
+    intentos <- 0
+	accesoValido <- 0
+	
+	//MATRICES
 	camposLibros <- 7 //id, titulo, autor, genero, anio, disponible, fecha devolucion
 	Dimension libros[200, camposLibros]
 	camposSocios <- 5 //dni, nombre, telefono, estado, diasPenalizacion
 	Dimension socios[200, camposSocios]
 	camposPrestamo  <- 4 // dniSocio, idLibro, fechaPrestamo, fechaFin, 
 	Dimension prestamos[200,camposPrestamo] 
+	camposBibliotecarios <- 2 //nombreBibliotecario, claveBibliotecario
+	cantBibliotecarios <- 50
+    Dimension bibliotecarios[cantBibliotecarios, camposBibliotecarios] 
 	i<- 0
 	
 	//Inicializo matriz de libros 
@@ -38,6 +47,12 @@ Algoritmo biblioteca
 		FinPara
 	FinPara
 	
+	// Inicializo matriz de bibliotecarios
+    Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+        bibliotecarios[i, 0] <- ""
+        bibliotecarios[i, 1] <- ""
+    FinPara
+    
 	//Precargo Libros para pruebas
 	libros[0, 0] <- "10000"
 	libros[0, 1] <- "DON QUIJOTE"
@@ -57,25 +72,29 @@ Algoritmo biblioteca
 	socios[0, 1] <- "Jose Lopez"
 	socios[0, 2] <- "1103160523"
 	socios[0, 3] <- "MULTADO"
-	socios[0, 4] <- "6"
-	
-	
+	socios[0, 4] <- "6"	
 	socios[1, 0] <- "45263568"
 	socios[1, 1] <- "Mar Gomez"
 	socios[1, 2] <- "1161176033" 
 	socios[1, 3] <- "INHABILITADO" 
-	socios[1, 4] <- ""
-	
+	socios[1, 4] <- ""	
 	socios[2, 0] <- "77463568"
 	socios[2, 1] <- "Martin Pix"
 	socios[2, 2] <- "1101176033" 
 	socios[2, 3] <- "HABILITADO"
 	socios[2, 4] <- ""
 	
+	// Precargo bibliotecarios para pruebas
+    bibliotecarios[0, 0] <- "GUADIX"
+    bibliotecarios[0, 1] <- "5678"
+	bibliotecarios[1, 0] <- "FRANCO"
+    bibliotecarios[1, 1] <- "5678"
+	bibliotecarios[2, 0] <- "MARCE"
+    bibliotecarios[2, 1] <- "5678"
 	
-	Escribir "****Bienvenido al Sistema de Gestion de Biblioteca****" 
+	Escribir "****Bienvenido al Sistema de Gestión de Biblioteca****" 	
 	
-	
+
 	
 	//Acceso diferenciado por tipo de usuario: Admin, Bibliotecario, Socio
 	Repetir
@@ -88,15 +107,44 @@ Algoritmo biblioteca
 					Escribir "Ingrese la clave de acceso: " 
 					Leer credencial
 				Hasta Que credencial == credencialAdmin
-				Escribir "Acceso admin (en proceso...)" 
-			2:  //Bibliotecario				
-				Repetir
-					Escribir "Ingrese la clave de acceso: " 
-					Leer credencial
-				Hasta Que credencial == credencialBibliotecario
 				
-				//Menu Bibliotecario
+				mostrarMenuPpalAdmin
+				administrador(bibliotecarios, cantBibliotecarios) 
 				
+			2:  //Acceso Bibliotecario				
+
+			Mientras intentos < 3 Y accesoValido = 0 Hacer
+				Escribir "=== ACCESO BIBLIOTECARIO ==="
+				Escribir "Intento ", intentos + 1, " de 3"
+				Escribir Sin Saltar "Nombre: "
+				Leer nombreIngresado
+				nombreIngresado <- Mayusculas(nombreIngresado)
+				Escribir Sin Saltar "Clave: "
+				Leer claveIngresada
+				
+				
+				
+				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
+					Escribir "Acceso concedido. Bienvenido ", nombreIngresado
+					accesoValido <- 1
+					Esperar 1 Segundos
+					Limpiar Pantalla
+					Escribir "Aca va todo lo q hace el biblio"
+				Sino
+					Escribir "Nombre o clave incorrectos."
+					intentos <- intentos + 1
+					Esperar 1 Segundos
+					Limpiar Pantalla
+				FinSi
+			FinMientras
+			
+			Si accesoValido = 0 Entonces
+				Escribir "Demasiados intentos fallidos. Volviendo al menú principal."
+				Esperar 2 Segundos
+			FinSi
+				
+				
+				//Menu Bibliotecario				
 				Repetir
 					mostrarMenuPpalBibliotecario
 					Leer modulo
@@ -216,12 +264,13 @@ Algoritmo biblioteca
 							Esperar 1 Segundos
 							Limpiar Pantalla
 						De Otro Modo:
-							Escribir "Opción inválida"
+							Escribir "Eligió una opción inválida."
 					Fin Segun
 				Hasta Que (modulo==3)
 				
 			3:
 				//Acceso Socio -  HAY Q HACER
+				Escribir "Acceso socios (en proceso...)"
 			0:
 				Escribir "Saliendo del Sistema..."
 				Esperar 1 segundo
@@ -233,7 +282,207 @@ Algoritmo biblioteca
 	
 FinAlgoritmo
 
-//Menues para mostrar
+
+//Funcion para validar accesos
+Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios)
+	Definir esValido Como Logico
+	Definir i Como Entero
+	esValido <- Falso
+	
+	Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+		Si bibliotecarios[i, 0] = nombreIngresado Y bibliotecarios[i, 1] = claveIngresada Entonces
+			esValido <- Verdadero
+			i <- cantBibliotecarios
+		FinSi
+	FinPara
+FinFuncion
+
+
+SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios)
+	Definir opAdmin, opGestion, i, indice, confirmar, totalBibliotecarios Como Entero	
+    Definir nombreBibliotecario, claveBibliotecario, opUsuario Como Cadena
+	
+	Repetir
+		Escribir ""
+        Escribir "*** MENÚ ADMINISTRADOR ***"
+        Escribir "1. Gestionar Bibliotecarios"
+        Escribir "2. Gestionar Socios"
+        Escribir "3. Gestionar Administradores"
+		Escribir "4. Volver al menú principal"
+        Escribir "Elija una opción (1-4): "
+        Leer opAdmin
+		
+		Segun opAdmin Hacer
+			1:
+				//Gestiono Bibliotecarios
+				Repetir
+					Escribir ""
+                    Escribir "*** GESTIÓN DE BIBLIOTECARIOS ***"
+                    Escribir "1. Agregar Bibliotecario"
+                    Escribir "2. Eliminar Bibliotecario"
+                    Escribir "3. Listar Bibliotecarios"
+                    Escribir "4. Volver"
+                    Escribir "Elija una opción (1-4): "
+					Esperar Tecla
+                    Leer opGestion
+					
+					Segun opGestion Hacer
+						1: 	//Agrego Bibliotecario
+							Repetir
+								//Asigno posición en el array
+								indice <- -1
+								Para i <- 0 Hasta cantBibliotecarios -1 Hacer
+									Si bibliotecarios[i, 0] = "" Entonces
+										indice <- i
+										i <- cantBibliotecarios -1  
+									FinSi
+								FinPara
+								
+								Si indice = -1 Entonces
+									Escribir "No hay espacio disponible para agregar más bibliotecarios."
+								Sino
+									confirmar <- 0
+									Mientras confirmar = 0 Hacer
+										nombreBibliotecario <- pedirTexto("Ingrese nombre del bibliotecario: ")
+										claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+										
+										// Valido que la clave tenga 4 dígitos
+										Mientras Longitud(claveBibliotecario) <> 4
+											Escribir "La clave debe tener exactamente 4 dígitos."
+											claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+										FinMientras
+										
+										// Verifico si el usuario ya existe
+										Definir bibliotecarioExiste Como Logico
+										bibliotecarioExiste <- Falso
+										Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+											Si bibliotecarios[i, 0] = nombreBibliotecario Entonces
+												bibliotecarioExiste <- Verdadero
+											FinSi
+										FinPara
+										
+										Si bibliotecarioExiste Entonces
+											Escribir "Ese Bibliotecario ya se encuentra registrado."
+										Sino
+											Limpiar Pantalla
+											Escribir "*** DATOS DEL NUEVO BIBLIOTECARIO ***"
+											Escribir "Nombre: ", nombreBibliotecario
+											Escribir "Clave: ", claveBibliotecario
+											Escribir "Confirma el ingreso? (S/N)"
+											Leer opUsuario
+											
+											Si Mayusculas(opUsuario) = "S" Entonces
+												bibliotecarios[indice, 0] <- nombreBibliotecario
+												bibliotecarios[indice, 1] <- claveBibliotecario
+												Escribir "Bibliotecario agregado exitosamente."
+												confirmar <- 1
+											FinSi
+										FinSi
+									FinMientras
+								FinSi
+								
+								Escribir "¿Desea agregar otro bibliotecario? (S/N)"
+								Leer opUsuario
+							Hasta Que Mayusculas(opUsuario) = "N"
+							
+						2:
+							//Elimino Bibliotecario
+							
+							Escribir ""
+                            Escribir "*** ELIMINAR BIBLIOTECARIO ***"
+                            
+                            // Mostrar bibliotecarios existentes
+                            Escribir "Bibliotecarios registrados:"
+                            Definir hayBibliotecarios Como Logico
+                            hayBibliotecarios <- Falso
+                            Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+                                Si bibliotecarios[i, 0] <> "" Entonces
+                                    Escribir i+1, ". ", bibliotecarios[i, 0], " - Clave: ", bibliotecarios[i, 1]
+                                    hayBibliotecarios <- Verdadero
+                                FinSi
+                            FinPara
+                            
+                            Si hayBibliotecarios Entonces
+                                Escribir "Ingrese el nombre del bibliotecario a eliminar: "
+                                Leer nombreBibliotecario
+								nombreBibliotecario <- Mayusculas(nombreBibliotecario)
+                                
+                                // Busco bibliotecario por nombre
+                                indice <- -1
+                                Para i <- 0 Hasta cantBibliotecarios-1  Hacer
+                                    Si bibliotecarios[i, 0] = nombreBibliotecario Entonces
+                                        indice <- i
+                                    FinSi
+                                FinPara
+                                
+                                Si indice = -1 Entonces
+                                    Escribir "No se encontró un bibliotecario con ese nombre."
+                                Sino
+                                    Escribir "Bibliotecario encontrado: ", bibliotecarios[indice, 0]
+                                    Escribir "¿Confirma que desea eliminar este bibliotecario? (S/N)"
+                                    Leer opUsuario
+                                    
+                                    Si Mayusculas(opUsuario) = "S" Entonces
+                                        bibliotecarios[indice, 0] <- ""
+                                        bibliotecarios[indice, 1] <- ""
+                                        Escribir "Bibliotecario eliminado exitosamente."
+                                    Sino
+                                        Escribir "Eliminación cancelada."
+                                    FinSi
+                                FinSi
+                            Sino
+                                Escribir "No hay bibliotecarios registrados."
+                            FinSi			
+							
+						3:
+							//Muestro Bibliotecarios
+							Escribir ""
+                            Escribir "*** LISTADO DE BIBLIOTECARIOS ***"                            
+                            totalBibliotecarios <- 0
+							
+                            Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+                                Si bibliotecarios[i, 0] <> "" Entonces
+                                    Escribir "----------------------------------------"
+                                    Escribir "Nombre: ", bibliotecarios[i, 0]
+                                    Escribir "Clave: ", bibliotecarios[i, 1]
+                                    totalBibliotecarios <- totalBibliotecarios + 1
+                                FinSi
+                            FinPara
+                            
+                            Si totalBibliotecarios = 0 Entonces
+                                Escribir "No hay bibliotecarios registrados."
+                            Sino
+								Escribir "----------------------------------------"
+                                Escribir "Total de bibliotecarios registrados: ", totalBibliotecarios
+                            FinSi
+                            
+						4:
+							Escribir "Volviendo al menú de Administrador..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
+							
+						De Otro Modo:
+							Escribir "Eligió una opción inválida."
+					Fin Segun				
+					
+				Hasta Que opGestion == 4
+			2:
+				Escribir "En proceso"
+			3:
+				Escribir "En proceso"
+			4:	
+				Escribir "Volviendo al menú principal..."
+				Esperar 1 Segundos
+				Limpiar Pantalla
+			De Otro Modo:
+				Escribir "Eligió una opción inválida."
+		Fin Segun
+		
+		
+	Hasta Que opAdmin == 4	
+FinSubAlgoritmo
+
+//Menúes para mostrar
 SubProceso  mostrarMenuAcceso
 	Escribir ""
 	Escribir "Indique su tipo de usuario (0 para Salir): "
@@ -242,6 +491,18 @@ SubProceso  mostrarMenuAcceso
 	Escribir "	2. BIBLIOTECARIO"
 	Escribir "	2. SOCIO"
 	Escribir "	0. Salir"
+	Escribir ""
+FinSubProceso
+
+SubProceso mostrarMenuPpalAdmin
+	Escribir ""
+	Escribir "Bienvenido, Admin!"
+	Escribir "Elija el módulo al que quiere acceder (4 para Volver): "
+	Escribir ""
+	Escribir "	1. ADMINs"
+	Escribir "	2. BIBLIOTECARIOS"
+	Escribir "	3. SOCIOS"
+	Escribir " 4. Volver"
 	Escribir ""
 FinSubProceso
 
@@ -631,7 +892,7 @@ Funcion buscarLibro(libros Por Referencia)
 				Escribir Sin Saltar "Ingrese año de publicación a buscar: "
 				Leer criterio
 			6:
-				Escribir "Volviendo al menú de Libros"
+				Escribir "Volviendo al menú de Libros..."
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
 		Fin Segun
@@ -845,7 +1106,8 @@ Funcion buscarSocio(socios Por Referencia)
 						criterio <- "MULTADO"
 				Fin Segun
 			3:
-				Escribir "Volviendo al menú de Socios"
+				Escribir "Volviendo al menú de Socios..."
+				Esperar 1 Segundos
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
 				
