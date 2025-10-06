@@ -538,6 +538,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	accesoValido <- 0
 	
 	Repetir
+		Limpiar Pantalla
 		Escribir ""
         Escribir "*** MENÚ ADMINISTRADOR ***"
         Escribir "1. Gestionar Bibliotecarios"
@@ -611,6 +612,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 												bibliotecarios[indice, 1] <- claveBibliotecario
 												Escribir "Bibliotecario agregado exitosamente."
 												confirmar <- 1
+											SiNo
+												Escribir "Ingreso de bibliotecario ", nombreBibliotecario " cancelado"
+												confirmar <- 1
 											FinSi
 										FinSi
 									FinMientras
@@ -618,12 +622,17 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								
 								Escribir "¿Desea agregar otro bibliotecario? (S/N)"
 								Leer opUsuario
+								//Esperar 1 segundo
 							Hasta Que Mayusculas(opUsuario) = "N"
+							
+							Escribir "Volviendo a Gestión de Bibliotecarios..."
+							Esperar 2 segundos
+							Limpiar Pantalla
 							
 						2:	//Elimino Bibliotecario							
 							Escribir ""
                             Escribir "*** ELIMINAR BIBLIOTECARIO ***"
-                            
+                            Escribir ""
                             // Mostrar bibliotecarios existentes
                             Escribir "Bibliotecarios registrados:"
                             Definir hayBibliotecarios Como Logico
@@ -660,7 +669,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                         bibliotecarios[indice, 1] <- ""
                                         Escribir "Bibliotecario eliminado exitosamente."
                                     Sino
-                                        Escribir "Eliminación cancelada."
+                                        Escribir "Eliminación de bibliotecario ", bibliotecarios[indice, 0], " cancelada."
                                     FinSi
                                 FinSi
                             Sino
