@@ -1,31 +1,51 @@
 Algoritmo biblioteca
 	
-	definir credencial, credencialAdmin, credencialBibliotecario Como caracter
+	definir credencial, credencialAdmin Como caracter
 	credencialAdmin <- "1234"
-	credencialBibliotecario <- "5678"
 	
-	
-	definir libros, socios, prestamos como Cadena 
+	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp Como Caracter
 	Definir op, modulo, opLibros, opSocios, opAcceso, i, j, l, m, n, c Como Entero 
-	Definir disponible, camposLibros, camposSocios,camposPrestamo Como Entero
-	camposLibros <- 7 //id, titulo, autor, genero, anio, disponible, fecha devolucion
-	Dimension libros[200, camposLibros]
+	
+	//VARIABLES PRESTAMOS
+	Definir cantPrestamos, camposPrestamos Como Entero
+	
+	//VARIABLES SOCIOS
+	Definir cantSocios, camposSocios Como Entero
+	
+	//VARIABLES LIBROS
+	Definir disponible, cantLibros, camposLibros Como Entero
+	
+	//VARIABLES BIBLIOTECARIOS
+	Definir cantBibliotecarios, camposBibliotecarios, intentos, accesoValido Como Entero 
+	Definir nombreIngresado, claveIngresada Como CAdena
+    intentos <- 0
+	accesoValido <- 0
+	
+	//MATRICES
+	cantLibros <- 200
+	camposLibros <- 8 //id, titulo, autor, genero, anio, disponible, fecha devolucion, stock
+	Dimension libros[cantLibros, camposLibros]
+	cantSocios <- 200
 	camposSocios <- 5 //dni, nombre, telefono, estado, diasPenalizacion
-	Dimension socios[200, camposSocios]
-	camposPrestamo  <- 4 // dniSocio, idLibro, fechaPrestamo, fechaFin, 
-	Dimension prestamos[200,camposPrestamo] 
+	Dimension socios[cantSocios, camposSocios]
+	cantPrestamos <- 200
+	camposPrestamos  <- 4 // dniSocio, idLibro, fechaPrestamo, fechaFin, 
+	Dimension prestamos[cantPrestamos, camposPrestamos] 
+	camposBibliotecarios <- 2 //nombreBibliotecario, claveBibliotecario
+	cantBibliotecarios <- 50
+    Dimension bibliotecarios[cantBibliotecarios, camposBibliotecarios] 
 	i<- 0
 	
 	//Inicializo matriz de libros 
-	Para i <- 0 Hasta 199 Hacer		
+	Para i <- 0 Hasta cantLibros-1 Hacer		
 		Para j <- 0 Hasta camposLibros - 1 Hacer
 			libros[i, j] <- ""
 		FinPara
 	FinPara	
 	
 	//Inicializo matriz de socios 
-	Para l <- 0 Hasta 199 Hacer		
+	Para l <- 0 Hasta cantSocios-1 Hacer		
 		Para m <- 0 Hasta camposSocios - 1 Hacer
 			socios[l, m] <- ""
 		FinPara
@@ -33,11 +53,17 @@ Algoritmo biblioteca
 	
 	//Inicializo matriz de prestamos 
 	Para n <- 0 Hasta 199 Hacer		
-		Para c <- 0 Hasta camposPrestamo - 1 Hacer
+		Para c <- 0 Hasta camposPrestamos - 1 Hacer
 			prestamos[n, c] <- ""
 		FinPara
 	FinPara
 	
+	// Inicializo matriz de bibliotecarios
+    Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+        bibliotecarios[i, 0] <- ""
+        bibliotecarios[i, 1] <- ""
+    FinPara
+    
 	//Precargo Libros para pruebas
 	libros[0, 0] <- "10000"
 	libros[0, 1] <- "DON QUIJOTE"
@@ -45,37 +71,224 @@ Algoritmo biblioteca
 	libros[0, 3] <- "NOVELA"
 	libros[0, 4] <- "1605" 
 	libros[0, 5] <- "1" 
+	libros[0, 7] <- "2" 
+	
 	libros[1, 0] <- "10001"
 	libros[1, 1] <- "HAMLET"
-	libros[1, 2] <- "WILLIAN SHAKESPEARE"
+	libros[1, 2] <- "WILLIAM SHAKESPEARE"
 	libros[1, 3] <- "TRAGEDIA"
-	libros[1, 4] <- "1603" 
-	libros[1, 5] <- "1" 
+	libros[1, 4] <- "1603"
+	libros[1, 5] <- "1"
+	libros[1, 7] <- "1"
+	
+	libros[2, 0] <- "10002"
+	libros[2, 1] <- "CIEN AÑOS DE SOLEDAD"
+	libros[2, 2] <- "GABRIEL GARCÍA MÁRQUEZ"
+	libros[2, 3] <- "NOVELA"
+	libros[2, 4] <- "1967"
+	libros[2, 5] <- "1"
+	libros[2, 7] <- "2"
+	
+	libros[3, 0] <- "10003"
+	libros[3, 1] <- "1984"
+	libros[3, 2] <- "GEORGE ORWELL"
+	libros[3, 3] <- "DISTOPÍA"
+	libros[3, 4] <- "1949"
+	libros[3, 5] <- "1"
+	libros[3, 7] <- "3"
+	
+	libros[4, 0] <- "10004"
+	libros[4, 1] <- "EL PRINCIPITO"
+	libros[4, 2] <- "ANTOINE DE SAINT-EXUPÉRY"
+	libros[4, 3] <- "FÁBULA"
+	libros[4, 4] <- "1943"
+	libros[4, 5] <- "0"
+	libros[4, 7] <- "0"
+	
+	libros[5, 0] <- "10005"
+	libros[5, 1] <- "DON QUIJOTE DE LA MANCHA"
+	libros[5, 2] <- "MIGUEL DE CERVANTES"
+	libros[5, 3] <- "NOVELA"
+	libros[5, 4] <- "1605"
+	libros[5, 5] <- "1"
+	libros[5, 7] <- "2"
+	
+	libros[6, 0] <- "10006"
+	libros[6, 1] <- "LA ODISEA"
+	libros[6, 2] <- "HOMERO"
+	libros[6, 3] <- "ÉPICA"
+	libros[6, 4] <- "800"
+	libros[6, 5] <- "1"
+	libros[6, 7] <- "3"
+	
+	libros[7, 0] <- "10007"
+	libros[7, 1] <- "FLORES PARA ALGERNON"
+	libros[7, 2] <- "DANIEL KEYES"
+	libros[7, 3] <- "CIENCIA FICCIÓN"
+	libros[7, 4] <- "1966"
+	libros[7, 5] <- "1"
+	libros[7, 7] <- "2"
+	
+	libros[8, 0] <- "10008"
+	libros[8, 1] <- "RAYUELA"
+	libros[8, 2] <- "JULIO CORTÁZAR"
+	libros[8, 3] <- "NOVELA"
+	libros[8, 4] <- "1963"
+	libros[8, 5] <- "0"
+	libros[8, 7] <- "0"
+	
+	libros[9, 0] <- "10009"
+	libros[9, 1] <- "LA DIVINA COMEDIA"
+	libros[9, 2] <- "DANTE ALIGHIERI"
+	libros[9, 3] <- "POESÍA"
+	libros[9, 4] <- "1320"
+	libros[9, 5] <- "1"
+	libros[9, 7] <- "3"
+	
+	libros[10, 0] <- "10010"
+	libros[10, 1] <- "FRANKENSTEIN"
+	libros[10, 2] <- "MARY SHELLEY"
+	libros[10, 3] <- "TERROR"
+	libros[10, 4] <- "1818"
+	libros[10, 5] <- "1"
+	libros[10, 7] <- "2"
+	
+	libros[11, 0] <- "10011"
+	libros[11, 1] <- "CRIMEN Y CASTIGO"
+	libros[11, 2] <- "FIODOR DOSTOYEVSKI"
+	libros[11, 3] <- "NOVELA"
+	libros[11, 4] <- "1866"
+	libros[11, 5] <- "0"
+	libros[11, 7] <- "0"
+	
+	libros[12, 0] <- "10012"
+	libros[12, 1] <- "MOBY DICK"
+	libros[12, 2] <- "HERMAN MELVILLE"
+	libros[12, 3] <- "AVENTURA"
+	libros[12, 4] <- "1851"
+	libros[12, 5] <- "1"
+	libros[12, 7] <- "3"
+	
+	libros[13, 0] <- "10013"
+	libros[13, 1] <- "DRÁCULA"
+	libros[13, 2] <- "BRAM STOKER"
+	libros[13, 3] <- "TERROR"
+	libros[13, 4] <- "1897"
+	libros[13, 5] <- "1"
+	libros[13, 7] <- "2"
+	
+	libros[14, 0] <- "10014"
+	libros[14, 1] <- "FAHRENHEIT 451"
+	libros[14, 2] <- "RAY BRADBURY"
+	libros[14, 3] <- "CIENCIA FICCIÓN"
+	libros[14, 4] <- "1953"
+	libros[14, 5] <- "0"
+	libros[14, 7] <- "0"
+	
+	libros[15, 0] <- "10015"
+	libros[15, 1] <- "EL NOMBRE DE LA ROSA"
+	libros[15, 2] <- "UMBERTO ECO"
+	libros[15, 3] <- "NOVELA HISTÓRICA"
+	libros[15, 4] <- "1980"
+	libros[15, 5] <- "1"
+	libros[15, 7] <- "3"
+	
+	libros[16, 0] <- "10016"
+	libros[16, 1] <- "LOS MISERABLES"
+	libros[16, 2] <- "VICTOR HUGO"
+	libros[16, 3] <- "NOVELA"
+	libros[16, 4] <- "1862"
+	libros[16, 5] <- "1"
+	libros[16, 7] <- "2"
+	
+	libros[17, 0] <- "10017"
+	libros[17, 1] <- "LA METAMORFOSIS"
+	libros[17, 2] <- "FRANZ KAFKA"
+	libros[17, 3] <- "FICCIÓN"
+	libros[17, 4] <- "1915"
+	libros[17, 5] <- "1"
+	libros[17, 7] <- "1"
+	
+	libros[18, 0] <- "10018"
+	libros[18, 1] <- "EL PERFUME"
+	libros[18, 2] <- "PATRICK SÜSKIND"
+	libros[18, 3] <- "NOVELA"
+	libros[18, 4] <- "1985"
+	libros[18, 5] <- "1"
+	libros[18, 7] <- "2"
+	
+	libros[19, 0] <- "10019"
+	libros[19, 1] <- "REBELIÓN EN LA GRANJA"
+	libros[19, 2] <- "GEORGE ORWELL"
+	libros[19, 3] <- "SATIRA POLÍTICA"
+	libros[19, 4] <- "1945"
+	libros[19, 5] <- "1"
+	libros[19, 7] <- "3"
+	
+	libros[20, 0] <- "10020"
+	libros[20, 1] <- "EL HOBBIT"
+	libros[20, 2] <- "J. R. R. TOLKIEN"
+	libros[20, 3] <- "FANTASÍA"
+	libros[20, 4] <- "1937"
+	libros[20, 5] <- "0"
+	libros[20, 7] <- "0"
+
 	
 	//Precargo Socios para pruebas
 	socios[0, 0] <- "87562896"
-	socios[0, 1] <- "Jose Lopez"
+	socios[0, 1] <- "JOSE LOPEZ"
 	socios[0, 2] <- "1103160523"
 	socios[0, 3] <- "MULTADO"
-	socios[0, 4] <- "6"
-	
+	socios[0, 4] <- "6"	
 	
 	socios[1, 0] <- "45263568"
-	socios[1, 1] <- "Mar Gomez"
+	socios[1, 1] <- "MAR GOMEZ"
 	socios[1, 2] <- "1161176033" 
 	socios[1, 3] <- "INHABILITADO" 
-	socios[1, 4] <- ""
+	socios[1, 4] <- ""	
 	
 	socios[2, 0] <- "77463568"
-	socios[2, 1] <- "Martin Pix"
+	socios[2, 1] <- "MARTIN PIX"
 	socios[2, 2] <- "1101176033" 
 	socios[2, 3] <- "HABILITADO"
 	socios[2, 4] <- ""
 	
+	socios[3, 0] <- "07062019"
+	socios[3, 1] <- "COPITO WOJTASIK"
+	socios[3, 2] <- "1141686306" 
+	socios[3, 3] <- "HABILITADO"
+	socios[3, 4] <- ""
 	
-	Escribir "****Bienvenido al Sistema de Gestion de Biblioteca****" 
+	socios[4, 0] <- "23122019"
+	socios[4, 1] <- "TAMBOR MENDEZ"
+	socios[4, 2] <- "1139556061" 
+	socios[4, 3] <- "HABILITADO"
+	socios[4, 4] <- ""
+	
+	socios[5, 0] <- "26091984"
+	socios[5, 1] <- "EMA ANCANS"
+	socios[5, 2] <- "1163697899" 
+	socios[5, 3] <- "HABILITADO"
+	socios[5, 4] <- ""
+	
+	socios[5, 0] <- "13051985"
+	socios[5, 1] <- "TOTA BOLLA"
+	socios[5, 2] <- "1165218111" 
+	socios[5, 3] <- "HABILITADO"
+	socios[5, 4] <- ""
+	
+	// Precargo bibliotecarios para pruebas
+    bibliotecarios[0, 0] <- "GUADIX"
+    bibliotecarios[0, 1] <- "5678"
+	
+	bibliotecarios[1, 0] <- "FRANCO"
+    bibliotecarios[1, 1] <- "5678"
+	
+	bibliotecarios[2, 0] <- "MARCE"
+    bibliotecarios[2, 1] <- "5678"
 	
 	
+	Escribir "****Bienvenido al Sistema de Gestión de Biblioteca****" 	
 	
 	//Acceso diferenciado por tipo de usuario: Admin, Bibliotecario, Socio
 	Repetir
@@ -88,152 +301,379 @@ Algoritmo biblioteca
 					Escribir "Ingrese la clave de acceso: " 
 					Leer credencial
 				Hasta Que credencial == credencialAdmin
-				Escribir "Acceso admin (en proceso...)" 
-			2:  //Bibliotecario				
-				Repetir
-					Escribir "Ingrese la clave de acceso: " 
-					Leer credencial
-				Hasta Que credencial == credencialBibliotecario
 				
-				//Menu Bibliotecario
+				mostrarMenuPpalAdmin
+				administrador(bibliotecarios, cantBibliotecarios) 
 				
-				Repetir
-					mostrarMenuPpalBibliotecario
-					Leer modulo
-					
-					Segun modulo Hacer
-						1:
-							Repetir
-								mostrarMenuLibros
-								Leer opLibros
+			2:  //Acceso Bibliotecario		
+				Mientras intentos < 3 Y accesoValido = 0 Hacer
+				Escribir "*** ACCESO BIBLIOTECARIO ***"
+				Escribir "Intento ", intentos + 1, " de 3"
+				Escribir Sin Saltar "Indique su nombre: "
+				Leer nombreIngresado
+				nombreIngresado <- Mayusculas(nombreIngresado)
+				Escribir Sin Saltar "Ingrese su clave: "
+				Leer claveIngresada
 								
-								Segun opLibros Hacer
-									1: //Agregar Libros
+				
+				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
+					Escribir "Acceso concedido. Bienvenido ", nombreIngresado
+					accesoValido <- 1
+					Esperar 1 Segundos
+					Limpiar Pantalla
+					//sigue con lo que hace el biblio 
+				Sino
+					Escribir "Nombre o clave incorrectos."
+					intentos <- intentos + 1
+					Esperar 1 Segundos
+					Limpiar Pantalla
+				FinSi
+			FinMientras
+			
+			Si accesoValido = 0 Entonces
+				Escribir "Demasiados intentos fallidos. Volviendo al menú principal..."
+				Esperar 2 Segundos
+				Limpiar Pantalla
+			FinSi
+								
+			//Menu Bibliotecario				
+			Repetir
+				mostrarMenuPpalBibliotecario
+				Leer modulo
+				
+				Segun modulo Hacer
+					1:
+						Repetir
+							mostrarMenuLibros
+							Leer opLibros
+							
+							Segun opLibros Hacer
+								1: //Agregar Libros
+									Repetir
+										crearLibro(libros)
 										Repetir
-											crearLibro(libros)
-											Repetir
-												Escribir "Desea agregar otro libro? (S/N)"
+											Escribir "Desea agregar otro libro? (S/N)"
+											Leer resp
+											resp<-Mayusculas(resp)	
+											si resp<>"S" y resp<>"N" Entonces
+												Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
 												Leer resp
 												resp<-Mayusculas(resp)	
-												si resp<>"S" y resp<>"N" Entonces
-													Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
-													Leer resp
-													resp<-Mayusculas(resp)	
-												FinSi
-											Hasta Que (resp = "S" o resp = "N")				
-										Mientras Que (resp<>"N")	
-									2: //Consultar Libros
+											FinSi
+										Hasta Que (resp = "S" o resp = "N")				
+									Mientras Que (resp<>"N")	
+								2: //Consultar Libros
+									Repetir
+										mostrarSubMenuConsultaLibros
+										Leer op 
+										
+										Segun op Hacer
+											1:
+												buscarLibro(libros, cantLibros)
+											2:
+												modificarLibro(libros, cantLibros)
+											3:	
+												Limpiar Pantalla
+												mostrarLibros(libros, cantLibros)
+											4:
+												registrarPrestamo(libros, socios, prestamos, cantLibros, cantSocios)		
+											5:	
+												mostrarPrestamos(prestamos, cantPrestamos)
+											6:
+												registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios)
+												Escribir ""
+											7:
+												Escribir "Volviendo a menu anterior..."
+												Esperar 1 segundos 
+												Limpiar Pantalla
+											De Otro Modo:
+												Escribir "Eligió una opción inválida."
+										Fin Segun
+									Hasta Que (op==7)
+								3:
+									Escribir "Volviendo al menu principal..."
+									Esperar 1 segundo
+									Limpiar Pantalla
+								De Otro Modo:
+									Escribir "Eligió una opción inválida."
+							Fin Segun
+							
+						Mientras que (opLibros<>3)
+					2:
+						Repetir
+							mostrarMenuSocios
+							Leer opSocios
+							
+							Segun opSocios Hacer
+								1: //Agregar Socios
+									Repetir
+										crearSocio(socios)
 										Repetir
-											mostrarSubMenuConsultaLibros
-											Leer op 
-											
-											Segun op Hacer
-												1:
-													buscarLibro(libros)
-												2:
-													modificarLibro(libros)
-												3:	
-													Limpiar Pantalla
-													mostrarLibros(libros)
-												4:
-													registrarPrestamo(libros, socios, prestamos)		
-												5:	
-													mostrarPrestamos(prestamos)
-												6:
-													registrarDevolucion(libros, socios, prestamos)
-													Escribir ""
-												7:
-													Escribir "Volviendo a menu anterior..."
-													Esperar 1 segundos 
-													Limpiar Pantalla
-												De Otro Modo:
-													Escribir "Eligió una opción inválida."
-											Fin Segun
-										Hasta Que (op=7)
-									3:
-										Escribir "Volviendo al menu principal..."
-										Esperar 1 segundo
-										Limpiar Pantalla
-									De Otro Modo:
-										Escribir "Eligió una opción inválida."
-								Fin Segun
-								
-							Mientras que (opLibros<>3)
-						2:
-							Repetir
-								mostrarMenuSocios
-								Leer opSocios
-								
-								Segun opSocios Hacer
-									1: //Agregar Socios
-										Repetir
-											crearSocio(socios)
-											Repetir
-												Escribir "¿Desea agregar otro socio? (S/N)"
+											Escribir "¿Desea agregar otro socio? (S/N)"
+											Leer resp
+											resp <- Mayusculas(resp)	
+											Si resp <> "S" Y resp <> "N" Entonces
+												Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
 												Leer resp
 												resp <- Mayusculas(resp)	
-												Si resp <> "S" Y resp <> "N" Entonces
-													Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
-													Leer resp
-													resp <- Mayusculas(resp)	
-												FinSi
-											Hasta Que (resp = "S" O resp = "N")				
-										Mientras Que (resp <> "N")
-										
-									2: //Consultar Socios
-										Repetir
-											mostrarSubMenuConsultaSocios
-											Leer op 
-											Segun op Hacer
-												1:
-													buscarSocio(socios)
-												2:
-													modificarSocio(socios)
-												3:	
-													Limpiar Pantalla
-													mostrarSocios(socios)
-												4:	
-													Escribir "Volviendo a menú anterior..."
-													Esperar 1 segundos 
-													Limpiar Pantalla
-												De Otro Modo:
-													Escribir "Eligió una opción inválida."
-											Fin Segun
-										Hasta Que (op = 4)
-										
-									3: 
-										Escribir "Volviendo al menú principal..."
-										Esperar 1 segundos
-										Limpiar Pantalla
-										
-									De Otro Modo:
-										Escribir "Eligió una opción inválida."
-								Fin Segun
-								
-							Hasta Que (opSocios = 3) 
-						3:
-							Escribir "Volviendo..."
-							Esperar 1 Segundos
-							Limpiar Pantalla
-						De Otro Modo:
-							Escribir "Opción inválida"
-					Fin Segun
-				Hasta Que (modulo==3)
-				
-			3:
-				//Acceso Socio -  HAY Q HACER
-			0:
-				Escribir "Saliendo del Sistema..."
-				Esperar 1 segundo
-			De Otro Modo:
-				Escribir "Eligió una opción inválida."
-		Fin Segun
-		
+											FinSi
+										Hasta Que (resp = "S" O resp = "N")				
+									Mientras Que (resp <> "N")
+									
+								2: //Consultar Socios
+									Repetir
+										mostrarSubMenuConsultaSocios
+										Leer op 
+										Segun op Hacer
+											1:
+												buscarSocio(socios, cantSocios)
+											2:
+												modificarSocio(socios, cantSocios)
+											3:	
+												Limpiar Pantalla
+												mostrarSocios(socios, cantSocios)
+											4:	
+												Escribir "Volviendo a menú anterior..."
+												Esperar 1 segundos 
+												Limpiar Pantalla
+											De Otro Modo:
+												Escribir "Eligió una opción inválida."
+										Fin Segun
+									Hasta Que (op = 4)
+									
+								3: 
+									Escribir "Volviendo al menú principal..."
+									Esperar 1 segundos
+									Limpiar Pantalla
+									
+								De Otro Modo:
+									Escribir "Eligió una opción inválida."
+							Fin Segun
+							
+						Hasta Que (opSocios = 3) 
+					3:
+						Escribir "Volviendo a Menu de Usuarios..."
+						Esperar 1 Segundos
+						Limpiar Pantalla
+					De Otro Modo:
+						Escribir "Eligió una opción inválida."
+				Fin Segun
+			Hasta Que (modulo==3)
+			
+		3:
+			//Acceso Socio -  HAY Q HACER
+			Escribir "Acceso socios (en proceso...)"
+		0:
+			Escribir "Saliendo del Sistema..."
+			Esperar 1 segundo
+		De Otro Modo:
+			Escribir "Eligió una opción inválida."
+	Fin Segun
+	
 	Hasta Que opAcceso == 0
 	
 FinAlgoritmo
 
-//Menues para mostrar
+
+//Valido acceso Bibliotecario
+Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios)
+	Definir esValido Como Logico
+	Definir i Como Entero
+	esValido <- Falso
+	
+	Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+		Si bibliotecarios[i, 0] = nombreIngresado Y bibliotecarios[i, 1] = claveIngresada Entonces
+			esValido <- Verdadero
+			i <- cantBibliotecarios
+		FinSi
+	FinPara
+FinFuncion
+
+//Vista Administrador
+SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios)
+	Definir opAdmin, opGestion, i, indice, confirmar, totalBibliotecarios Como Entero	
+    Definir nombreBibliotecario, claveBibliotecario, opUsuario Como Cadena
+	
+	Repetir
+		Escribir ""
+        Escribir "*** MENÚ ADMINISTRADOR ***"
+        Escribir "1. Gestionar Bibliotecarios"
+        Escribir "2. Gestionar Socios"
+        Escribir "3. Gestionar Administradores"
+		Escribir "4. Volver al menú principal"
+        Escribir "Elija una opción (1-4): "
+        Leer opAdmin
+		
+		Segun opAdmin Hacer
+			1:
+				//Gestiono Bibliotecarios
+				Repetir
+					Escribir ""
+                    Escribir "*** GESTIÓN DE BIBLIOTECARIOS ***"
+                    Escribir "1. Agregar Bibliotecario"
+                    Escribir "2. Eliminar Bibliotecario"
+                    Escribir "3. Listar Bibliotecarios"
+                    Escribir "4. Volver"
+                    Escribir "Elija una opción (1-4): "
+					Esperar Tecla
+                    Leer opGestion
+					
+					Segun opGestion Hacer
+						1: 	//Agrego Bibliotecario
+							Repetir
+								//Asigno posición en el array
+								indice <- -1
+								Para i <- 0 Hasta cantBibliotecarios -1 Hacer
+									Si bibliotecarios[i, 0] = "" Entonces
+										indice <- i
+										i <- cantBibliotecarios -1  
+									FinSi
+								FinPara
+								
+								Si indice = -1 Entonces
+									Escribir "No hay espacio disponible para agregar más bibliotecarios."
+								Sino
+									confirmar <- 0
+									Mientras confirmar = 0 Hacer
+										nombreBibliotecario <- pedirTexto("Ingrese nombre del bibliotecario: ")
+										claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+										
+										// Valido que la clave tenga 4 dígitos
+										Mientras Longitud(claveBibliotecario) <> 4
+											Escribir "La clave debe tener exactamente 4 dígitos."
+											claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+										FinMientras
+										
+										// Verifico si el usuario ya existe
+										Definir bibliotecarioExiste Como Logico
+										bibliotecarioExiste <- Falso
+										Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+											Si bibliotecarios[i, 0] = nombreBibliotecario Entonces
+												bibliotecarioExiste <- Verdadero
+											FinSi
+										FinPara
+										
+										Si bibliotecarioExiste Entonces
+											Escribir "Ese Bibliotecario ya se encuentra registrado."
+										Sino
+											Limpiar Pantalla
+											Escribir "*** DATOS DEL NUEVO BIBLIOTECARIO ***"
+											Escribir "Nombre: ", nombreBibliotecario
+											Escribir "Clave: ", claveBibliotecario
+											Escribir "Confirma el ingreso? (S/N)"
+											Leer opUsuario
+											
+											Si Mayusculas(opUsuario) = "S" Entonces
+												bibliotecarios[indice, 0] <- nombreBibliotecario
+												bibliotecarios[indice, 1] <- claveBibliotecario
+												Escribir "Bibliotecario agregado exitosamente."
+												confirmar <- 1
+											FinSi
+										FinSi
+									FinMientras
+								FinSi
+								
+								Escribir "¿Desea agregar otro bibliotecario? (S/N)"
+								Leer opUsuario
+							Hasta Que Mayusculas(opUsuario) = "N"
+							
+						2:	//Elimino Bibliotecario
+							
+							Escribir ""
+                            Escribir "*** ELIMINAR BIBLIOTECARIO ***"
+                            
+                            // Mostrar bibliotecarios existentes
+                            Escribir "Bibliotecarios registrados:"
+                            Definir hayBibliotecarios Como Logico
+                            hayBibliotecarios <- Falso
+                            Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+                                Si bibliotecarios[i, 0] <> "" Entonces
+                                    Escribir i+1, ". ", bibliotecarios[i, 0], " - Clave: ", bibliotecarios[i, 1]
+                                    hayBibliotecarios <- Verdadero
+                                FinSi
+                            FinPara
+                            
+                            Si hayBibliotecarios Entonces
+                                Escribir "Ingrese el nombre del bibliotecario a eliminar: "
+                                Leer nombreBibliotecario
+								nombreBibliotecario <- Mayusculas(nombreBibliotecario)
+                                
+                                // Busco bibliotecario por nombre
+                                indice <- -1
+                                Para i <- 0 Hasta cantBibliotecarios-1  Hacer
+                                    Si bibliotecarios[i, 0] = nombreBibliotecario Entonces
+                                        indice <- i
+                                    FinSi
+                                FinPara
+                                
+                                Si indice = -1 Entonces
+                                    Escribir "No se encontró un bibliotecario con ese nombre."
+                                Sino
+                                    Escribir "Bibliotecario encontrado: ", bibliotecarios[indice, 0]
+                                    Escribir "¿Confirma que desea eliminar este bibliotecario? (S/N)"
+                                    Leer opUsuario
+                                    
+                                    Si Mayusculas(opUsuario) = "S" Entonces
+                                        bibliotecarios[indice, 0] <- ""
+                                        bibliotecarios[indice, 1] <- ""
+                                        Escribir "Bibliotecario eliminado exitosamente."
+                                    Sino
+                                        Escribir "Eliminación cancelada."
+                                    FinSi
+                                FinSi
+                            Sino
+                                Escribir "No hay bibliotecarios registrados."
+                            FinSi			
+							
+						3:
+							//Muestro Bibliotecarios
+							Escribir ""
+                            Escribir "*** LISTADO DE BIBLIOTECARIOS ***"                            
+                            totalBibliotecarios <- 0
+							
+                            Para i <- 0 Hasta cantBibliotecarios-1 Hacer
+                                Si bibliotecarios[i, 0] <> "" Entonces
+                                    Escribir "----------------------------------------"
+                                    Escribir "Nombre: ", bibliotecarios[i, 0]
+                                    Escribir "Clave: ", bibliotecarios[i, 1]
+                                    totalBibliotecarios <- totalBibliotecarios + 1
+                                FinSi
+                            FinPara
+                            
+                            Si totalBibliotecarios = 0 Entonces
+                                Escribir "No hay bibliotecarios registrados."
+                            Sino
+								Escribir "----------------------------------------"
+                                Escribir "Total de bibliotecarios registrados: ", totalBibliotecarios
+                            FinSi
+                            
+						4:
+							Escribir "Volviendo al menú de Administrador..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
+							
+						De Otro Modo:
+							Escribir "Eligió una opción inválida."
+					Fin Segun				
+					
+				Hasta Que opGestion == 4
+			2:
+				Escribir "En proceso"
+			3:
+				Escribir "En proceso"
+			4:	
+				Escribir "Volviendo al menú principal..."
+				Esperar 1 Segundos
+				Limpiar Pantalla
+			De Otro Modo:
+				Escribir "Eligió una opción inválida."
+		Fin Segun		
+		
+	Hasta Que opAdmin == 4	
+FinSubAlgoritmo
+
+
+//*******************************************MENUES PARA MOSTRAR*******************************************************
 SubProceso  mostrarMenuAcceso
 	Escribir ""
 	Escribir "Indique su tipo de usuario (0 para Salir): "
@@ -242,6 +682,18 @@ SubProceso  mostrarMenuAcceso
 	Escribir "	2. BIBLIOTECARIO"
 	Escribir "	2. SOCIO"
 	Escribir "	0. Salir"
+	Escribir ""
+FinSubProceso
+
+SubProceso mostrarMenuPpalAdmin
+	Escribir ""
+	Escribir "Bienvenido, Admin!"
+	Escribir "Elija el módulo al que quiere acceder (4 para Volver): "
+	Escribir ""
+	Escribir "	1. ADMINs"
+	Escribir "	2. BIBLIOTECARIOS"
+	Escribir "	3. SOCIOS"
+	Escribir " 4. Volver"
 	Escribir ""
 FinSubProceso
 
@@ -296,15 +748,15 @@ SubProceso  mostrarSubMenuConsultaSocios
 	Escribir "Elija la opcion: "
 FinSubProceso
 
-
+//*******************************************FUNCIONES AUXILIARES*******************************************************
 //Asigno posición a cada libro ingresado
 Funcion posicion<-buscarUltimo(libros) 
     Definir i, posicion Como Entero
     i <- 0	
-    Mientras i < 200 Y libros[i, 0] <> "" Hacer
+    Mientras i < cantLibros Y libros[i, 0] <> "" Hacer
         i <- i + 1
     FinMientras	
-    Si i < 199 Entonces
+    Si i < cantLibros-1 Entonces
         posicion <- i
     Sino
         posicion <- -1
@@ -493,11 +945,10 @@ FinFuncion
 Funcion idUnico <- generarId
 	Definir totalGenerados, i, j, nuevoId, repetido, generados Como Entero
 	Definir idUnico como Cadena
-	Dimension generados[200]
+	Dimension generados[cantLibros]
 	totalGenerados <- 0
 	
-	Repetir
-//		nuevoID <- Aleatorio(10000, 99999) 		
+	Repetir	
 		// Verifico si ya existe
 		repetido <- 0
 		si totalGenerados>0
@@ -517,11 +968,11 @@ Funcion idUnico <- generarId
 	idUnico<-ConvertirATexto(nuevoId)
 FinFuncion
 
-
+//*******************************************LIBROS*******************************************************
 //Crear libro
 funcion crearLibro(libros Por Referencia)
-	Definir idLibro, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, opcionUsuario como caracter
-	Definir confirmar, indice, numTemporal Como Entero
+	Definir idLibro, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, stockLibro, opcionUsuario como caracter
+	Definir confirmar, indice, numTemporal, stockTemporal Como Entero
 	confirmar <- 0
 	indice <- buscarUltimo(libros) 
 	Mientras confirmar = 0 Hacer
@@ -534,6 +985,12 @@ funcion crearLibro(libros Por Referencia)
 		//anoPublicacionLibro <- pedirNumero("Año de publicacion: ")
 		numTemporal<-pedirNumero("Año de publicacion: ")
 		anoPublicacionLibro <- ConvertirATexto(numTemporal)
+		stockTemporal<-pedirNumero("Cantidad de ejemplares: ") 
+		Mientras stockTemporal <=0
+			Escribir "Ingrese una cantidad válida"
+			stockTemporal<-pedirNumero("Cantidad de ejemplares: ")
+		FinMientras
+		stockLibro<- ConvertirATexto(stockTemporal) 
 		
 		Limpiar Pantalla
 		
@@ -548,6 +1005,8 @@ funcion crearLibro(libros Por Referencia)
 		Escribir generoLibro
 		Escribir sin saltar "Año de publicacion: "
 		Escribir anoPublicacionLibro
+		Escribir sin saltar "Stock: "
+		Escribir stockLibro 
 		Escribir "Confirma ingreso? (S/N)"
 		leer opcionUsuario
 		si Mayusculas(opcionUsuario) == "S" Entonces
@@ -560,16 +1019,17 @@ funcion crearLibro(libros Por Referencia)
 	libros[indice, 2] <- autorLibro
 	libros[indice, 3] <- generoLibro
 	libros[indice, 4] <- anoPublicacionLibro 
-	libros[indice, 5] <- "1" //esta disponible
+	libros[indice, 5] <- "1" //esta disponible	
+	libros[indice, 7] <- stockLibro
 FinFuncion
 
 
 //Cuenta coincidencias segun filtro
-Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados)
+Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados, cantLibros)
     Definir i, cantResultados Como Entero
     i <- 0
     cantResultados <- 0	
-    Mientras i < 200 Hacer
+    Mientras i < cantLibros Hacer
         Si libros[i, 0] <> "" Entonces
             Si libros[i, columna] = filtro Entonces
                 resultados[cantResultados] <- i
@@ -582,14 +1042,14 @@ FinFuncion
 
 
 //Buscar Libros
-Funcion buscarLibro(libros Por Referencia)
+Funcion buscarLibro(libros Por Referencia, cantLibros)
 	Definir tituloLibro, autorLibro, generoLibro, anoPublicacionLibro como caracter
-	Definir opcionUsuario, columna, resultados, i, indice, cantidad Como Entero
+	Definir opUsuario, columna, resultados, i, indice, cantidad Como Entero
 	Definir criterio como Cadena
-	Dimension resultados[200]
+	Dimension resultados[cantLibros]
 	
 	//Inicializo resultados
-	Para i <- 0 Hasta 199 Hacer		
+	Para i <- 0 Hasta cantLibros-1 Hacer		
 		resultados[i] <- -1
 	FinPara
 	
@@ -604,9 +1064,9 @@ Funcion buscarLibro(libros Por Referencia)
 		Escribir "5. Año de publicación"
 		Escribir "6. Volver"
 		Escribir "Ingrese una opción (1-6): "
-		Leer opcionUsuario
+		Leer opUsuario
 		
-		Segun opcionUsuario Hacer
+		Segun opUsuario Hacer
 			1:
 				columna<-0
 				Escribir Sin Saltar "Ingrese id a buscar: "
@@ -631,15 +1091,16 @@ Funcion buscarLibro(libros Por Referencia)
 				Escribir Sin Saltar "Ingrese año de publicación a buscar: "
 				Leer criterio
 			6:
-				Escribir "Volviendo al menú de Libros"
+				Escribir "Volviendo al menú de Libros..."
+				Limpiar Pantalla
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
 		Fin Segun
-	Hasta Que opcionUsuario>=1 y opcionUsuario<=6
+	Hasta Que opUsuario>=1 y opUsuario<=6
 	
 	
-	Si opcionUsuario >=1 y opcionUsuario <=5 Entonces
-		cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados)	
+	Si opUsuario >=1 y opUsuario <=5 Entonces
+		cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados, cantLibros)	
 		
 		// Mostrar resultados si hay coincidencias
 		Si cantidad = 0 Entonces
@@ -654,6 +1115,7 @@ Funcion buscarLibro(libros Por Referencia)
 				Escribir "Género: ", libros[indice, 3]
 				Escribir "Año: ", libros[indice, 4]
 				Escribir "Disponible: ", libros[indice, 5]
+				Escribir "Stock: ", libros[indice, 7]
 				Escribir ""
 			FinPara
 		FinSi			
@@ -661,9 +1123,9 @@ Funcion buscarLibro(libros Por Referencia)
 FinFuncion
 
 //Modificar Libro
-Funcion modificarLibro(libros Por Referencia)
+Funcion modificarLibro(libros Por Referencia, cantLibros)
     Definir i, idBuscado, indice, confirmar Como Entero
-    Definir opcionUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro Como Cadena
+    Definir opcionUsuario, nuevoDato, tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, stockLibro Como Cadena
 	
     // Pedir el ID del libro a modificar
 	Escribir ""
@@ -673,7 +1135,7 @@ Funcion modificarLibro(libros Por Referencia)
 	
     // Buscar el libro en la matriz
     indice <- -1
-    Para i <- 0 Hasta 199
+    Para i <- 0 Hasta cantLibros-1
         Si libros[i,0] = ConvertirATexto(idBuscado) Entonces
             indice <- i
         FinSi
@@ -688,16 +1150,18 @@ Funcion modificarLibro(libros Por Referencia)
         autorLibro <- libros[indice,2]
         generoLibro <- libros[indice,3]
         anoPublicacionLibro <- libros[indice,4]
+		stockLibro <- libros[indice,7]
 		
         confirmar <- 0
         Mientras confirmar = 0 Hacer
             Limpiar Pantalla
             Escribir "***DATOS ACTUALES DEL LIBRO***"
             Escribir "ID: ", libros[indice,0]
-            Escribir "1. Titulo: ", tituloLibro
-            Escribir "2. Autor: ", autorLibro
-            Escribir "3. Genero: ", generoLibro
-            Escribir "4. Año de Publicacion: ", anoPublicacionLibro
+            Escribir "Titulo: ", tituloLibro
+            Escribir "Autor: ", autorLibro
+            Escribir "Genero: ", generoLibro
+            Escribir "Año de Publicacion: ", anoPublicacionLibro
+			Escribir "Ejemplares disponibles: ", stockLibro
 			
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
 			
@@ -721,6 +1185,11 @@ Funcion modificarLibro(libros Por Referencia)
             Si Longitud(nuevoDato) > 0 Entonces
                 anoPublicacionLibro <- nuevoDato
             FinSi
+			Escribir Sin Saltar "Nueva cantidad de ejemplares: "
+			Leer nuevoDato
+            Si Longitud(nuevoDato) > 0 Entonces
+                stockLibro <- nuevoDato
+            FinSi
 			
             Limpiar Pantalla
             Escribir "***DATOS DEL LIBRO MODIFICADOS***"
@@ -729,7 +1198,7 @@ Funcion modificarLibro(libros Por Referencia)
             Escribir "Autor: ", autorLibro
             Escribir "Genero: ", generoLibro
             Escribir "Año de Publicacion: ", anoPublicacionLibro
-			
+			Escribir "Stock: ", stockLibro
             Escribir "Confirma los cambios? (s/n)"
             Leer opcionUsuario
             Si Mayusculas(opcionUsuario) = "S" Entonces
@@ -742,15 +1211,17 @@ Funcion modificarLibro(libros Por Referencia)
         libros[indice,2] <- autorLibro
         libros[indice,3] <- generoLibro
         libros[indice,4] <- anoPublicacionLibro
+		libros[indice,7] <- stockLibro
     FinSi
 FinFuncion
 
 
 //Mostrar libros cargados
-Funcion mostrarLibros(libros Por Referencia)	
+Funcion mostrarLibros(libros Por Referencia, cantLibros)	
 	Definir i Como Entero
+	
 	Escribir "*** LISTA DE LIBROS CARGADOS ***"	
-	Para i <- 0 Hasta 199   
+	Para i <- 0 Hasta cantLibros-1
 		Si libros[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
 			Escribir "ID: ", libros[i,0]
@@ -759,12 +1230,13 @@ Funcion mostrarLibros(libros Por Referencia)
 			Escribir "Genero: ", libros[i,3]
 			Escribir "Año de Publicacion: ", libros[i,4]
 			Escribir "Disponible: ", libros[i,5]
-			Escribir "Fecha prevista de devolucion: ", libros[i,6]
+			//Escribir "Fecha prevista de devolucion: ", libros[i,6] //Ver sacar esta 
+			Escribir "Cantidad de ejemplares: ", libros[i,7]
 		FinSi
 	FinPara
 FinFuncion
 
-
+//*******************************************SOCIOS*******************************************************
 //Crear socio
 Funcion crearSocio(socios Por Referencia)
 	Definir opcionUsuario, dniSocio, nombreSocio, telSocio, estadoSocio como caracter
@@ -803,14 +1275,13 @@ Funcion crearSocio(socios Por Referencia)
 	socios[indice, 3] <- estadoSocio
 FinFuncion
 
-
 //Buscar Socio
-Funcion buscarSocio(socios Por Referencia)
-	Definir opcionUsuario, columna, resultados, i, indice, cantidad Como Entero
+Funcion buscarSocio(socios Por Referencia, cantSocios)
+	Definir opUsuario, columna, resultados, i, indice, cantidad Como Entero
 	Definir criterio como Cadena
-	Dimension resultados[200]
+	Dimension resultados[cantSocios]
 	//Inicializo resultados
-	Para i <- 0 Hasta 199 Hacer		
+	Para i <- 0 Hasta cantSocios-1 Hacer		
 		resultados[i] <- -1
 	FinPara
 	
@@ -819,16 +1290,22 @@ Funcion buscarSocio(socios Por Referencia)
 		Escribir "**BÚSQUEDA DE SOCIO**"
 		Escribir "Elija un criterio de búsqueda"
 		Escribir "1. DNI"
-		Escribir "2. Estado:"
-		Escribir "3. Volver"
-		Escribir "Ingrese una opción (1-3): "
-		Leer opcionUsuario
+		Escribir "2. Nombre"
+		Escribir "3. Estado"
+		Escribir "4. Volver"
+		Escribir "Ingrese una opción (1-4): "
+		Leer opUsuario
 		
-		Segun opcionUsuario Hacer
+		Segun opUsuario Hacer
 			1:
 				columna<-0
 				criterio <- pedirNumeroComoTexto("Ingrese DNI a buscar: ")
 			2:
+				columna<-1
+				Escribir Sin Saltar "Ingrese nombre a buscar: "
+				Leer criterio				
+				criterio <- Mayusculas(criterio)				
+			3:
 				columna <- 3
 				Repetir
 					Escribir "Ingrese Estado a buscar (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
@@ -844,16 +1321,17 @@ Funcion buscarSocio(socios Por Referencia)
 					De Otro Modo:
 						criterio <- "MULTADO"
 				Fin Segun
-			3:
-				Escribir "Volviendo al menú de Socios"
+			4:	
+				Escribir "Volviendo al menú de Socios..."
+				Esperar 1 Segundos
+				Limpiar Pantalla
 			De Otro Modo:
-				Escribir "Eligió una opción inválida."
-				
+				Escribir "Eligió una opción inválida."				
 		Fin Segun	
-	Hasta Que opcionUsuario >= 1 Y opcionUsuario <= 3
+	Hasta Que opUsuario >= 1 Y opUsuario <= 4
 	
-	Si opcionUsuario >= 1 Y opcionUsuario <= 2 Entonces
-		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados)
+	Si opUsuario >= 1 Y opUsuario <= 3 Entonces
+		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados, cantLibros)
 		// Mostrar resultados si hay coincidencias
 		Si cantidad = 0 Entonces
 			Escribir "No se encontraron socios con ese criterio."
@@ -873,7 +1351,7 @@ Funcion buscarSocio(socios Por Referencia)
 FinFuncion
 
 //Modificar Socio
-Funcion modificarSocio(socios Por Referencia)
+Funcion modificarSocio(socios Por Referencia, cantSocios)
     Definir i, indice, confirmar Como Entero
     Definir opcionUsuario, nuevoDato, nombreSocio,telSocio,estadoSocio, penalizacionSocio, idBuscado Como Cadena
 	
@@ -884,7 +1362,7 @@ Funcion modificarSocio(socios Por Referencia)
 	
     // Buscar el socio en la matriz
     indice <- -1
-    Para i <- 0 Hasta 199
+    Para i <- 0 Hasta cantSocios-1
         Si socios[i,0] = idBuscado Entonces
             indice <- i
         FinSi
@@ -964,10 +1442,10 @@ FinFuncion
 
 
 //Mostrar socios cargados
-Funcion mostrarSocios(socios Por Referencia)
+Funcion mostrarSocios(socios Por Referencia, cantSocios)
 	Definir i Como Entero
 	Escribir "*** LISTA DE SOCIOS CARGADOS ***"	
-	Para i <- 0 Hasta 199   
+	Para i <- 0 Hasta cantSocios-1   
 		Si socios[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
 			Escribir "DNI: ", socios[i,0]
@@ -1071,8 +1549,8 @@ SubProceso mostrarLibroEncontrado(libros Por Referencia, indiceLibro)
 FinSubProceso
 
 //Registrar préstamo
-Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamos Por Referencia)
-    Definir i, j, disponible, indiceLibro, indiceSocio, p Como Entero
+Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios)
+    Definir i, j, disponible, indiceLibro, indiceSocio, p, stockActual Como Entero
     Definir idBuscado, dniBuscado, op, fechaPrestamo, fechaFinPrestamo Como Cadena
     disponible <- -1
     indiceSocio <- -1
@@ -1083,10 +1561,11 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
     Leer idBuscado
 	
     // Buscar libro
-    Para i <- 0 Hasta 199 Hacer
+    Para i <- 0 Hasta cantLibros-1 Hacer
         Si libros[i,0] = idBuscado Entonces
             indiceLibro <- i
-            Si libros[i,5] = "1" Entonces
+			stockActual <- ConvertirANumero(libros[i,7])  
+            Si libros[i,5] = "1" y stockActual > 0 Entonces
                 disponible <- 1
             SiNo
                 disponible <- 0
@@ -1098,13 +1577,15 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
         Escribir "ID no encontrado"
     SiNo
         Si disponible = 1 Entonces
-            Escribir "El libro está DISPONIBLE para préstamo"
+            Escribir "El libro ", libros[indiceLibro, 1] " está disponible para préstamo"
+			Escribir "Stock disponible: ", stockActual
 			mostrarLibroEncontrado(libros, indiceLibro)
+			
             Escribir "Ingrese DNI del socio: "
             Leer dniBuscado
 			
             // Buscar socio
-            Para j <- 0 Hasta 199 Hacer
+            Para j <- 0 Hasta cantSocios-1 Hacer
                 Si socios[j,0] = dniBuscado Entonces
                     indiceSocio <- j
                 FinSi
@@ -1115,7 +1596,7 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
             SiNo
                 Segun socios[indiceSocio,3] Hacer
                     "HABILITADO":
-                        Escribir "Socio habilitado para préstamo"
+                        Escribir "Socio ", socios[indiceSocio,1] " habilitado para préstamo"
                         Escribir "Desea registrar préstamo (S-N)?"
                         Leer op
                         op <- Mayusculas(op)
@@ -1123,9 +1604,15 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                             "S":
                                 Escribir "Registrando préstamo..."
                                 Esperar 1 segundo
-                                Si indiceLibro <> -1 Entonces
-									libros[indiceLibro,5] <- "0"			
-								FinSi		
+								
+								//Actualizo stock
+								stockActual <- stockActual - 1
+                                libros[indiceLibro,7] <- ConvertirATexto(stockActual)
+								
+								Si stockActual == 0 Entonces
+									libros[indiceLibro,5] <- "0"											
+								FinSi
+								
                                 fechasPrestamo(fechaPrestamo, fechaFinPrestamo)
 								// Guardar en prestamos en la fila p
                                 prestamos[p,0] <- idBuscado
@@ -1136,8 +1623,11 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                                 socios[indiceSocio,3] <- "INHABILITADO" // tiene préstamo activo
 								socios[indiceSocio,4] <- "0"  // Reiniciar días de penalizacion
                                 Escribir "Préstamo registrado con éxito"
+								Escribir "Stock restante del libro: ", stockActual
                             "N":
                                 Escribir "Volviendo a consultas..."
+								Esperar 1 Segundos
+								Limpiar Pantalla
                             De Otro Modo:
                                 Escribir "Opción inválida"
                         Fin Segun
@@ -1148,16 +1638,18 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                 FinSegun
             FinSi
         Sino
-            Escribir "El libro NO se encuentra disponible para préstamo"
+			Escribir "El libro ", libros[indiceLibro,1]  " No se encuentra disponible para préstamo"
+			
+
         FinSi
     FinSi
 FinFuncion
 
 //Mostrar prestamos cargados
-Funcion mostrarPrestamos(prestamos Por Referencia)	
+Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)	
 	Definir i Como Entero
 	Escribir "*** LISTA DE PRÉSTAMOS ***"	
-	Para i <- 0 Hasta 199   
+	Para i <- 0 Hasta cantPrestamos-1   
 		Si prestamos[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
 			Escribir "ID LIBRO: ", prestamos[i,0]
@@ -1264,7 +1756,7 @@ Funcion fechaFinPenalidad <- calcularPenalidad(diasAtraso, fechaDevolucion)
 FinFuncion
 
 //Gestiono devolución
-Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia)
+Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios)
     Definir i, j, prestado, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad Como Entero
     Definir idBuscado, dniSocio, op, fechaFinPrestamo, fechaDev Como Cadena
     Definir fechaValida Como Logico
@@ -1278,10 +1770,10 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
     idBuscado <- pedirNumeroComoTexto("Ingrese id del libro a devolver: ")
     
     // Buscar libro
-    Para i <- 0 Hasta 199 Hacer
+    Para i <- 0 Hasta cantLibros-1 Hacer
         Si libros[i,0] = idBuscado Entonces
             indiceLibro <- i
-            Si libros[i,5] = "0" Entonces
+            Si libros[i,5] = "0" Entonces //aca necesito q compare si fue prestado, no q no este disponible para prestamo. Al agregar stock puede ser libros[i,5]>0 y q se haya prestado otro ejemplar
                 prestado <- 1
             Sino
                 prestado <- 0
@@ -1297,11 +1789,11 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
             mostrarLibroEncontrado(libros, indiceLibro)
             
             // BUSCAR EL PRÉSTAMO ACTIVO PARA ESTE LIBRO
-            Para i <- 0 Hasta 199 Hacer
+            Para i <- 0 Hasta cantLibros-1 Hacer
                 Si prestamos[i,0] = idBuscado Y prestamos[i,1] <> "" Entonces
                     indicePrestamo <- i
                     dniSocio <- prestamos[i,1]
-                    i <- 200
+                    i <- cantLibros
                 FinSi
             FinPara
             
@@ -1309,10 +1801,10 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                 Escribir "Error: No se encontró el préstamo asociado a este libro"
             Sino
                 // BUSCAR EL SOCIO POR DNI
-                Para j <- 0 Hasta 199 Hacer
+                Para j <- 0 Hasta cantSocios-1 Hacer
                     Si socios[j,0] = dniSocio Entonces
                         indiceSocio <- j
-                        j <- 200
+                        j <- cantSocios
                     FinSi
                 FinPara
                 
@@ -1371,6 +1863,8 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
                     Sino
                         Si op = "N" Entonces
                             Escribir "Volviendo a consultas..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
                         Sino
                             Escribir "Opción inválida"
                         FinSi
