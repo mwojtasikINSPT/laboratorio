@@ -76,7 +76,7 @@ Algoritmo biblioteca
 		Leer opAcceso
 		
 		Segun opAcceso Hacer
-			1:	//Acceso Admin	
+			1:	//Acceso Admin
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
 					Escribir "*** ACCESO ADMINISTRADOR ***"					
 					Escribir Sin Saltar "Nombre: "
@@ -104,7 +104,7 @@ Algoritmo biblioteca
 					Esperar 2 Segundos
 				FinSi
 				
-				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores) 		
+				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios) 		
 				
 			2:  //Acceso Bibliotecario		
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
@@ -212,7 +212,7 @@ Algoritmo biblioteca
 							Segun opSocios Hacer
 								1: //Agregar Socios
 									Repetir
-										crearSocio(socios, cantSocios)
+										//crearSocio(socios, cantSocios)
 										Repetir
 											Escribir "¿Desea agregar otro socio? (S/N)"
 											Leer resp
@@ -266,8 +266,10 @@ Algoritmo biblioteca
 			Hasta Que (modulo==3)
 			
 		3:
-			//Acceso Socio -  HAY Q HACER
-			Escribir "Acceso socios (en proceso...)"
+			//Acceso Socios -  HAY Q COMPLETAR...
+			Escribir "*** ACCESO SOCIOS ***"
+			
+			sociosVista(Libros, cantLibros)
 		0:
 			Escribir "Saliendo del Sistema..."
 			Esperar 1 segundo
@@ -308,7 +310,7 @@ Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, 
 FinFuncion
 
 //Vista Administrador
-SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, administradores Por Referencia, cantAdministradores)
+SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, administradores Por Referencia, cantAdministradores, socios Por Referencia, cantSocios)
 	//Bibliotecarios
 	Definir opAdmin, opGestion, i, indice, confirmar, totalBibliotecarios Como Entero	
     Definir nombreBibliotecario, claveBibliotecario, opUsuario Como Cadena
@@ -493,7 +495,54 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					
 				Hasta Que opGestion == 4
 			2: //Gestiono Socios
-				Escribir "Gestión de Socios En proceso..." //Hacer
+				Escribir "Gestión de Socios En proceso..." //Terminar
+				Repetir
+					Escribir ""
+					Escribir "*** GESTIÓN DE SOCIOS ***"
+					Escribir "1. Agregar Socio"
+					Escribir "2. Modificar Socio"
+					Escribir "3. Eliminar Socio"
+					Escribir "4. Listar Socios"
+					Escribir "5. Volver"
+					Escribir "Elija una opción (1-4): "
+					Leer opGestion
+					
+					Segun opGestion Hacer
+						1:
+							Repetir
+								Escribir "Crear socio (en proceso...)"
+								crearSocio(socios, cantSocios)
+								Repetir
+									Escribir "¿Desea agregar otro socio? (S/N)"
+									Leer opUsuario
+									opUsuario <- Mayusculas(opUsuario)	
+									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
+										Escribir "Por favor ingrese S para Sí o N para No."	
+										Leer opUsuario
+										opUsuario <- Mayusculas(opUsuario)	
+									FinSi
+								Hasta Que (opUsuario = "S" O opUsuario = "N")				
+							Mientras Que (opUsuario <> "N")
+						2:
+							Escribir "Modificar socio... (en proceso)"
+							Esperar 1 segundos
+						3:
+							Escribir "Eliminar socio... (en proceso)"
+							Esperar 1 segundos
+						4:	
+							Escribir "Listar socios... (en proceso)"
+							Esperar 1 segundos
+						5:	
+							Escribir "Volviendo al menú de Administrador..."
+							Esperar 1 Segundos
+							Limpiar Pantalla
+						De Otro Modo:
+							Escribir "Opción incorrecta. Volviendo a Menú Administrador..."
+							Esperar 1 segundo
+					Fin Segun
+					
+				Hasta Que opGestion =5			
+				
 				Esperar 2 segundos
 			3:				
 				//Gestiono Admins
@@ -657,6 +706,50 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	Hasta Que opAdmin == 4	
 FinSubAlgoritmo
 
+//*******************************************SOCIOS*******************************************************
+//Vista Socios -- En proceso!!!
+SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros)
+	Definir op Como Entero
+	
+	Repetir
+		
+		Escribir ""
+        Escribir "*** MENÚ SOCIOS ***"
+        Escribir "1. Ver Libros Disponibles"
+        Escribir "2. Ver mis préstamos activos"
+        Escribir "3. Ver mi estado"
+		Escribir "4. Volver al menú principal"
+        Escribir "Elija una opción (1-4): "
+        Leer op
+		Esperar 1 segundos
+		
+		Segun op Hacer
+			1:
+				mostrarLibros(libros, cantLibros)
+				Escribir ""
+				Escribir "Presione una tecla para Volver..."
+				Esperar Tecla
+				Limpiar Pantalla
+			2:
+				//Ver mis préstamos
+				Escribir "Acá podrá ver préstamos..."
+				Esperar 2 Segundos
+				Limpiar Pantalla
+			3:
+				//Ver Estado
+				Escribir "Acá podrá ver su estado.."
+				Esperar 2 Segundos
+				Limpiar Pantalla
+			4:	
+				Escribir "Volviendo a Menú anterior..."
+				Esperar 1 segundo
+			De Otro Modo:
+				Escribir "Opción inválida"
+		Fin Segun	
+		
+	Hasta Que op=4
+		
+FinSubAlgoritmo
 
 //*******************************************MENUES PARA MOSTRAR*******************************************************
 SubProceso  mostrarMenuAcceso
