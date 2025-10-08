@@ -974,11 +974,20 @@ FinFuncion
 Funcion num <- pedirNumero(mensaje)
 	definir num Como Entero
 	Definir esNumero Como Logico
-	definir input como cadena
+	definir numInput, input como cadena
 	esNumero <- Falso
+	
+	
 	Mientras !esNumero Hacer
 		Escribir Sin Saltar mensaje
-		leer input
+		
+		leer numInput
+		Si Longitud(numInput)>11 Entonces
+			Escribir "El número debe tener hasta 11 dìgitos"
+		SiNo
+			input <- (numInput)		
+		FinSi	
+		
 		Si (EsNumeroEnteroPositivo(input)=Verdadero) Entonces
 			esNumero <- Verdadero
 		SiNo
@@ -990,10 +999,11 @@ FinFuncion
 
 // Pido un número pero lo devuelvo como texto
 Funcion numTexto <- pedirNumeroComoTexto(mensaje)
-    Definir numero Como Entero
+    Definir num Como Entero
     Definir numTexto Como Cadena
-    numero <- pedirNumero(mensaje) // ya validado como número
-    numTexto <- ConvertirATexto(numero)
+    num <- pedirNumero(mensaje) // ya validado como número
+	numTexto <- ConvertirATexto(num)
+    
 FinFuncion
 
 //Pido un número (opcional) y devuelvo como texto - para modificaciones
@@ -1483,7 +1493,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		Escribir dniSocio
 		Escribir Sin Saltar "Nombre y Apellido: "
 		Escribir nombreSocio
-		Escribir sin saltar "Telefono: "
+		Escribir sin saltar "Teléfono: "
 		Escribir telSocio
 		Escribir sin saltar "Estado: "
 		Escribir estadoSocio
@@ -1584,7 +1594,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 				Escribir "Socio encontrado:"
 				Escribir "DNI: ", socios[indice, 0]
 				Escribir "Nombre y apellido: ", socios[indice, 1]
-				Escribir "Telefono: ", socios[indice, 2]
+				Escribir "Teléfono: ", socios[indice, 2]
 				Escribir "Estado: ", socios[indice, 3]
 				Escribir ""
 			FinPara
@@ -1626,7 +1636,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "***DATOS ACTUALES DEL SOCIO***"
             Escribir "DNI: ", socios[indice,0]
             Escribir "Nombre y apellido: ", nombreSocio
-            Escribir "Telefono: ", telSocio
+            Escribir "Teléfono: ", telSocio
             Escribir "Estado: ", estadoSocio
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
 			Escribir ""
@@ -1638,7 +1648,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 				nombreSocio <-  nuevoDato
             FinSi			
 			
-			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Telefono: ", telSocio)		
+			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
 			
             Escribir Sin Saltar "Nuevo Estado (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
 			Leer nuevoDato	
@@ -1667,7 +1677,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "***DATOS DEL SOCIO MODIFICADOS***"
             Escribir "DNI: ", socios[indice,0]
             Escribir "1. Nombre y apellido: ", nombreSocio
-            Escribir "2. Telefono: ", telSocio
+            Escribir "2. Teléfono: ", telSocio
             Escribir "3. Estado: ", estadoSocio
 			
 			Repetir
@@ -1709,7 +1719,7 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 			Escribir "----------------------------------------"
 			Escribir "DNI: ", socios[i,0]
 			Escribir "Nombre y apellido: ", socios[i,1]
-			Escribir "Telefono: ", socios[i,2]
+			Escribir "Teléfono: ", socios[i,2]
 			Escribir "Estado: ", socios[i,3]
 				Si socios[i,3] = "MULTADO" Entonces
 					Escribir "Días de penalización: ", socios[i,4]
