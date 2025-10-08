@@ -672,7 +672,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 									5:	
 										mostrarPrestamos(prestamos, cantPrestamos)
 									6:
-										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, camposPrestamos)
+										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
 										Escribir ""
 									7:
 										Escribir "Volviendo a menu anterior..."
@@ -2094,7 +2094,7 @@ FinFuncion
 
 
 //Gestiono devolución
-Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, camposPrestamos)
+Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
     Definir i, j, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad, stockActual Como Entero
     Definir idLibro, dniSocio, op, fechaFinPrestamo, fechaPrestamo, fechaDev Como Cadena
     Definir fechaValida Como Logico
@@ -2916,7 +2916,7 @@ FinPara
 
 Escribir(borde_inferior)
 
-Esperar 3 Segundos
+Esperar 2 Segundos
 Limpiar Pantalla
 
 FinSubproceso
