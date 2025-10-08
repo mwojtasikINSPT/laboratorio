@@ -136,135 +136,7 @@ Algoritmo biblioteca
 				Limpiar Pantalla
 			FinSi
 				
-			//Menu Bibliotecario				
-			Repetir
-				mostrarMenuPpalBibliotecario
-				Leer modulo
-				
-				Segun modulo Hacer
-					1:
-						Repetir
-							mostrarMenuLibros
-							Leer opLibros
-							Esperar 2 Segundos
-							Limpiar Pantalla
-							
-							Segun opLibros Hacer
-								1: //Agregar Libros
-									Repetir
-										crearLibro(libros, cantLibros)
-										Repetir
-											Escribir "Desea agregar otro libro? (S/N)"
-											Leer resp
-											resp<-Mayusculas(resp)	
-											si resp<>"S" y resp<>"N" Entonces
-												Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
-												Leer resp
-												resp<-Mayusculas(resp)	
-											FinSi
-										Hasta Que (resp = "S" o resp = "N")		
-										Esperar 1 Segundos
-										Limpiar Pantalla
-									Mientras Que (resp<>"N")	
-								2: //Consultar Libros
-									Repetir
-										mostrarSubMenuConsultaLibros
-										Leer op 
-										
-										Segun op Hacer
-											1:
-												buscarLibro(libros, cantLibros)
-											2:
-												modificarLibro(libros, cantLibros)
-											3:	
-												Limpiar Pantalla
-												mostrarLibros(libros, cantLibros)
-											4:
-												registrarPrestamo(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos)		
-											5:	
-												mostrarPrestamos(prestamos, cantPrestamos)
-											6:
-												registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, camposPrestamos)
-												Escribir ""
-											7:
-												Escribir "Volviendo a menu anterior..."
-												Esperar 1 segundos 
-												Limpiar Pantalla
-											De Otro Modo:
-												Escribir "Eligió una opción inválida."
-										Fin Segun
-									Hasta Que (op==7)
-								3:
-									Escribir "Volviendo al menu principal..."
-									Esperar 1 segundo
-									Limpiar Pantalla
-								De Otro Modo:
-									Escribir "Eligió una opción inválida."
-							Fin Segun
-							
-						Mientras que (opLibros<>3)
-					2:
-						Repetir
-							mostrarMenuSocios
-							Leer opSocios
-							Esperar 1 segundos
-							
-							Segun opSocios Hacer
-								1: //Agregar Socios
-									Repetir
-										//crearSocio(socios, cantSocios)
-										Repetir
-											Escribir "¿Desea agregar otro socio? (S/N)"
-											Leer resp
-											resp <- Mayusculas(resp)	
-											Si resp <> "S" Y resp <> "N" Entonces
-												Escribir "Por favor ingrese S para Sí o N para No."	
-												Leer resp
-												resp <- Mayusculas(resp)	
-											FinSi
-										Hasta Que (resp = "S" O resp = "N")				
-									Mientras Que (resp <> "N")
-									
-								2: //Consultar Socios
-									Repetir
-										mostrarSubMenuConsultaSocios
-										Leer op 
-										Segun op Hacer
-											1:
-												buscarSocio(socios, cantSocios)
-											2:
-												modificarSocio(socios, cantSocios)
-											3:	
-												Limpiar Pantalla
-												mostrarSocios(socios, cantSocios)
-											4:	
-												Escribir "Volviendo a menú anterior..."
-												Esperar 1 segundos 
-												Limpiar Pantalla
-											De Otro Modo:
-												Escribir "Eligió una opción inválida."
-										Fin Segun
-									Hasta Que (op = 4)
-									
-								3: 
-									Escribir "Volviendo al menú principal..."
-									Esperar 1 segundos
-									Limpiar Pantalla
-									
-								De Otro Modo:
-									Escribir "Eligió una opción inválida."
-							Fin Segun
-							
-						Hasta Que (opSocios = 3) 
-					3:
-						Escribir "Volviendo a Menu de Usuarios..."
-						Esperar 1 Segundos
-						Limpiar Pantalla
-					De Otro Modo:
-						Escribir "Eligió una opción inválida."
-				Fin Segun
-			Hasta Que (modulo==3)
-			
+			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
 		3:
 			//Acceso Socios -  HAY Q COMPLETAR...
 			Escribir "*** ACCESO SOCIOS ***"
@@ -704,6 +576,141 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 		Fin Segun		
 		
 	Hasta Que opAdmin == 4	
+FinSubAlgoritmo
+
+
+//Vista Bibliotecario
+SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos)
+	Definir resp Como Caracter
+	Definir op, modulo, opLibros, opSocios, opAcceso, i, j Como Entero 
+	
+	Repetir
+		mostrarMenuPpalBibliotecario
+		Leer modulo
+		
+		Segun modulo Hacer
+			1:
+				Repetir
+					mostrarMenuLibros
+					Leer opLibros
+					Esperar 2 Segundos
+					Limpiar Pantalla
+					
+					Segun opLibros Hacer
+						1: //Agregar Libros
+							Repetir
+								crearLibro(libros, cantLibros)
+								Repetir
+									Escribir "Desea agregar otro libro? (S/N)"
+									Leer resp
+									resp<-Mayusculas(resp)	
+									si resp<>"S" y resp<>"N" Entonces
+										Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
+										Leer resp
+										resp<-Mayusculas(resp)	
+									FinSi
+								Hasta Que (resp = "S" o resp = "N")		
+								Esperar 1 Segundos
+								Limpiar Pantalla
+							Mientras Que (resp<>"N")	
+						2: //Consultar Libros
+							Repetir
+								mostrarSubMenuConsultaLibros
+								Leer op 
+								
+								Segun op Hacer
+									1:
+										buscarLibro(libros, cantLibros)
+									2:
+										modificarLibro(libros, cantLibros)
+									3:	
+										Limpiar Pantalla
+										mostrarLibros(libros, cantLibros)
+									4:
+										registrarPrestamo(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos)		
+									5:	
+										mostrarPrestamos(prestamos, cantPrestamos)
+									6:
+										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, camposPrestamos)
+										Escribir ""
+									7:
+										Escribir "Volviendo a menu anterior..."
+										Esperar 1 segundos 
+										Limpiar Pantalla
+									De Otro Modo:
+										Escribir "Eligió una opción inválida."
+								Fin Segun
+							Hasta Que (op==7)
+						3:
+							Escribir "Volviendo al menu principal..."
+							Esperar 1 segundo
+							Limpiar Pantalla
+						De Otro Modo:
+							Escribir "Eligió una opción inválida."
+					Fin Segun
+					
+				Mientras que (opLibros<>3)
+			2:
+				Repetir
+					mostrarMenuSocios
+					Leer opSocios
+					Esperar 1 segundos
+					
+					Segun opSocios Hacer
+						1: //Agregar Socios
+							Repetir
+								crearSocio(socios, cantSocios)
+								Repetir
+									Escribir "¿Desea agregar otro socio? (S/N)"
+									Leer resp
+									resp <- Mayusculas(resp)	
+									Si resp <> "S" Y resp <> "N" Entonces
+										Escribir "Por favor ingrese S para Sí o N para No."	
+										Leer resp
+										resp <- Mayusculas(resp)	
+									FinSi
+								Hasta Que (resp = "S" O resp = "N")				
+							Mientras Que (resp <> "N")
+							
+						2: //Consultar Socios
+							Repetir
+								mostrarSubMenuConsultaSocios
+								Leer op 
+								Segun op Hacer
+									1:
+										buscarSocio(socios, cantSocios)
+									2:
+										modificarSocio(socios, cantSocios)
+									3:	
+										Limpiar Pantalla
+										mostrarSocios(socios, cantSocios)
+									4:	
+										Escribir "Volviendo a menú anterior..."
+										Esperar 1 segundos 
+										Limpiar Pantalla
+									De Otro Modo:
+										Escribir "Eligió una opción inválida."
+								Fin Segun
+							Hasta Que (op = 4)
+							
+						3: 
+							Escribir "Volviendo al menú principal..."
+							Esperar 1 segundos
+							Limpiar Pantalla
+							
+						De Otro Modo:
+							Escribir "Eligió una opción inválida."
+					Fin Segun
+					
+				Hasta Que (opSocios = 3) 
+			3:
+				Escribir "Volviendo a Menu de Usuarios..."
+				Esperar 1 Segundos
+				Limpiar Pantalla
+			De Otro Modo:
+				Escribir "Eligió una opción inválida."
+		Fin Segun
+	Hasta Que (modulo==3)
 FinSubAlgoritmo
 
 //*******************************************SOCIOS*******************************************************
@@ -1387,11 +1394,21 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 			Escribir "Genero: ", libros[i,3]
 			Escribir "Año de Publicacion: ", libros[i,4]
 			Escribir "Disponible: ", libros[i,5]
-			//Escribir "Fecha prevista de devolucion: ", libros[i,6] //Ver sacar esta 
+			//Escribir "Fecha prevista de devolucion: ", libros[i,6] //Ver  
 			Escribir "Cantidad de ejemplares disponibles para préstamo: ", libros[i,7]
-			Escribir "Cantidad de ejemplares en préstamo: ", libros[i,8]
+			Si libros[i,8]="" Entonces
+				Escribir "No hay ejemplares de este libro en préstamo"
+			Sino 
+				Escribir "Cantidad de ejemplares en préstamo: ", libros[i,8]	
+			FinSi
 		FinSi
 	FinPara
+	Escribir ""
+	Escribir "				FIN DEL LISTADO DE LIBROS CARGADOS"
+	Escribir "				Presione una tecla para volver al menú de Consulta de Libros"
+	Esperar Tecla
+	Esperar 1 segundo
+	Limpiar Pantalla
 FinFuncion
 
 
@@ -1435,7 +1452,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			confirmar <- 1
 			Escribir "Ingreso del Socio ", nombreSocio " confirmado"				
 		Sino	
-			Escribir "Ingreso cancelado"
+			Escribir "Ingreso del Socio ", nombreSocio " cancelado"
 			confirmar <- 1
 		FinSi
 		Escribir""
@@ -1648,7 +1665,13 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 					Escribir "Días de penalización: ", socios[i,4]
 				FinSi
 		FinSi
-	FinPara	
+	FinPara
+	Escribir ""
+	Escribir "				FIN DEL LISTADO DE SOCIOS CARGADOS"
+	Escribir "				Presione una tecla para volver al menú de Consulta de Socios"
+	Esperar Tecla
+	Esperar 1 segundo
+	Limpiar Pantalla
 FinFuncion
 
 
