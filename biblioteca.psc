@@ -1,6 +1,5 @@
 Algoritmo biblioteca
 	
-		
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp Como Caracter
 	Definir op, modulo, opLibros, opSocios, opAcceso, i, j Como Entero 
@@ -121,7 +120,6 @@ Algoritmo biblioteca
 					accesoValido <- 1
 					Esperar 1 Segundos
 					Limpiar Pantalla
-					//sigue con lo que hace el biblio 
 				Sino
 					Escribir "Nombre o clave incorrectos."
 					intentos <- intentos + 1
@@ -204,7 +202,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
         Escribir "Elija una opción (1-4): "
         Leer opAdmin
 		
-				
 		Segun opAdmin Hacer
 			1:
 				//Gestiono Bibliotecarios
@@ -216,7 +213,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                     Escribir "3. Listar Bibliotecarios"
                     Escribir "4. Volver"
                     Escribir "Elija una opción (1-4): "
-					//Esperar Tecla
                     Leer opGestion
 					
 					Segun opGestion Hacer
@@ -277,10 +273,26 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Escribir "¿Desea agregar otro bibliotecario? (S/N)"
-								Leer opUsuario
-								//Esperar 1 segundo
+								Repetir
+									Escribir "¿Desea agregar otro bibliotecario? (S/N)"
+									Leer opUsuario
+									opUsuario <- Mayusculas(opUsuario)	
+									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
+										Escribir "Por favor ingrese S para Sí o N para No."	
+										Leer opUsuario
+										opUsuario <- Mayusculas(opUsuario)	
+									FinSi
+								Hasta Que (opUsuario = "S" O opUsuario = "N")	
+								
+								Si opUsuario = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Gestión de Bibliotecarios..."
+								FinSi
+								
 							Hasta Que Mayusculas(opUsuario) = "N"
+							
+							
 							
 							Escribir "Volviendo a Gestión de Bibliotecarios..."
 							Esperar 2 segundos
@@ -393,7 +405,14 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										Leer opUsuario
 										opUsuario <- Mayusculas(opUsuario)	
 									FinSi
-								Hasta Que (opUsuario = "S" O opUsuario = "N")				
+								Hasta Que (opUsuario = "S" O opUsuario = "N")		
+								
+								Si opUsuario = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Gestión de Socios..."
+								FinSi
+								
 							Mientras Que (opUsuario <> "N")
 						2:
 							Escribir "Modificar socio... (en proceso)"
@@ -464,6 +483,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										
 										Si administradorExiste Entonces
 											Escribir "Ese Administrador ya se encuentra registrado."
+											Escribir ""
 										Sino
 											Limpiar Pantalla
 											Escribir "*** DATOS DEL NUEVO ADMINISTRADOR ***"
@@ -485,10 +505,25 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Escribir ""
-								Escribir "¿Desea agregar otro administrador? (S/N)"
-								Leer opUsuario
-								Escribir "Volviendo a Gestión de Administradores..."
+								Escribir ""							
+								Repetir
+									Escribir "¿Desea agregar otro administrador? (S/N)"
+									Leer opUsuario
+									opUsuario <- Mayusculas(opUsuario)	
+									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
+										Escribir "Por favor ingrese S para Sí o N para No."	
+										Leer opUsuario
+										opUsuario <- Mayusculas(opUsuario)	
+									FinSi
+								Hasta Que (opUsuario = "S" O opUsuario = "N")	
+								
+								Si opUsuario = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Gestión de Administradores..."
+								FinSi
+								
+								
 								Esperar 2 segundo
 								Limpiar Pantalla
 							Hasta Que Mayusculas(opUsuario) = "N"
@@ -609,7 +644,14 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 										Leer resp
 										resp<-Mayusculas(resp)	
 									FinSi
-								Hasta Que (resp = "S" o resp = "N")		
+								Hasta Que (resp = "S" o resp = "N")	
+									
+								Si resp = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Menú de Libros..."
+								FinSi
+									
 								Esperar 1 Segundos
 								Limpiar Pantalla
 							Mientras Que (resp<>"N")	
@@ -669,7 +711,15 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 										Leer resp
 										resp <- Mayusculas(resp)	
 									FinSi
-								Hasta Que (resp = "S" O resp = "N")				
+								Hasta Que (resp = "S" O resp = "N")	
+									
+								Si resp = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Menú de Socios..."
+								FinSi
+								
+								
 							Mientras Que (resp <> "N")
 							
 						2: //Consultar Socios
@@ -1149,9 +1199,9 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 		Esperar 1 segundo
 		Si Mayusculas(opUsuario) = "S" Entonces
 			confirmar <- 1
-			Escribir "Cambios confirmados"				
+			Escribir "Ingreso del libro ", tituloLibro " confirmado"				
 		Sino	
-			Escribir "Cambios no confirmados"
+			Escribir "Ingreso del libro ", tituloLibro " no confirmado"	
 			confirmar <- 1
 		FinSi
 		Escribir""
