@@ -1,6 +1,5 @@
 Algoritmo biblioteca
 	
-		
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp Como Caracter
 	Definir op, modulo, opLibros, opSocios, opAcceso, i, j Como Entero 
@@ -68,7 +67,7 @@ Algoritmo biblioteca
 	administradoresPrecargados(administradores, cantAdministradores, camposAdministradores)
 	
 	
-	Escribir "****Bienvenido al Sistema de Gestión de Biblioteca****" 	
+	bienvenidaSistema
 	
 	//Acceso diferenciado por tipo de usuario: Admin, Bibliotecario, Socio
 	Repetir
@@ -121,7 +120,6 @@ Algoritmo biblioteca
 					accesoValido <- 1
 					Esperar 1 Segundos
 					Limpiar Pantalla
-					//sigue con lo que hace el biblio 
 				Sino
 					Escribir "Nombre o clave incorrectos."
 					intentos <- intentos + 1
@@ -204,7 +202,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
         Escribir "Elija una opción (1-4): "
         Leer opAdmin
 		
-				
 		Segun opAdmin Hacer
 			1:
 				//Gestiono Bibliotecarios
@@ -216,7 +213,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                     Escribir "3. Listar Bibliotecarios"
                     Escribir "4. Volver"
                     Escribir "Elija una opción (1-4): "
-					//Esperar Tecla
                     Leer opGestion
 					
 					Segun opGestion Hacer
@@ -277,10 +273,26 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Escribir "¿Desea agregar otro bibliotecario? (S/N)"
-								Leer opUsuario
-								//Esperar 1 segundo
+								Repetir
+									Escribir "¿Desea agregar otro bibliotecario? (S/N)"
+									Leer opUsuario
+									opUsuario <- Mayusculas(opUsuario)	
+									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
+										Escribir "Por favor ingrese S para Sí o N para No."	
+										Leer opUsuario
+										opUsuario <- Mayusculas(opUsuario)	
+									FinSi
+								Hasta Que (opUsuario = "S" O opUsuario = "N")	
+								
+								Si opUsuario = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Gestión de Bibliotecarios..."
+								FinSi
+								
 							Hasta Que Mayusculas(opUsuario) = "N"
+							
+							
 							
 							Escribir "Volviendo a Gestión de Bibliotecarios..."
 							Esperar 2 segundos
@@ -393,7 +405,14 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										Leer opUsuario
 										opUsuario <- Mayusculas(opUsuario)	
 									FinSi
-								Hasta Que (opUsuario = "S" O opUsuario = "N")				
+								Hasta Que (opUsuario = "S" O opUsuario = "N")		
+								
+								Si opUsuario = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Gestión de Socios..."
+								FinSi
+								
 							Mientras Que (opUsuario <> "N")
 						2:
 							Escribir "Modificar socio... (en proceso)"
@@ -464,6 +483,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										
 										Si administradorExiste Entonces
 											Escribir "Ese Administrador ya se encuentra registrado."
+											Escribir ""
 										Sino
 											Limpiar Pantalla
 											Escribir "*** DATOS DEL NUEVO ADMINISTRADOR ***"
@@ -485,10 +505,25 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Escribir ""
-								Escribir "¿Desea agregar otro administrador? (S/N)"
-								Leer opUsuario
-								Escribir "Volviendo a Gestión de Administradores..."
+								Escribir ""							
+								Repetir
+									Escribir "¿Desea agregar otro administrador? (S/N)"
+									Leer opUsuario
+									opUsuario <- Mayusculas(opUsuario)	
+									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
+										Escribir "Por favor ingrese S para Sí o N para No."	
+										Leer opUsuario
+										opUsuario <- Mayusculas(opUsuario)	
+									FinSi
+								Hasta Que (opUsuario = "S" O opUsuario = "N")	
+								
+								Si opUsuario = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Gestión de Administradores..."
+								FinSi
+								
+								
 								Esperar 2 segundo
 								Limpiar Pantalla
 							Hasta Que Mayusculas(opUsuario) = "N"
@@ -609,7 +644,14 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 										Leer resp
 										resp<-Mayusculas(resp)	
 									FinSi
-								Hasta Que (resp = "S" o resp = "N")		
+								Hasta Que (resp = "S" o resp = "N")	
+									
+								Si resp = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Menú de Libros..."
+								FinSi
+									
 								Esperar 1 Segundos
 								Limpiar Pantalla
 							Mientras Que (resp<>"N")	
@@ -669,7 +711,15 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 										Leer resp
 										resp <- Mayusculas(resp)	
 									FinSi
-								Hasta Que (resp = "S" O resp = "N")				
+								Hasta Que (resp = "S" O resp = "N")	
+									
+								Si resp = "S" Entonces
+									Limpiar Pantalla
+								Sino 	
+									Escribir "Volviendo a Menú de Socios..."
+								FinSi
+								
+								
 							Mientras Que (resp <> "N")
 							
 						2: //Consultar Socios
@@ -1149,9 +1199,9 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 		Esperar 1 segundo
 		Si Mayusculas(opUsuario) = "S" Entonces
 			confirmar <- 1
-			Escribir "Cambios confirmados"				
+			Escribir "Ingreso del libro ", tituloLibro " confirmado"				
 		Sino	
-			Escribir "Cambios no confirmados"
+			Escribir "Ingreso del libro ", tituloLibro " no confirmado"	
 			confirmar <- 1
 		FinSi
 		Escribir""
@@ -2722,3 +2772,104 @@ Funcion administradoresPrecargados(administradores Por Referencia, cantAdministr
     administradores[2, 1] <- "1234"
 FinFuncion
 
+// *****************************************************VISUALES*******************************************************************
+
+SubProceso bienvenidaSistema
+Definir ancho_pantalla, longitud_linea, i, j,k, espacios, espacios_izquierda, espacios_derecha, max_contenido Como Entero
+Definir linea_con_espacios Como Cadena
+Definir borde_superior, borde_inferior Como Cadena
+Definir lineas Como Cadena
+Dimension lineas[32]
+
+ancho_pantalla <- 140
+espacios_izquierda <- 10
+espacios_derecha <- 10
+max_contenido <- ancho_pantalla - espacios_izquierda - espacios_derecha
+
+
+lineas[0]  <- "$$$$$$$\  $$\                                                   $$\       $$\                                     "
+lineas[1]  <- "$$  __$$\ \__|                                                  \__|      $$ |                                    "
+lineas[2]  <- "$$ |  $$ |$$\  $$$$$$\  $$$$$$$\ $$\    $$\  $$$$$$\  $$$$$$$\  $$\  $$$$$$$ | $$$$$$\   $$$$$$$\                 "
+lineas[3]  <- "$$$$$$$\ |$$ |$$  __$$\ $$  __$$\\$$\  $$  |$$  __$$\ $$  __$$\ $$ |$$  __$$ |$$  __$$\ $$  _____|                "
+lineas[4]  <- "$$  __$$\ $$ |$$$$$$$$ |$$ |  $$ |\$$\$$  / $$$$$$$$ |$$ |  $$ |$$ |$$ /  $$ |$$ /  $$ |\$$$$$$\                  "
+lineas[5]  <- "$$ |  $$ |$$ |$$   ____|$$ |  $$ | \$$$  /  $$   ____|$$ |  $$ |$$ |$$ |  $$ |$$ |  $$ | \____$$\                 "
+lineas[6]  <- "$$$$$$$  |$$ |\$$$$$$$\ $$ |  $$ |  \$  /   \$$$$$$$\ $$ |  $$ |$$ |\$$$$$$$ |\$$$$$$  |$$$$$$$  |                "
+lineas[7]  <- "\_______/ \__| \_______|\__|  \__|   \_/     \_______|\__|  \__|\__| \_______| \______/ \_______/                 "
+lineas[8]  <- "                                                                                                                  "
+lineas[9]  <- "                                                                                                                  "
+lineas[10] <- "                                                                                                                  "
+lineas[11] <- "          $$\                 $$\             $$\                                                   $$\           "
+lineas[12] <- "          $$ |                \__|            $$ |                                                  $$ |          "
+lineas[13] <- " $$$$$$\  $$ |       $$$$$$$\ $$\  $$$$$$$\ $$$$$$\    $$$$$$\  $$$$$$\$$$$\   $$$$$$\         $$$$$$$ | $$$$$$\  "
+lineas[14] <- " \____$$\ $$ |      $$  _____|$$ |$$  _____|\_$$  _|  $$  __$$\ $$  _$$  _$$\  \____$$\       $$  __$$ |$$  __$$\ "
+lineas[15] <- " $$$$$$$ |$$ |      \$$$$$$\  $$ |\$$$$$$\    $$ |    $$$$$$$$ |$$ / $$ / $$ | $$$$$$$ |      $$ /  $$ |$$$$$$$$ |"
+lineas[16] <- "$$  __$$ |$$ |       \____$$\ $$ | \____$$\   $$ |$$\ $$   ____|$$ | $$ | $$ |$$  __$$ |      $$ |  $$ |$$   ____|"
+lineas[17] <- "\$$$$$$$ |$$ |      $$$$$$$  |$$ |$$$$$$$  |  \$$$$  |\$$$$$$$\ $$ | $$ | $$ |\$$$$$$$ |      \$$$$$$$ |\$$$$$$$\ "
+lineas[18] <- " \_______|\__|      \_______/ \__|\_______/    \____/  \_______|\__| \__| \__| \_______|       \_______| \_______|"
+lineas[19] <- "                                                                                                                  "
+lineas[20] <- "                                                                                                                  "
+lineas[21] <- "                                                                                                                  "
+lineas[22] <- "$$$$$$$\  $$\ $$\       $$\ $$\            $$\                                                                    "
+lineas[23] <- "$$  __$$\ \__|$$ |      $$ |\__|           $$ |                                                                   "
+lineas[24] <- "$$ |  $$ |$$\ $$$$$$$\  $$ |$$\  $$$$$$\ $$$$$$\    $$$$$$\   $$$$$$$\ $$$$$$\                                    "
+lineas[25] <- "$$$$$$$\ |$$ |$$  __$$\ $$ |$$ |$$  __$$\\_$$  _|  $$  __$$\ $$  _____|\____$$\                                   "
+lineas[26] <- "$$  __$$\ $$ |$$ |  $$ |$$ |$$ |$$ /  $$ | $$ |    $$$$$$$$ |$$ /      $$$$$$$ |                                  "
+lineas[27] <- "$$ |  $$ |$$ |$$ |  $$ |$$ |$$ |$$ |  $$ | $$ |$$\ $$   ____|$$ |     $$  __$$ |                                  "
+lineas[28] <- "$$$$$$$  |$$ |$$$$$$$  |$$ |$$ |\$$$$$$  | \$$$$  |\$$$$$$$\ \$$$$$$$\\$$$$$$$ |                                  "
+lineas[29] <- "\_______/ \__|\_______/ \__|\__| \______/   \____/  \_______| \_______|\_______|                                  "
+lineas[30] <- "                                                                                                                  "
+lineas[31] <- "                                                                                                                  "
+
+
+borde_superior <- ""
+borde_inferior <- ""
+Para i <- 1 Hasta ancho_pantalla Hacer
+	borde_superior <- borde_superior + "*"
+	borde_inferior <- borde_inferior + "*"
+FinPara
+
+Escribir(borde_superior)
+
+
+Para i <- 0 Hasta 31 Hacer
+	longitud_linea <- Longitud(lineas[i])
+	
+	// Si la línea es más corta que el máximo, completarla con espacios
+	Si longitud_linea < max_contenido Entonces
+		Para k <- 1 Hasta (max_contenido - longitud_linea) Hacer
+			lineas[i] <- lineas[i] + " "
+		FinPara
+		longitud_linea <- max_contenido
+	FinSi
+	
+	// Si la línea es más larga, truncarla
+	Si longitud_linea > max_contenido Entonces
+		lineas[i] <- SubCadena(lineas[i], 0, max_contenido)
+		longitud_linea <- max_contenido
+	FinSi
+	
+	linea_con_espacios <- ""
+	
+	// Espacios fijos a la izquierda
+	Para j <- 1 Hasta espacios_izquierda Hacer
+		linea_con_espacios <- linea_con_espacios + " "
+	FinPara
+	
+	// Línea de texto
+	linea_con_espacios <- linea_con_espacios + lineas[i]
+	
+	// Espacios fijos a la derecha
+	Para j <- 1 Hasta espacios_derecha Hacer
+		linea_con_espacios <- linea_con_espacios + " "
+	FinPara
+	
+	// Imprimir línea con bordes laterales
+	Escribir("|" + linea_con_espacios + "|")
+FinPara
+
+Escribir(borde_inferior)
+
+Esperar 3 Segundos
+Limpiar Pantalla
+
+FinSubproceso
