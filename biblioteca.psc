@@ -47,7 +47,7 @@ Algoritmo biblioteca
 	i<- 0
 	
 	//Inicializo matriz de prestamos 
-	Para i <- 0 Hasta 199 Hacer		
+	Para i <- 0 Hasta cantPrestamos - 1 Hacer		
 		Para j <- 0 Hasta camposPrestamos - 1 Hacer
 			prestamos[i, j] <- ""
 		FinPara
@@ -139,7 +139,7 @@ Algoritmo biblioteca
 			//Acceso Socios -  HAY Q COMPLETAR...
 			Escribir "*** ACCESO SOCIOS ***"
 			
-			sociosVista(Libros, cantLibros)
+			sociosVista(libros, cantLibros, prestamos, cantPrestamos)
 		0:
 			Escribir "Saliendo del Sistema..."
 			Esperar 1 segundo
@@ -291,8 +291,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								FinSi
 								
 							Hasta Que Mayusculas(opUsuario) = "N"
-							
-							
+								
 							
 							Escribir "Volviendo a Gestión de Bibliotecarios..."
 							Esperar 2 segundos
@@ -765,11 +764,10 @@ FinSubAlgoritmo
 
 //*******************************************SOCIOS*******************************************************
 //Vista Socios -- En proceso!!!
-SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros)
+SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros, prestamos Por Referencia, cantPrestamos)
 	Definir op Como Entero
 	
-	Repetir
-		
+	Repetir		
 		Escribir ""
         Escribir "*** MENÚ SOCIOS ***"
         Escribir "1. Ver Libros Disponibles"
@@ -789,6 +787,8 @@ SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros)
 				Limpiar Pantalla
 			2:
 				//Ver mis préstamos
+				Escribir ""
+				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros)
 				Escribir "Acá podrá ver préstamos..."
 				Esperar 2 Segundos
 				Limpiar Pantalla
@@ -1822,6 +1822,43 @@ SubProceso mostrarLibroEncontrado(libros Por Referencia, indiceLibro)
 	Escribir ""
 FinSubProceso
 
+
+//Muestro préstamo activo - para Socios
+SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros Por Referencia, cantLibros)
+	Definir i, indicePrestamo Como Entero
+	definir dniSocio, idLibro, fechaPrestamo como Cadena
+	indicePrestamo <- -1
+	
+	Escribir "Ingrese su DNI para ver préstamos activos"
+	Leer dniSocio
+	Escribir prestamos[0,0] 
+	
+	Para i <- 0 Hasta cantPrestamos-1 Hacer
+		Si dniSocio = prestamos[i,1]  Entonces
+			indicePrestamo <- i
+			idLibro <- prestamos[i,0]
+			fechaPrestamo <- prestamos[i,2]
+		FinSi
+	FinPara
+	
+	Si indicePrestamo  = -1 Entonces
+		Escribir "El socio con DNI ", dniSocio " no tiene préstamos activos."
+	SiNo
+		//Busco el préstamo activo para el socio
+		Escribir "El socio con DNI ", dniSocio " tiene en préstamo:"
+		Para i <- 0 Hasta cantLibros-1 Hacer
+			Si libros[i,0] = idLibro Entonces
+			indiceLibro <- i
+			mostrarLibroEncontrado(libros, i)
+			FinSi
+		FinPara
+		Escribir "Presione una tecla para volver"
+		Esperar Tecla
+	FinSi		
+	
+FinSubProceso
+
+
 //Registrar préstamo
 Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos)
     Definir i, j, disponible, indiceLibro, indiceSocio, k, p, stockActual Como Entero
@@ -2080,7 +2117,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
         Escribir "Error: Socio no encontrado"
     Sino
 		// BUSCAR PRÉSTAMO ACTIVO DEL SOCIO
-		Para i <- 0 Hasta 199 Hacer
+		Para i <- 0 Hasta cantPrestamos-1 Hacer
 			Si prestamos[i,1] = dniSocio Entonces
 				indicePrestamo <- i
 				idLibro <- prestamos[i,0]
