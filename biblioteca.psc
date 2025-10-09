@@ -89,19 +89,16 @@ Algoritmo biblioteca
 					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
 						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
 						accesoValido <- 1
-						Esperar 1 Segundos
-						Limpiar Pantalla						
+						esperarLimpiar("")				
 					Sino
 						Escribir "Nombre o clave incorrectos."
 						intentos <- intentos + 1
-						Esperar 2 Segundos
-						Limpiar Pantalla
+						esperarLimpiar("")	
 					FinSi
 				FinMientras
 				
 				Si accesoValido = 0 Entonces
-					Escribir "Demasiados intentos fallidos. Volviendo al menú principal."
-					Esperar 2 Segundos
+					esperarLimpiar("Demasiados intentos fallidos. Volviendo al menú principal...")	
 				FinSi
 				
 				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios) 		
@@ -118,15 +115,11 @@ Algoritmo biblioteca
 				Leer claveIngresada						
 				
 				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
-					Escribir "Acceso concedido. Bienvenido ", nombreIngresado
 					accesoValido <- 1
-					Esperar 1 Segundos
-					Limpiar Pantalla
-				Sino
-					Escribir "Nombre o clave incorrectos."
+					esperarLimpiar("Acceso concedido. Bienvenido " + nombreIngresado)
+				Sino					
 					intentos <- intentos + 1
-					Esperar 1 Segundos
-					Limpiar Pantalla
+					esperarLimpiar("Nombre o clave incorrectos")
 				FinSi
 			FinMientras
 			
@@ -143,8 +136,7 @@ Algoritmo biblioteca
 			
 			sociosVista(libros, cantLibros, prestamos, cantPrestamos)
 		"0":
-			Escribir "Saliendo del Sistema..."
-			Esperar 1 segundo
+			esperarLimpiar("Saliendo del Sistema...")
 		De Otro Modo:
 			Escribir "Eligió una opción inválida."
 	Fin Segun
@@ -154,7 +146,7 @@ Algoritmo biblioteca
 FinAlgoritmo
 
 
-//******************************************* FUNCIONES AUXILIARES VALIDACION DE ACCESO *******************************************************
+//******************************************* FUNCIONES AUXILIARES - VALIDACION DE ACCESO *******************************************************
 Funcion esValido <- validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores)
     Definir esValido Como Logico
     Definir i Como Entero
@@ -200,8 +192,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	accesoValido <- 0
 	
 	Repetir
-		Limpiar Pantalla
-		Escribir ""
+		esperarLimpiar("")
         Escribir "*** MENÚ ADMINISTRADOR ***"
         Escribir "1. Gestionar Bibliotecarios"
         Escribir "2. Gestionar Socios"
@@ -291,8 +282,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								
 							Hasta Que Mayusculas(opUsuario) = "N"
 								
-							
-							Escribir "Volviendo a Gestión de Bibliotecarios..."
+							//Escribir "Volviendo a Gestión de Bibliotecarios..."
 							Esperar 2 segundos
 							Limpiar Pantalla
 							
@@ -367,9 +357,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                             FinSi
                             
 						"4":
-							Escribir "Volviendo al menú de Administrador..."
-							Esperar 1 Segundos
-							Limpiar Pantalla
+							esperarLimpiar("Volviendo al menú de Administrador...")
 							
 						De Otro Modo:
 							Escribir "Eligió una opción inválida."
@@ -412,12 +400,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Escribir "Listar socios... (en proceso)"
 							Esperar 1 segundos
 						"5":	
-							Escribir "Volviendo al menú de Administrador..."
-							Esperar 1 Segundos
-							Limpiar Pantalla
+							esperarLimpiar("Volviendo al menú de Administrador...")
 						De Otro Modo:
-							Escribir "Opción incorrecta. Volviendo a Menú Administrador..."
-							Esperar 1 segundo
+							esperarLimpiar("Opción incorrecta. Volviendo a Menú Administrador...")
 					Fin Segun
 					
 				Hasta Que resp = "5"			
@@ -460,8 +445,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 											claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
 										FinMientras
 										
-										// Verifico si el usuario ya existe
-										
+										// Verifico si el usuario ya existe										
 										administradorExiste <- Falso
 										Para i <- 0 Hasta cantAdministradores-1 Hacer
 											Si administradores[i, 0] = nombreAdmin Entonces
@@ -493,8 +477,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Escribir ""			
-								
 								opUsuario <- confirmarInformacion("Desea agregar otro administrador? (S/N)")
 								
 								Si opUsuario == "S" Entonces
@@ -502,9 +484,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								Sino 	
 									Escribir "Volviendo a Gestión de Administradores..."
 								FinSi								
-								
-								Esperar 2 segundo
-								Limpiar Pantalla
+								esperarLimpiar("")
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
 						"2":  // Eliminar Administrador  
@@ -579,19 +559,14 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								Escribir "----------------------------------------"
 								Escribir "Total de Administradores registrados: ", totalAdministradores
 							FinSi
-						"4":  
-							Escribir "Volviendo al menú de Administrador..."
-							Esperar 1 Segundos
-							Limpiar Pantalla
+						"4": 
+							esperarLimpiar("Volviendo al menú de Administrador...")
 						De Otro Modo:
-							Escribir "Opción incorrecta"
-							Esperar 1 segundo
+							esperarLimpiar( "Opción incorrecta")
 					Fin Segun
 				Hasta Que resp == "4"
 			"4":	
-				Escribir "Volviendo al Menú principal..."
-				Esperar 2 Segundos
-				Limpiar Pantalla
+				esperarLimpiar("Volviendo al Menú principal...")
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
 		Fin Segun		
@@ -614,8 +589,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 				Repetir
 					mostrarMenuLibros
 					Leer opLibros
-					Esperar 2 Segundos
-					Limpiar Pantalla
+					esperarLimpiar("")
 					
 					Segun opLibros Hacer
 						1: //Agregar Libros
@@ -629,9 +603,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 								Sino 	
 									Escribir "Volviendo a Menú de Libros..."
 								FinSi
-									
-								Esperar 1 Segundos
-								Limpiar Pantalla
+								esperarLimpiar("")
 							Mientras Que (resp<>"N")	
 						2: //Consultar Libros
 							Repetir
@@ -654,17 +626,13 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
 										Escribir ""
 									7:
-										Escribir "Volviendo a menu anterior..."
-										Esperar 1 segundos 
-										Limpiar Pantalla
+										esperarLimpiar("Volviendo a menu anterior...")
 									De Otro Modo:
-										Escribir "Eligió una opción inválida."
+										esperarLimpiar("Eligió una opción inválida.")
 								Fin Segun
 							Hasta Que (op==7)
-						3:
-							Escribir "Volviendo al menu principal..."
-							Esperar 1 segundo
-							Limpiar Pantalla
+						3:							
+							esperarLimpiar("Volviendo al menu principal...")
 						De Otro Modo:
 							Escribir "Eligió una opción inválida."
 					Fin Segun
@@ -704,28 +672,21 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 										Limpiar Pantalla
 										mostrarSocios(socios, cantSocios)
 									4:	
-										Escribir "Volviendo a menú anterior..."
-										Esperar 1 segundos 
-										Limpiar Pantalla
+										esperarLimpiar("Volviendo a menú anterior...")
 									De Otro Modo:
 										Escribir "Eligió una opción inválida."
 								Fin Segun
 							Hasta Que (op = 4)
 							
 						3: 
-							Escribir "Volviendo al menú principal..."
-							Esperar 1 segundos
-							Limpiar Pantalla
-							
+							esperarLimpiar("Volviendo a Menú Principal...")	
 						De Otro Modo:
 							Escribir "Eligió una opción inválida."
 					Fin Segun
 					
 				Hasta Que (opSocios = 3) 
 			3:
-				Escribir "Volviendo a Menu de Usuarios..."
-				Esperar 1 Segundos
-				Limpiar Pantalla
+				esperarLimpiar("Volviendo a Menú de Usuarios...")	
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."
 		Fin Segun
@@ -751,10 +712,8 @@ SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros, prestamos Por Refer
 		Segun op Hacer
 			1:
 				mostrarLibros(libros, cantLibros)
-				Escribir ""
-				Escribir "Presione una tecla para Volver..."
-				Esperar Tecla
-				Limpiar Pantalla
+//				esperarLimpiar("Presione una tecla para Volver...")	
+//				Esperar Tecla
 			2:
 				Escribir ""
 				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros)
@@ -781,6 +740,7 @@ FinSubAlgoritmo
 Funcion respuesta<-confirmarInformacion(mensaje) 
 	Definir respuesta Como Caracter	
 	Repetir
+		Escribir ""
 		Escribir mensaje
 		Leer respuesta
 		respuesta <- Mayusculas(respuesta)	
@@ -874,6 +834,12 @@ SubProceso  mostrarSubMenuConsultaSocios
 FinSubProceso
 
 //*******************************************FUNCIONES AUXILIARES*******************************************************
+SubProceso esperarLimpiar(mensaje)
+	Escribir mensaje
+	Esperar 2 segundos
+	Limpiar Pantalla
+FinSubProceso
+
 //Asigno posición a cada libro ingresado
 Funcion posicion<-buscarUltimo(libros, cantLibros) 
     Definir i, posicion Como Entero
@@ -963,9 +929,7 @@ Funcion txtOpcional <- pedirTextoOpcional(mensaje, valorActual)
     
 	Si esTextoValido
 		txtOpcional <- resp		
-	FinSi
-	
-	
+	FinSi	
 FinFuncion
 
 //Valido Números
@@ -1218,9 +1182,8 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 		Escribir sin saltar "Stock: "
 		Escribir stockLibro 
 		
-		opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
-		
-		Esperar 1 segundo
+		opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")		
+		esperarLimpiar("")
 		Si Mayusculas(opUsuario) = "S" Entonces
 			confirmar <- 1
 			Escribir "Ingreso del libro ", tituloLibro " confirmado"				
@@ -1228,8 +1191,8 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 			Escribir "Ingreso del libro ", tituloLibro " no confirmado"	
 			confirmar <- 1
 		FinSi
-		Escribir""
-		Esperar 1 segundo
+		
+		esperarLimpiar("")
 	FinMientras
 	
 	libros[indice, 0] <- idLibro
@@ -1466,11 +1429,10 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 		FinSi
 	FinPara
 	Escribir ""
-	Escribir "				FIN DEL LISTADO DE LIBROS CARGADOS"
-	Escribir "				Presione una tecla para volver al menú de Consulta de Libros"
+	Escribir "	--------------FIN DEL LISTADO DE LIBROS CARGADOS-----------------"	
+	Escribir "				Presione una tecla para volver"	
 	Esperar Tecla
-	Esperar 1 segundo
-	Limpiar Pantalla
+	esperarLimpiar("")
 FinFuncion
 
 
@@ -1511,9 +1473,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			Escribir "Ingreso del Socio ", nombreSocio " cancelado"
 			confirmar <- 1
 		FinSi
-		Escribir""
-		Esperar 1 segundo
-		
+		esperarLimpiar("")		
 	FinMientras
 	
 	// Guardo cambios en la matriz
@@ -1571,9 +1531,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 						criterio <- "MULTADO"
 				Fin Segun
 			4:	
-				Escribir "Volviendo al menú de Socios..."
-				Esperar 1 Segundos
-				Limpiar Pantalla
+				esperarLimpiar("Volviendo al menú de Socios...")
 			De Otro Modo:
 				Escribir "Eligió una opción inválida."				
 		Fin Segun	
@@ -1627,8 +1585,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
         confirmar <- 0
 		
         Mientras confirmar = 0 Hacer
-            Limpiar Pantalla
-			Escribir ""
+            esperarLimpiar("")
             Escribir "***DATOS ACTUALES DEL SOCIO***"
             Escribir "DNI: ", socios[indice,0]
             Escribir "Nombre y apellido: ", nombreSocio
@@ -1641,8 +1598,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 			nuevoDato <- Mayusculas(nuevoDato)
 			Si Longitud(nuevoDato)>0 Entonces
 				nombreSocio <-  nuevoDato				
-			FinSi
-			
+			FinSi			
 			
 			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
 			
@@ -1666,8 +1622,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 						leer penalizacionSocio
 				Fin Segun
             FinSi			
-			Esperar 2 segundos
-            Limpiar Pantalla
+			esperarLimpiar("")
             Escribir "***DATOS DEL SOCIO MODIFICADOS***"
             Escribir "DNI: ", socios[indice,0]
             Escribir "1. Nombre y apellido: ", nombreSocio
@@ -1675,9 +1630,9 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "3. Estado: ", estadoSocio
 			
 			Escribir ""
-			opUsuario <- confirmarInformacion("Confirma los cambios? (S/N)")
-            
+			opUsuario <- confirmarInformacion("Confirma los cambios? (S/N)")            
 			Esperar 1 segundo
+			
             Si Mayusculas(opUsuario) = "S" Entonces
                 confirmar <- 1
 				Escribir "Cambios del Socio ", nombreSocio " confirmados"				
@@ -1685,8 +1640,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 				Escribir "Cambios no confirmados"
 				confirmar <- 1
             FinSi
-			Escribir""
-			Esperar 1 segundo
+			esperarLimpiar("")
         FinMientras
 		
         // Guardar cambios en la matriz
@@ -1717,8 +1671,7 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 	Escribir "				FIN DEL LISTADO DE SOCIOS CARGADOS"
 	Escribir "				Presione una tecla para volver al menú de Consulta de Socios"
 	Esperar Tecla
-	Esperar 1 segundo
-	Limpiar Pantalla
+	esperarLimpiar("")
 FinFuncion
 
 
@@ -1732,6 +1685,7 @@ Funcion fechasPrestamo(fechaInicio Por Referencia, fechaFinPrestamo Por Referenc
     mes <- trunc((fecha MOD 10000) / 100)
     dia <- fecha MOD 100
 	
+	Escribir ""
 	Escribir "Fecha de inicio del préstamo: ", dia, "/", mes, "/", anio
 	si (dia<10) Entonces
 		diaTemp <- "0"+ConvertirATexto(dia)
@@ -1841,8 +1795,7 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 		FinPara
 		Escribir "Presione una tecla para volver"
 		Esperar Tecla
-	FinSi		
-	
+	FinSi			
 FinSubProceso
 
 
@@ -1854,7 +1807,9 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
     indiceSocio <- -1
     p <- 0
 	
+	Escribir ""
     Escribir "REGISTRAR PRÉSTAMO DE LIBRO"
+	Escribir ""
     Escribir Sin Saltar "Ingrese id del libro a prestar: "
     Leer idBuscado
 	
@@ -1900,8 +1855,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 							
                         Segun op Hacer
                             "S":
-                                Escribir "Registrando préstamo..."
-                                Esperar 1 segundo
+                                Escribir "Registrando préstamo..." 
+                                esperar 1 segundo
 								
 								//Actualizo stock
 								stockActual <- stockActual - 1
@@ -1928,12 +1883,13 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                                 libros[indiceLibro,6] <- fechaFinPrestamo
                                 socios[indiceSocio,3] <- "INHABILITADO" // tiene préstamo activo
 								socios[indiceSocio,4] <- "0"  // Reiniciar días de penalizacion
-                                Escribir "Préstamo registrado con éxito"
+                                Escribir "Préstamo para el socio ", socios[indiceSocio,1] " registrado con éxito"
+								Escribir ""
 								Escribir "Stock restante del libro: ", stockActual
+								esperar 2 segundos
+								esperarLimpiar("")
                             "N":
-                                Escribir "Volviendo a consultas..."
-								Esperar 1 Segundos
-								Limpiar Pantalla
+								esperarLimpiar("Volviendo a consultas...")
                             De Otro Modo:
                                 Escribir "Opción inválida"
                         Fin Segun
@@ -1944,9 +1900,7 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                 FinSegun
             FinSi
         Sino
-			Escribir "El libro ", libros[indiceLibro,1]  " No se encuentra disponible para préstamo"
-			Esperar 2 Segundos
-			Limpiar Pantalla
+			esperarLimpiar("El libro " + libros[indiceLibro,1]  + " No se encuentra disponible para préstamo")
         FinSi
     FinSi
 FinFuncion
@@ -1972,10 +1926,8 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	FinPara
 		
 	Si totalPrestamos = 0 Entonces
-		Escribir ""
-		Escribir "No hay préstamos activos en este momento."
+		esperarLimpiar("No hay préstamos activos en este momento.")
 	FinSi
-	Esperar 3 segundos
 FinFuncion
 
 
@@ -2168,9 +2120,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 				FinSi
 			Sino
 				Si op = "N" Entonces
-					Escribir "Volviendo a consultas..."
-					Esperar 1 Segundos
-					Limpiar Pantalla
+					esperarLimpiar("Volviendo a consultas...")
 				FinSi
 			FinSi
 		FinSi
