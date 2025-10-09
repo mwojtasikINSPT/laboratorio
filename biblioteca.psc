@@ -77,13 +77,14 @@ Algoritmo biblioteca
 		Segun opAcceso Hacer
 			"1":	//Acceso Admin
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
-					Escribir "*** ACCESO ADMINISTRADOR ***"					
-					Escribir Sin Saltar "Nombre: "
+					Escribir "*** ACCESO ADMINISTRADOR ***"	
+					Escribir ""
+					Escribir "Intento ", intentos + 1, " de 3"
+					Escribir Sin Saltar "Ingrese su Nombre: "
 					Leer nombreIngresado
 					nombreIngresado <- Mayusculas(nombreIngresado)
-					Escribir Sin Saltar "Clave: "
+					Escribir Sin Saltar "Ingrese su Clave: "
 					Leer claveIngresada
-					Escribir "Intento ", intentos + 1, " de 3"
 					
 					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
 						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
@@ -107,13 +108,14 @@ Algoritmo biblioteca
 				
 			"2":  //Acceso Bibliotecario		
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
-				Escribir "*** ACCESO BIBLIOTECARIO ***"
-				Escribir Sin Saltar "Indique su nombre: "
+				Escribir "*** ACCESO BIBLIOTECARIO ***"	
+				EScribir ""
+				Escribir "Intento ", intentos + 1, " de 3"
+				Escribir Sin Saltar "Ingrese su nombre: "
 				Leer nombreIngresado
 				nombreIngresado <- Mayusculas(nombreIngresado)
 				Escribir Sin Saltar "Ingrese su clave: "
-				Leer claveIngresada		
-				Escribir "Intento ", intentos + 1, " de 3"
+				Leer claveIngresada						
 				
 				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
 					Escribir "Acceso concedido. Bienvenido ", nombreIngresado
@@ -151,7 +153,8 @@ Algoritmo biblioteca
 	
 FinAlgoritmo
 
-//*******************************************ADMINS*******************************************************
+
+//******************************************* FUNCIONES AUXILIARES VALIDACION DE ACCESO *******************************************************
 Funcion esValido <- validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores)
     Definir esValido Como Logico
     Definir i Como Entero
@@ -179,10 +182,13 @@ Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, 
 	FinPara
 FinFuncion
 
-//Vista Administrador
+//***************************************************************Vista Administrador*********************************************************
 SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, administradores Por Referencia, cantAdministradores, socios Por Referencia, cantSocios)
+	Definir i Como Entero
+	Definir resp, opAdmin Como Caracter
+	Definir dato como Cadena
 	//Bibliotecarios
-	Definir opAdmin, opGestion, i, indice, confirmar, totalBibliotecarios Como Entero	
+	Definir indice, confirmar, totalBibliotecarios Como Entero	
     Definir nombreBibliotecario, claveBibliotecario, opUsuario Como Cadena
 	//Admins
 	Definir nombreIngresado, claveIngresada, nombreAdmin, claveAdmin Como Cadena
@@ -203,7 +209,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
         Leer opAdmin
 		
 		Segun opAdmin Hacer
-			1:
+			"1":
 				//Gestiono Bibliotecarios
 				Repetir
 					Escribir ""
@@ -213,10 +219,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                     Escribir "3. Listar Bibliotecarios"
                     Escribir "4. Volver"
                     Escribir "Elija una opción (1-4): "
-                    Leer opGestion
+                    Leer resp
 					
-					Segun opGestion Hacer
-						1: 	//Agrego Bibliotecario
+					Segun resp Hacer
+						"1": 	//Agrego Bibliotecario
 							Repetir
 								//Asigno posición en el array
 								indice <- -1
@@ -257,8 +263,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 											Escribir "*** DATOS DEL NUEVO BIBLIOTECARIO ***"
 											Escribir "Nombre: ", nombreBibliotecario
 											Escribir "Clave: ", claveBibliotecario
-											Escribir "Confirma el ingreso? (S/N)"
-											Leer opUsuario
+											
+											opUsuario <- confirmarInformacion("Confirma el ingreso? (S/N)")
 											
 											Si Mayusculas(opUsuario) = "S" Entonces
 												bibliotecarios[indice, 0] <- nombreBibliotecario
@@ -273,16 +279,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Repetir
-									Escribir "¿Desea agregar otro bibliotecario? (S/N)"
-									Leer opUsuario
-									opUsuario <- Mayusculas(opUsuario)	
-									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
-										Escribir "Por favor ingrese S para Sí o N para No."	
-										Leer opUsuario
-										opUsuario <- Mayusculas(opUsuario)	
-									FinSi
-								Hasta Que (opUsuario = "S" O opUsuario = "N")	
+								opUsuario <- confirmarInformacion("Desea agregar otro bibliotecario? (S/N)")
 								
 								Si opUsuario = "S" Entonces
 									Limpiar Pantalla
@@ -297,7 +294,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Esperar 2 segundos
 							Limpiar Pantalla
 							
-						2:	//Elimino Bibliotecario							
+						"2":	//Elimino Bibliotecario							
 							Escribir ""
                             Escribir "*** ELIMINAR BIBLIOTECARIO ***"
                             Escribir ""
@@ -330,8 +327,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                     Escribir "No se encontró un bibliotecario con ese nombre."
                                 Sino
                                     Escribir "Bibliotecario encontrado: ", bibliotecarios[indice, 0]
-                                    Escribir "¿Confirma que desea eliminar este bibliotecario? (S/N)"
-                                    Leer opUsuario
+                                    
+                                    opUsuario <- confirmarInformacion("Confirma que desea eliminar este bibliotecario? (S/N)")
                                     
                                     Si Mayusculas(opUsuario) = "S" Entonces
                                         bibliotecarios[indice, 0] <- ""
@@ -345,7 +342,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                 Escribir "No hay bibliotecarios registrados."
                             FinSi			
 							
-						3:
+						"3":
 							//Muestro Bibliotecarios
 							Escribir ""
                             Escribir "*** LISTADO DE BIBLIOTECARIOS ***"                            
@@ -367,17 +364,16 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                 Escribir "Total de bibliotecarios registrados: ", totalBibliotecarios
                             FinSi
                             
-						4:
+						"4":
 							Escribir "Volviendo al menú de Administrador..."
 							Esperar 1 Segundos
 							Limpiar Pantalla
 							
 						De Otro Modo:
 							Escribir "Eligió una opción inválida."
-					Fin Segun				
-					
-				Hasta Que opGestion == 4
-			2: //Gestiono Socios
+					Fin Segun
+				Hasta Que resp == "4"
+			"2": //Gestiono Socios
 				Escribir "Gestión de Socios En proceso..." //Terminar
 				Repetir
 					Escribir ""
@@ -388,23 +384,14 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Escribir "4. Listar Socios"
 					Escribir "5. Volver"
 					Escribir "Elija una opción (1-5): "
-					Leer opGestion
+					Leer resp
 					
-					Segun opGestion Hacer
-						1:
+					Segun resp Hacer
+						"1":
 							Repetir
 								Escribir "Crear socio (en proceso...)"
 								crearSocio(socios, cantSocios)
-								Repetir
-									Escribir "¿Desea agregar otro socio? (S/N)"
-									Leer opUsuario
-									opUsuario <- Mayusculas(opUsuario)	
-									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
-										Escribir "Por favor ingrese S para Sí o N para No."	
-										Leer opUsuario
-										opUsuario <- Mayusculas(opUsuario)	
-									FinSi
-								Hasta Que (opUsuario = "S" O opUsuario = "N")		
+								opUsuario <- confirmarInformacion("Desea agregar otro socio? (S/N)")
 								
 								Si opUsuario = "S" Entonces
 									Limpiar Pantalla
@@ -413,16 +400,16 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								FinSi
 								
 							Mientras Que (opUsuario <> "N")
-						2:
+						"2":
 							Escribir "Modificar socio... (en proceso)"
 							Esperar 1 segundos
-						3:
+						"3":
 							Escribir "Eliminar socio... (en proceso)"
 							Esperar 1 segundos
-						4:	
+						"4":	
 							Escribir "Listar socios... (en proceso)"
 							Esperar 1 segundos
-						5:	
+						"5":	
 							Escribir "Volviendo al menú de Administrador..."
 							Esperar 1 Segundos
 							Limpiar Pantalla
@@ -431,10 +418,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Esperar 1 segundo
 					Fin Segun
 					
-				Hasta Que opGestion =5			
+				Hasta Que resp = "5"			
 				
 				Esperar 2 segundos
-			3:				
+			"3":				
 				//Gestiono Admins
 				Repetir
 					Escribir ""
@@ -444,10 +431,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Escribir "3. Listar Administradores"
 					Escribir "4. Volver"
 					Escribir "Elija una opción (1-4): "
-					Leer opGestion
+					Leer resp
 					
-					Segun opGestion Hacer
-						1:  // Agregar Administrador							
+					Segun resp Hacer
+						"1":  // Agregar Administrador							
 							Repetir
 								//Asigno posición en el array
 								indice <- -1
@@ -468,7 +455,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										
 										Mientras Longitud(claveAdmin) <> 4
 											Escribir "La clave debe tener exactamente 4 dígitos."
-											claveAdministrador <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+											claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
 										FinMientras
 										
 										// Verifico si el usuario ya existe
@@ -488,10 +475,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 											Escribir "*** DATOS DEL NUEVO ADMINISTRADOR ***"
 											Escribir "Nombre: ", nombreAdmin
 											Escribir "Clave: ", claveAdmin
-											Escribir "Confirma el ingreso? (S/N)"
-											Leer opUsuario
 											
-											Si Mayusculas(opUsuario) = "S" Entonces
+											opUsuario <- confirmarInformacion("Confirma el ingreso? (S/N)")
+											
+											Si opUsuario == "S" Entonces
 												administradores[indice, 0] <- nombreAdmin
 												administradores[indice, 1] <- claveAdmin
 												Escribir "Administrador agregado exitosamente."
@@ -504,30 +491,21 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinMientras
 								FinSi
 								
-								Escribir ""							
-								Repetir
-									Escribir "¿Desea agregar otro administrador? (S/N)"
-									Leer opUsuario
-									opUsuario <- Mayusculas(opUsuario)	
-									Si opUsuario <> "S" Y opUsuario <> "N" Entonces
-										Escribir "Por favor ingrese S para Sí o N para No."	
-										Leer opUsuario
-										opUsuario <- Mayusculas(opUsuario)	
-									FinSi
-								Hasta Que (opUsuario = "S" O opUsuario = "N")	
+								Escribir ""			
 								
-								Si opUsuario = "S" Entonces
+								opUsuario <- confirmarInformacion("Desea agregar otro administrador? (S/N)")
+								
+								Si opUsuario == "S" Entonces
 									Limpiar Pantalla
 								Sino 	
 									Escribir "Volviendo a Gestión de Administradores..."
-								FinSi
-								
+								FinSi								
 								
 								Esperar 2 segundo
 								Limpiar Pantalla
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
-						2:  // Eliminar Administrador  
+						"2":  // Eliminar Administrador  
 							Escribir ""
 							Escribir "*** ELIMINAR ADMINISTRADOR ***"
 							Escribir ""
@@ -560,8 +538,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									Escribir "No se encontró un Administrador con ese nombre."
 								Sino
 									Escribir "Administrador encontrado: ", administradores[indice, 0]
-									Escribir "¿Confirma que desea eliminar al administrador ", administradores[indice, 0], "? (S/N)"
-									Leer opUsuario
+									dato <-administradores[indice, 0]
+									opUsuario <- confirmarInformacion("¿Confirma que desea eliminar al administrador " + dato + "? (S/N)")	
 									
 									Si Mayusculas(opUsuario) = "S" Entonces
 										administradores[indice, 0] <- ""
@@ -574,7 +552,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Sino
 								Escribir "No hay administradores registrados."
 							FinSi
-						3:   // Listar Administradores
+						"3":   // Listar Administradores
 							
 							Escribir ""
 							Escribir "*** LISTADO DE ADMINISTRADORES ***"                            
@@ -595,13 +573,16 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								Escribir "----------------------------------------"
 								Escribir "Total de Administradores registrados: ", totalAdministradores
 							FinSi
-						4:  
+						"4":  
 							Escribir "Volviendo al menú de Administrador..."
 							Esperar 1 Segundos
 							Limpiar Pantalla
+						De Otro Modo:
+							Escribir "Opción incorrecta"
+							Esperar 1 segundo
 					Fin Segun
-				Hasta Que opGestion = 4
-			4:	
+				Hasta Que resp == "4"
+			"4":	
 				Escribir "Volviendo al Menú principal..."
 				Esperar 2 Segundos
 				Limpiar Pantalla
@@ -609,7 +590,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 				Escribir "Eligió una opción inválida."
 		Fin Segun		
 		
-	Hasta Que opAdmin == 4	
+	Hasta Que opAdmin == "4"	
 FinSubAlgoritmo
 
 
@@ -634,17 +615,9 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 						1: //Agregar Libros
 							Repetir
 								crearLibro(libros, cantLibros)
-								Repetir
-									Escribir "Desea agregar otro libro? (S/N)"
-									Leer resp
-									resp<-Mayusculas(resp)	
-									si resp<>"S" y resp<>"N" Entonces
-										Escribir "Entrada inválida. Por favor ingrese S para Sí o N para No."	
-										Leer resp
-										resp<-Mayusculas(resp)	
-									FinSi
-								Hasta Que (resp = "S" o resp = "N")	
-									
+								
+								resp <- confirmarInformacion("Desea agregar otro libro? (S/N)")
+								
 								Si resp = "S" Entonces
 									Limpiar Pantalla
 								Sino 	
@@ -701,23 +674,14 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 						1: //Agregar Socios
 							Repetir
 								crearSocio(socios, cantSocios)
-								Repetir
-									Escribir "¿Desea agregar otro socio? (S/N)"
-									Leer resp
-									resp <- Mayusculas(resp)	
-									Si resp <> "S" Y resp <> "N" Entonces
-										Escribir "Por favor ingrese S para Sí o N para No."	
-										Leer resp
-										resp <- Mayusculas(resp)	
-									FinSi
-								Hasta Que (resp = "S" O resp = "N")	
-									
+								
+								resp <- confirmarInformacion("¿Desea agregar otro socio? (S/N)")
+								
 								Si resp = "S" Entonces
 									Limpiar Pantalla
 								Sino 	
 									Escribir "Volviendo a Menú de Socios..."
-								FinSi
-								
+								FinSi								
 								
 							Mientras Que (resp <> "N")
 							
@@ -806,6 +770,24 @@ SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros, prestamos Por Refer
 	Hasta Que op=4
 		
 FinSubAlgoritmo
+
+//Respuesta S/N
+Funcion respuesta<-confirmarInformacion(mensaje) 
+	Definir respuesta Como Caracter	
+	Repetir
+		Escribir mensaje
+		Leer respuesta
+		respuesta <- Mayusculas(respuesta)	
+		
+		Mientras respuesta <> "S" Y respuesta <> "N"
+			Escribir "Por favor ingrese S para Sí o N para No."	
+			Leer respuesta
+			respuesta <- Mayusculas(respuesta)	
+		FinMientras
+	Hasta Que (respuesta == "S" O respuesta == "N")
+FinFuncion
+
+
 
 //*******************************************MENUES PARA MOSTRAR*******************************************************
 SubProceso  mostrarMenuAcceso
@@ -1229,16 +1211,8 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 		Escribir anoPublicacionLibro
 		Escribir sin saltar "Stock: "
 		Escribir stockLibro 
-			
-		Repetir
-			Escribir ""
-			Escribir "Confirma ingreso? (S/N)"
-			Leer opUsuario
-			opUsuario <- Mayusculas(opUsuario)
-			Si (opUsuario <> "S" y opUsuario <> "N")
-				Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
-			FinSi
-		Hasta Que (opUsuario="S" o opUsuario="N")
+		
+		opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 		
 		Esperar 1 segundo
 		Si Mayusculas(opUsuario) = "S" Entonces
@@ -1437,17 +1411,9 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
             Escribir "Año de Publicacion: ", anoPublicacionLibro
 			Escribir "Stock: ", stockLibro
 			
-            Repetir
-				Escribir ""
-				Escribir "Confirma los cambios? (S/N)"
-				Leer opUsuario
-				opUsuario <- Mayusculas(opUsuario)
-				Si (opUsuario <> "S" y opUsuario <> "N")
-					Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
-				FinSi
-			Hasta Que (opUsuario="S" o opUsuario="N")
-            
-			Esperar 1 segundo
+			opUsuario <- confirmarInformacion( "Confirma los cambios? (S/N)")
+			Esperar 1 Segundos
+			
             Si Mayusculas(opUsuario) = "S" Entonces
                 confirmar <- 1
 				Escribir "Cambios confirmados"				
@@ -1528,16 +1494,10 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		Escribir sin saltar "Estado: "
 		Escribir estadoSocio
 		
-		Repetir
-			Escribir ""
-			Escribir "Confirma ingreso? (S/N)"
-			Leer opUsuario
-			opUsuario <- Mayusculas(opUsuario)
-			Si (opUsuario <> "S" y opUsuario <> "N")
-				Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
-			FinSi
-		Hasta Que (opUsuario="S" o opUsuario="N")
+		Escribir ""
+		opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 		Esperar 1 segundo
+		
 		Si Mayusculas(opUsuario) = "S" Entonces
 			confirmar <- 1
 			Escribir "Ingreso del Socio ", nombreSocio " confirmado"				
@@ -1708,15 +1668,8 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "2. Teléfono: ", telSocio
             Escribir "3. Estado: ", estadoSocio
 			
-			Repetir
-				Escribir ""
-				Escribir "Confirma los cambios? (S/N)"
-				Leer opUsuario
-				opUsuario <- Mayusculas(opUsuario)
-				Si (opUsuario <> "S" y opUsuario <> "N")
-					Escribir "Opción inválida. Por favor ingrese S (para confirmar) o N (para descartar)."
-				FinSi
-			Hasta Que (opUsuario="S" o opUsuario="N")
+			Escribir ""
+			opUsuario <- confirmarInformacion("Confirma los cambios? (S/N)")
             
 			Esperar 1 segundo
             Si Mayusculas(opUsuario) = "S" Entonces
@@ -1937,17 +1890,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                     "HABILITADO":
                         Escribir "Socio ", socios[indiceSocio,1] " habilitado para préstamo"
 						
-						Repetir
-							Escribir "Desea registrar préstamo (S-N)?"
-							Leer op
-							op <- Mayusculas(op)
-							Si op<>"S" y op<>"N" Entonces
-								Escribir "Por favor ingrese S para Sí o N para No"
-								Leer op
-								op <- Mayusculas(op)
-							FinSi
-						Hasta Que (op = "S" o op = "N")						
-						
+						op <- confirmarInformacion("Desea registrar préstamo (S/N)?")
+							
                         Segun op Hacer
                             "S":
                                 Escribir "Registrando préstamo..."
@@ -2163,17 +2107,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 				FinSi
 			FinPara
 			
-			Repetir
-				Escribir "Desea registrar devolución (S-N)?"
-				Leer op
-				op <- Mayusculas(op)
-				Si op<>"S" y op<>"N" Entonces
-					Escribir "Por favor ingrese S para Sí o N para No"
-					Leer op
-					op <- Mayusculas(op)
-				FinSi
-			Hasta Que (op = "S" o op = "N")
-			
+			op <- confirmarInformacion("Desea registrar devolución (S/N)?")
 				
 			Si op = "S" Entonces
 				Escribir "Registrando Devolución..."
