@@ -1,8 +1,8 @@
 Algoritmo biblioteca
 	
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
-	Definir resp Como Caracter
-	Definir op, modulo, opLibros, opSocios, opAcceso, i, j Como Entero 
+	Definir resp, opAcceso Como Caracter
+	Definir op, modulo, opLibros, opSocios, i, j Como Entero 
 	
 	//VARIABLES PRESTAMOS
 	Definir cantPrestamos, camposPrestamos Como Entero
@@ -75,7 +75,7 @@ Algoritmo biblioteca
 		Leer opAcceso
 		
 		Segun opAcceso Hacer
-			1:	//Acceso Admin
+			"1":	//Acceso Admin
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
 					Escribir "*** ACCESO ADMINISTRADOR ***"					
 					Escribir Sin Saltar "Nombre: "
@@ -105,7 +105,7 @@ Algoritmo biblioteca
 				
 				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios) 		
 				
-			2:  //Acceso Bibliotecario		
+			"2":  //Acceso Bibliotecario		
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
 				Escribir "*** ACCESO BIBLIOTECARIO ***"
 				Escribir Sin Saltar "Indique su nombre: "
@@ -135,19 +135,19 @@ Algoritmo biblioteca
 			FinSi
 				
 			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
-		3:
+		"3":
 			//Acceso Socios -  HAY Q COMPLETAR...
 			Escribir "*** ACCESO SOCIOS ***"
 			
 			sociosVista(libros, cantLibros, prestamos, cantPrestamos)
-		0:
+		"0":
 			Escribir "Saliendo del Sistema..."
 			Esperar 1 segundo
 		De Otro Modo:
 			Escribir "Eligió una opción inválida."
 	Fin Segun
 	
-	Hasta Que opAcceso == 0
+	Hasta Que opAcceso == "0"
 	
 FinAlgoritmo
 
@@ -941,9 +941,43 @@ Funcion txt <- pedirTexto(mensaje)
 	txt <- input
 FinFuncion
 
-//PidoTextoOpcional (para modificaciones) 
-Funcion pidoTextoOpcional(libros Por Referencia)
-	//Completar
+//Pido Texto Opcional (para modificaciones) 
+Funcion txtOpcional <- pedirTextoOpcional(mensaje, valorActual)
+	
+	Definir i Como Entero
+	Definir resp, txtOpcional como Cadena
+	Definir letra Como Caracter
+	Definir esTextoValido Como Logico
+	esTextoValido <- Falso
+	
+	//Verifico: si ingresa vacio, queda el valor anterior. Si no: valida q sea texto el nuevo ingreso	 
+	Repetir
+		Escribir Sin Saltar mensaje
+		Leer resp
+		
+		Si Longitud(resp) = 0 Entonces
+			txtOpcional <- valorActual 
+			esTextoValido <- Verdadero
+		Sino
+			Para i<-0 Hasta Longitud(resp)-1 Con Paso 1 Hacer
+				letra <- Subcadena(resp, i ,i)	
+				Si (letra < "A" o letra > "Z") y (letra < "a" o letra > "z") y (letra <> "á") y (letra <> "é") y (letra <> "í") y (letra <> "ó") y (letra <> "ú") y (letra <> "Á") y (letra <> "É") y (letra <> "Í") y (letra <> "Ó") y (letra <> "Ú") y (letra <> "ñ") y (letra <> "Ñ") y (letra <> " ") Entonces
+					esTextoValido <- Falso	
+				Sino 
+					esTextoValido <- Verdadero
+				FinSi
+			Fin Para	
+			Si !esTextoValido
+				Escribir "Error. El nombre sólo puede contener letras"				
+			FinSi
+		FinSi	
+	Hasta Que esTextoValido	
+    
+	Si esTextoValido
+		txtOpcional <- resp		
+	FinSi
+	
+	
 FinFuncion
 
 //Valido Números
@@ -977,8 +1011,7 @@ Funcion num <- pedirNumero(mensaje)
 	definir num Como Entero
 	Definir esNumero Como Logico
 	definir numInput, input como cadena
-	esNumero <- Falso
-	
+	esNumero <- Falso	
 	
 	Mientras !esNumero Hacer
 		Escribir Sin Saltar mensaje
@@ -1010,22 +1043,22 @@ FinFuncion
 
 //Pido un número (opcional) y devuelvo como texto - para modificaciones
 Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
-    Definir numero Como Entero
-    Definir numTexto, input Como Cadena
+    Definir num Como Entero
+    Definir numTexto, resp Como Cadena
     Definir esNumero Como Logico
 	
     Escribir Sin Saltar mensaje
-    Leer input
+    Leer resp
 	
-    Si Longitud(input) = 0 Entonces
+    Si Longitud(resp) = 0 Entonces
         numTexto <- valorActual
     Sino
-        esNumero <- EsNumeroEnteroPositivo(input)
+        esNumero <- EsNumeroEnteroPositivo(resp)
         Si esNumero Entonces
-            numero <- ConvertirANumero(input)
-            numTexto <- ConvertirATexto(numero)
+            numero <- ConvertirANumero(resp)
+            numTexto <- ConvertirATexto(num)
         Sino
-            Escribir "Entrada inválida. Ingrese un número entero mayor o igual a cero. "
+            Escribir "Entrada inválida. Ingrese un número. "
             numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
         FinSi
     FinSi
@@ -1372,26 +1405,23 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
 			
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
 			
-            Escribir Sin Saltar "Nuevo Título: "
-            Leer nuevoDato
+			nuevoDato <- pedirTextoOpcional("Nuevo Título: ", tituloLibro)
 			nuevoDato <- Mayusculas(nuevoDato)
-            Si Longitud(nuevoDato) > 0 Entonces
-                tituloLibro <- nuevoDato
-            FinSi			
+			Si Longitud(nuevoDato) > 0 Entonces
+				tituloLibro <- nuevoDato
+			FinSi	
 			
-            Escribir Sin Saltar "Nuevo Autor: "
-			Leer nuevoDato
+			nuevoDato <- pedirTextoOpcional("Nuevo Autor: ", autorLibro)
 			nuevoDato <- Mayusculas(nuevoDato)
-            Si Longitud(nuevoDato) > 0 Entonces
-                autorLibro <- nuevoDato
-            FinSi		
+			Si Longitud(nuevoDato) > 0 Entonces
+				autorLibro <- nuevoDato
+			FinSi	
 			
-            Escribir Sin Saltar "Nuevo Género: "
-			Leer nuevoDato
-			nuevoDato <- Mayusculas(nuevoDato)			
-            Si Longitud(nuevoDato) > 0 Entonces
-                generoLibro <- nuevoDato
-            FinSi			
+			nuevoDato <- pedirTextoOpcional("Nuevo Género: ", generoLibro)
+			nuevoDato <- Mayusculas(nuevoDato)
+			Si Longitud(nuevoDato) > 0 Entonces
+				generoLibro <- nuevoDato
+			FinSi	
 			
 			anoPublicacionLibro <- pedirNumeroComoTextoOpcional("Nuevo Año de Publicacion: ", anoPublicacionLibro)
 			
@@ -1641,13 +1671,12 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
 			Escribir ""
 			
-            Escribir Sin Saltar "Nuevo Nombre y apellido: "            
-			Leer nuevoDato			
-            Si Longitud(nuevoDato) > 0 Entonces
-				nuevoDato <- Mayusculas(nuevoDato)
-				nombreSocio <-  nuevoDato
-				
-            FinSi			
+			nuevoDato <- pedirTextoOpcional("Nuevo Nombre y apellido: ", nombreSocio)
+			nuevoDato <- Mayusculas(nuevoDato)
+			Si Longitud(nuevoDato)>0 Entonces
+				nombreSocio <-  nuevoDato				
+			FinSi
+			
 			
 			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
 			
