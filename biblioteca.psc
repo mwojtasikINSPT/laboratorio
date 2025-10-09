@@ -387,7 +387,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Escribir "3. Eliminar Socio"
 					Escribir "4. Listar Socios"
 					Escribir "5. Volver"
-					Escribir "Elija una opción (1-4): "
+					Escribir "Elija una opción (1-5): "
 					Leer opGestion
 					
 					Segun opGestion Hacer
@@ -786,7 +786,6 @@ SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros, prestamos Por Refer
 				Esperar Tecla
 				Limpiar Pantalla
 			2:
-				//Ver mis préstamos
 				Escribir ""
 				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros)
 				Escribir "Acá podrá ver préstamos..."
@@ -942,7 +941,10 @@ Funcion txt <- pedirTexto(mensaje)
 	txt <- input
 FinFuncion
 
-//Pido Texto opcional (para modificaciones) 
+//PidoTextoOpcional (para modificaciones) 
+Funcion pidoTextoOpcional(libros Por Referencia)
+	//Completar
+FinFuncion
 
 //Valido Números
 Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
@@ -1170,7 +1172,6 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 		tituloLibro<-pedirTexto("Ingrese Nombre del libro: ")
 		autorLibro<-pedirTexto("Ingrese Autor: ")
 		generoLibro<-pedirTexto("Ingrese Género: ")
-		//anoPublicacionLibro <- pedirNumero("Año de publicacion: ")
 		numTemporal<-pedirNumero("Año de publicacion: ")
 		anoPublicacionLibro <- ConvertirATexto(numTemporal)
 		stockTemporal<-pedirNumero("Cantidad de ejemplares: ") 
@@ -1454,7 +1455,6 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 			Escribir "Genero: ", libros[i,3]
 			Escribir "Año de Publicacion: ", libros[i,4]
 			Escribir "Disponible: ", libros[i,5]
-			//Escribir "Fecha prevista de devolucion: ", libros[i,6] //Ver  
 			Escribir "Cantidad de ejemplares disponibles para préstamo: ", libros[i,7]
 			Si libros[i,8]="" Entonces
 				Escribir "No hay ejemplares de este libro en préstamo"
@@ -1646,6 +1646,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Si Longitud(nuevoDato) > 0 Entonces
 				nuevoDato <- Mayusculas(nuevoDato)
 				nombreSocio <-  nuevoDato
+				
             FinSi			
 			
 			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
@@ -1668,8 +1669,6 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 						estadoSocio <- "MULTADO"
 						Escribir "Ingrese los dias de penalización: "
 						leer penalizacionSocio
-					De Otro Modo:
-						//nada, ya aviso antes q no cambia
 				Fin Segun
             FinSi			
 			Esperar 2 segundos
@@ -2178,7 +2177,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 					FinSi
 					
 					// 4. LIMPIAR FECHA DE DEVOLUCIÓN DEL LIBRO 
-					libros[indiceLibro,6] <- "" 
+					//libros[indiceLibro,6] <- "" 
 					
 					// Elimino el préstamo
 					Para j <- 0 Hasta camposPrestamos-1 Hacer
