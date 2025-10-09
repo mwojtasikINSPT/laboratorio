@@ -194,6 +194,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	Definir nombreIngresado, claveIngresada, nombreAdmin, claveAdmin Como Cadena
 	Definir intentos, accesoValido, totalAdministradores Como Entero
 	Definir administradorExiste, hayAdministradores Como Logico
+	definir cantAdmins Como Entero
+	cantAdmins <- 0
 	intentos <- 0
 	accesoValido <- 0
 	
@@ -517,40 +519,44 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								Si administradores[i, 0] <> "" Entonces
 									Escribir i+1, ". ", administradores[i, 0], " - Clave: ", administradores[i, 1]
 									hayAdministradores <- Verdadero
+									cantAdmins <- i
 								FinSi
 							FinPara
 							
 							Si hayAdministradores Entonces
-								Escribir ""
-								Escribir "Ingrese el nombre del Administrador a eliminar: "
-								Leer nombreAdmin
-								nombreAdmin <- Mayusculas(nombreAdmin)
-								
-								// Busco admin por nombre
-								indice <- -1
-								Para i <- 0 Hasta cantAdministradores-1  Hacer
-									Si administradores[i, 0] = nombreAdmin Entonces
-										indice <- i
-									FinSi
-								FinPara
-								
-								Si indice = -1 Entonces
-									Escribir "No se encontró un Administrador con ese nombre."
-								Sino
-									Escribir "Administrador encontrado: ", administradores[indice, 0]
-									dato <-administradores[indice, 0]
-									opUsuario <- confirmarInformacion("¿Confirma que desea eliminar al administrador " + dato + "? (S/N)")	
+								Si cantAdmins = 0 Entonces
+									Escribir ""
+									Escribir "NO SE PUEDE ELIMINAR AL ADMIN"
+									Escribir "Debe haber al menos un administrador del Sistema"
+								SiNo
+									Escribir ""
+									Escribir "Ingrese el nombre del Administrador a eliminar: "
+									Leer nombreAdmin
+									nombreAdmin <- Mayusculas(nombreAdmin)
 									
-									Si Mayusculas(opUsuario) = "S" Entonces
-										administradores[indice, 0] <- ""
-										administradores[indice, 1] <- ""
-										Escribir "Administrador eliminado exitosamente."
+									indice <- -1
+									Para i <- 0 Hasta cantAdministradores-1  Hacer
+										Si administradores[i, 0] = nombreAdmin Entonces
+											indice <- i
+										FinSi
+									FinPara
+									
+									Si indice = -1 Entonces
+										Escribir "No se encontró un Administrador con ese nombre."
 									Sino
-										Escribir "Eliminación cancelada."
+										Escribir "Administrador encontrado: ", administradores[indice, 0]
+										dato <-administradores[indice, 0]
+										opUsuario <- confirmarInformacion("¿Confirma que desea eliminar al administrador " + dato + "? (S/N)")	
+										
+										Si Mayusculas(opUsuario) = "S" Entonces
+											administradores[indice, 0] <- ""
+											administradores[indice, 1] <- ""
+											Escribir "Administrador eliminado exitosamente."
+										Sino
+											Escribir "Eliminación cancelada."
+										FinSi
 									FinSi
-								FinSi
-							Sino
-								Escribir "No hay administradores registrados."
+								FinSi										
 							FinSi
 						"3":   // Listar Administradores
 							
