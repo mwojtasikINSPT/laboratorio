@@ -1,5 +1,6 @@
 Algoritmo biblioteca
 	
+	
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp, opAcceso Como Caracter
 	Definir op, modulo, opLibros, opSocios, i, j Como Entero 
@@ -66,19 +67,19 @@ Algoritmo biblioteca
 	// Precargo Administradores para pruebas
 	administradoresPrecargados(administradores, cantAdministradores, camposAdministradores)
 	
-	
 	bienvenidaSistema
 	
 	//Acceso diferenciado por tipo de usuario: Admin, Bibliotecario, Socio
 	Repetir
 		mostrarMenuAcceso
 		Leer opAcceso
+		//esperarLimpiar("")
 		
 		Segun opAcceso Hacer
 			"1":	//Acceso Admin
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
 					Escribir "*** ACCESO ADMINISTRADOR ***"	
-					Escribir ""
+					espacio
 					Escribir "Intento ", intentos + 1, " de 3"
 					Escribir Sin Saltar "Ingrese su Nombre: "
 					Leer nombreIngresado
@@ -106,7 +107,7 @@ Algoritmo biblioteca
 			"2":  //Acceso Bibliotecario		
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
 				Escribir "*** ACCESO BIBLIOTECARIO ***"	
-				EScribir ""
+				espacio
 				Escribir "Intento ", intentos + 1, " de 3"
 				Escribir Sin Saltar "Ingrese su nombre: "
 				Leer nombreIngresado
@@ -131,20 +132,24 @@ Algoritmo biblioteca
 				
 			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
 		"3":
-			//Acceso Socios -  HAY Q COMPLETAR...
-			Escribir "*** ACCESO SOCIOS ***"
-			
-			sociosVista(libros, cantLibros, prestamos, cantPrestamos)
+			//Acceso Socios
+			Escribir "*** ACCESO SOCIOS ***"			
+			socio(libros, cantLibros, prestamos, cantPrestamos, socios, cantSocios)
 		"0":
+			Escribir "Gracias por usar nuestro Sistema de Gestión de Biblioteca"
+			espacio
 			esperarLimpiar("Saliendo del Sistema...")
 		De Otro Modo:
-			Escribir "Eligió una opción inválida."
+			esperarLimpiar("Eligió una opción inválida.")
 	Fin Segun
 	
 	Hasta Que opAcceso == "0"
 	
 FinAlgoritmo
 
+SubProceso espacio
+	Escribir ""
+FinSubProceso
 
 //******************************************* FUNCIONES AUXILIARES - VALIDACION DE ACCESO *******************************************************
 Funcion esValido <- validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores)
@@ -205,7 +210,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 			"1":
 				//Gestiono Bibliotecarios
 				Repetir
-					Escribir ""
+					espacio
                     Escribir "*** GESTIÓN DE BIBLIOTECARIOS ***"
                     Escribir "1. Agregar Bibliotecario"
                     Escribir "2. Eliminar Bibliotecario"
@@ -287,9 +292,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Limpiar Pantalla
 							
 						"2":	//Elimino Bibliotecario							
-							Escribir ""
+							espacio
                             Escribir "*** ELIMINAR BIBLIOTECARIO ***"
-                            Escribir ""
+                            espacio
                             // Mostrar bibliotecarios existentes
                             Escribir "Bibliotecarios registrados:"
                             Definir hayBibliotecarios Como Logico
@@ -336,7 +341,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							
 						"3":
 							//Muestro Bibliotecarios
-							Escribir ""
+							espacio
                             Escribir "*** LISTADO DE BIBLIOTECARIOS ***"                            
                             totalBibliotecarios <- 0
 							
@@ -366,8 +371,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 			"2": //Gestiono Socios
 				Escribir "Gestión de Socios En proceso..." //Terminar
 				Repetir
-					Escribir ""
+					espacio
 					Escribir "*** GESTIÓN DE SOCIOS ***"
+					espacio
 					Escribir "1. Agregar Socio"
 					Escribir "2. Modificar Socio"
 					Escribir "3. Eliminar Socio"
@@ -411,13 +417,14 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 			"3":				
 				//Gestiono Admins
 				Repetir
-					Escribir ""
+					espacio
 					Escribir "*** GESTIÓN DE ADMINISTRADORES ***"
+					espacio
 					Escribir "1. Agregar Administrador"
 					Escribir "2. Eliminar Administrador"
 					Escribir "3. Listar Administradores"
 					Escribir "4. Volver"
-					Escribir "Elija una opción (1-4): "
+					Escribir Sin Saltar "Elija una opción (1-4): "
 					Leer resp
 					
 					Segun resp Hacer
@@ -455,7 +462,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										
 										Si administradorExiste Entonces
 											Escribir "Ese Administrador ya se encuentra registrado."
-											Escribir ""
+											espacio
 										Sino
 											Limpiar Pantalla
 											Escribir "*** DATOS DEL NUEVO ADMINISTRADOR ***"
@@ -488,9 +495,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
 						"2":  // Eliminar Administrador  
-							Escribir ""
+							espacio
 							Escribir "*** ELIMINAR ADMINISTRADOR ***"
-							Escribir ""
+							espacio
 							// Mostrar admins existentes
 							Escribir "Administradores registrados:"
 							hayAdministradores <- Falso
@@ -505,11 +512,11 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							
 							Si hayAdministradores Entonces
 								Si cantAdmins = 0 Entonces
-									Escribir ""
+									espacio
 									Escribir "NO SE PUEDE ELIMINAR AL ADMIN"
 									Escribir "Debe haber al menos un administrador del Sistema"
 								SiNo
-									Escribir ""
+									espacio
 									Escribir "Ingrese el nombre del Administrador a eliminar: "
 									Leer nombreAdmin
 									nombreAdmin <- Mayusculas(nombreAdmin)
@@ -540,7 +547,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							FinSi
 						"3":   // Listar Administradores
 							
-							Escribir ""
+							espacio
 							Escribir "*** LISTADO DE ADMINISTRADORES ***"                            
 							totalAdministradores <- 0
 							
@@ -577,22 +584,22 @@ FinSubAlgoritmo
 
 //Vista Bibliotecario
 SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos)
-	Definir resp Como Caracter
-	Definir op, modulo, opLibros, opSocios, opAcceso, i, j Como Entero 
+	Definir resp, modulo, op, opLibros, opSocios Como Caracter
+	//Definir i, j Como Entero 
 	
 	Repetir
 		mostrarMenuPpalBibliotecario
 		Leer modulo
 		
 		Segun modulo Hacer
-			1:
+			"1":
 				Repetir
 					mostrarMenuLibros
 					Leer opLibros
 					esperarLimpiar("")
 					
 					Segun opLibros Hacer
-						1: //Agregar Libros
+						"1": //Agregar Libros
 							Repetir
 								crearLibro(libros, cantLibros)
 								
@@ -605,47 +612,47 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 								FinSi
 								esperarLimpiar("")
 							Mientras Que (resp<>"N")	
-						2: //Consultar Libros
+						"2": //Consultar Libros
 							Repetir
 								mostrarSubMenuConsultaLibros
 								Leer op 
 								
 								Segun op Hacer
-									1:
+									"1":
 										buscarLibro(libros, cantLibros)
-									2:
+									"2":
 										modificarLibro(libros, cantLibros)
-									3:	
+									"3":	
 										Limpiar Pantalla
 										mostrarLibros(libros, cantLibros)
-									4:
+									"4":
 										registrarPrestamo(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos)		
-									5:	
+									"5":	
 										mostrarPrestamos(prestamos, cantPrestamos)
-									6:
+									"6":
 										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
-										Escribir ""
-									7:
+										espacio
+									"7":
 										esperarLimpiar("Volviendo a menu anterior...")
 									De Otro Modo:
 										esperarLimpiar("Eligió una opción inválida.")
 								Fin Segun
-							Hasta Que (op==7)
-						3:							
+							Hasta Que (op == "7")
+						"3":							
 							esperarLimpiar("Volviendo al menu principal...")
 						De Otro Modo:
 							Escribir "Eligió una opción inválida."
 					Fin Segun
 					
-				Mientras que (opLibros<>3)
-			2:
+				Mientras que (opLibros <> "3")
+			"2":
 				Repetir
 					mostrarMenuSocios
 					Leer opSocios
-					Esperar 1 segundos
+					esperarLimpiar("")
 					
 					Segun opSocios Hacer
-						1: //Agregar Socios
+						"1": //Agregar Socios
 							Repetir
 								crearSocio(socios, cantSocios)
 								
@@ -654,93 +661,97 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 								Si resp = "S" Entonces
 									Limpiar Pantalla
 								Sino 	
-									Escribir "Volviendo a Menú de Socios..."
+									esperarLimpiar("Volviendo a Menú de Socios...")
 								FinSi								
 								
 							Mientras Que (resp <> "N")
 							
-						2: //Consultar Socios
+						"2": //Consultar Socios
 							Repetir
 								mostrarSubMenuConsultaSocios
 								Leer op 
 								Segun op Hacer
-									1:
+									"1":
 										buscarSocio(socios, cantSocios)
-									2:
+									"2":
 										modificarSocio(socios, cantSocios)
-									3:	
+									"3":	
 										Limpiar Pantalla
 										mostrarSocios(socios, cantSocios)
-									4:	
+									"4":	
 										esperarLimpiar("Volviendo a menú anterior...")
 									De Otro Modo:
 										Escribir "Eligió una opción inválida."
 								Fin Segun
-							Hasta Que (op = 4)
+							Hasta Que (op == "4")
 							
-						3: 
+						"3": 
 							esperarLimpiar("Volviendo a Menú Principal...")	
 						De Otro Modo:
-							Escribir "Eligió una opción inválida."
+							esperarLimpiar("Eligió una opción inválida.")
 					Fin Segun
 					
-				Hasta Que (opSocios = 3) 
-			3:
+				Hasta Que (opSocios == "3") 
+			"3":
 				esperarLimpiar("Volviendo a Menú de Usuarios...")	
 			De Otro Modo:
-				Escribir "Eligió una opción inválida."
+				esperarLimpiar("Eligió una opción inválida.")
 		Fin Segun
-	Hasta Que (modulo==3)
+	Hasta Que (modulo == "3")
 FinSubAlgoritmo
 
 //*******************************************SOCIOS*******************************************************
-//Vista Socios -- En proceso!!!
-SubAlgoritmo sociosVista (Libros Por Referencia, cantLibros, prestamos Por Referencia, cantPrestamos)
-	Definir op Como Entero
+//Vista Socios 
+SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia, cantPrestamos, socios Por Referencia, cantSocios)
+	Definir op Como Caracter
 	
 	Repetir		
-		Escribir ""
+		espacio
         Escribir "*** MENÚ SOCIOS ***"
+		espacio
         Escribir "1. Ver Libros Disponibles"
-        Escribir "2. Ver mis préstamos activos"
-        Escribir "3. Ver mi estado"
-		Escribir "4. Volver al menú principal"
-        Escribir "Elija una opción (1-4): "
+		Escribir "2. Buscar Libros"
+        Escribir "3. Ver mis préstamos activos"
+        Escribir "4. Ver mi estado"
+		Escribir "5. Volver al menú principal"
+        Escribir "Elija una opción (1-5): "
         Leer op
-		Esperar 1 segundos
 		
 		Segun op Hacer
-			1:
+			"1":
+				esperarLimpiar("")
 				mostrarLibros(libros, cantLibros)
-//				esperarLimpiar("Presione una tecla para Volver...")	
-//				Esperar Tecla
-			2:
-				Escribir ""
+			"2":
+				esperarLimpiar("")
+				buscarLibro(libros, cantLibros)
+			"3":
+				esperarLimpiar("")
 				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros)
-				Escribir "Acá podrá ver préstamos..."
-				Esperar 2 Segundos
-				Limpiar Pantalla
-			3:
-				//Ver Estado
-				Escribir "Acá podrá ver su estado.."
-				Esperar 2 Segundos
-				Limpiar Pantalla
-			4:	
-				Escribir "Volviendo a Menú anterior..."
-				Esperar 1 segundo
+				esperarLimpiar("")
+			"4":
+				mostrarEstadoSocio(socios, cantSocios)
+				esperarLimpiar("")
+			"5":	
+				esperarLimpiar("Volviendo a Menú anterior...")
 			De Otro Modo:
-				Escribir "Opción inválida"
+				esperarLimpiar("Opción inválida")
 		Fin Segun	
 		
-	Hasta Que op=4
-		
+	Hasta Que op == "5"		
 FinSubAlgoritmo
+
+//*******************************************FUNCIONES AUXILIARES*******************************************************
+SubProceso esperarLimpiar(mensaje)
+	Escribir mensaje
+	Esperar 2 segundos
+	Limpiar Pantalla
+FinSubProceso
 
 //Respuesta S/N
 Funcion respuesta<-confirmarInformacion(mensaje) 
 	Definir respuesta Como Caracter	
 	Repetir
-		Escribir ""
+		espacio
 		Escribir mensaje
 		Leer respuesta
 		respuesta <- Mayusculas(respuesta)	
@@ -753,92 +764,6 @@ Funcion respuesta<-confirmarInformacion(mensaje)
 	Hasta Que (respuesta == "S" O respuesta == "N")
 FinFuncion
 
-
-
-//*******************************************MENUES PARA MOSTRAR*******************************************************
-SubProceso  mostrarMenuAcceso
-	Escribir ""
-	Escribir "Indique su tipo de usuario (0 para Salir del Sistema): "
-	Escribir ""
-	Escribir "	1. ADMIN"
-	Escribir "	2. BIBLIOTECARIO"
-	Escribir "	3. SOCIO"
-	Escribir "	0. Salir"
-	Escribir ""
-FinSubProceso
-
-SubProceso mostrarMenuPpalAdmin
-	Escribir ""
-	Escribir "Elija el módulo al que quiere acceder (4 para Volver): "
-	Escribir ""
-	Escribir "	1. ADMINs"
-	Escribir "	2. BIBLIOTECARIOS"
-	Escribir "	3. SOCIOS"
-	Escribir "4. Volver"
-	Escribir ""
-FinSubProceso
-
-SubProceso mostrarMenuPpalBibliotecario
-	Escribir ""
-	Escribir "Elija el módulo al que quiere acceder (3 para Volver): "
-	Escribir ""
-	Escribir "	1. LIBROS"
-	Escribir "	2. SOCIOS"
-	Escribir "	3. Volver"
-	Escribir ""
-FinSubProceso
-
-SubProceso mostrarMenuLibros
-	Escribir ""
-	Escribir "**** MENU LIBROS ****"
-	Escribir "1. Agregar libros"		
-	Escribir "2. Consultar libros"
-	Escribir "3. Volver al menu principal"
-	Escribir ""
-	Escribir Sin Saltar "Elija la opcion: "	
-FinSubProceso
-
-SubProceso  mostrarSubMenuConsultaLibros
-	Escribir ""
-	Escribir "***Sub Menu Consulta de Libros***"
-	Escribir "1. Buscar Libro"
-	Escribir "2. Modificar datos de libro"
-	Escribir "3. Listado de Libros"
-	Escribir "4. Registrar Préstamo"
-	Escribir "5. Listado de Préstamos"
-	Escribir "6. Registrar Devolución"
-	Escribir "7. Volver"
-	Escribir ""
-	Escribir Sin Saltar "Elija la opcion: "
-FinSubProceso
-
-SubProceso mostrarMenuSocios
-	Escribir ""
-	Escribir "**** MENU SOCIOS ****"
-	Escribir "1. Agregar socio"		
-	Escribir "2. Consultar socios"
-	Escribir "3. Volver al menu principal"
-	Escribir ""
-	Escribir Sin Saltar "Elija la opcion: "	
-FinSubProceso
-
-SubProceso  mostrarSubMenuConsultaSocios	
-	Escribir ""
-	Escribir "***Sub Menu Consulta de Socios***"
-	Escribir "1. Buscar Socio"
-	Escribir "2. Modificar datos del socio"
-	Escribir "3. Listado de Socios"
-	Escribir "4. Volver"
-	Escribir ""
-	Escribir Sin Saltar "Elija la opcion: "
-FinSubProceso
-
-//*******************************************FUNCIONES AUXILIARES*******************************************************
-SubProceso esperarLimpiar(mensaje)
-	Escribir mensaje
-	Esperar 2 segundos
-	Limpiar Pantalla
-FinSubProceso
 
 //Asigno posición a cada libro ingresado
 Funcion posicion<-buscarUltimo(libros, cantLibros) 
@@ -853,7 +778,6 @@ Funcion posicion<-buscarUltimo(libros, cantLibros)
         posicion <- -1
     FinSi
 FinFuncion
-
 
 //Valido Texto
 Funcion esTextoValido <- ValidarTexto(cadenaAVerificar)
@@ -989,8 +913,7 @@ Funcion numTexto <- pedirNumeroComoTexto(mensaje)
     Definir num Como Entero
     Definir numTexto Como Cadena
     num <- pedirNumero(mensaje) // ya validado como número
-	numTexto <- ConvertirATexto(num)
-    
+	numTexto <- ConvertirATexto(num)    
 FinFuncion
 
 //Pido un número (opcional) y devuelvo como texto - para modificaciones
@@ -1021,7 +944,7 @@ Funcion fechaDev <- pedirFechaDevolucion
     Definir anio, mes, dia Como Entero
     Definir fechaDev Como Cadena
     
-    Escribir ""
+    espacio
     Escribir "*** FECHA DE DEVOLUCIÓN ***"
     anio <- pedirNumero("Ingrese el año de devolución (AAAA): ")
     mes <- pedirNumero("Ingrese el mes de devolución (1-12): ")
@@ -1151,8 +1074,9 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 	confirmar <- 0
 	indice <- buscarUltimo(libros, cantLibros) 
 	Mientras confirmar = 0 Hacer
-		Escribir ""
+		espacio
 		Escribir "***INGRESO DE NUEVO LIBRO***"
+		espacio
 		idLibro<-generarId(cantLibros)
 		tituloLibro<-pedirTexto("Ingrese Nombre del libro: ")
 		autorLibro<-pedirTexto("Ingrese Autor: ")
@@ -1169,6 +1093,7 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 		Limpiar Pantalla
 		
 		Escribir "***DATOS DEL NUEVO LIBRO***"
+		espacio
 		Escribir Sin Saltar "Id del libro: "
 		Escribir idLibro
 		Escribir Sin Saltar "Nombre: "
@@ -1224,8 +1149,8 @@ FinFuncion
 
 //Buscar Libros
 Funcion buscarLibro(libros Por Referencia, cantLibros)
-	Definir tituloLibro, autorLibro, generoLibro, anoPublicacionLibro como caracter
-	Definir opUsuario, columna, resultados, i, indice, cantidad Como Entero
+	Definir tituloLibro, autorLibro, generoLibro, anoPublicacionLibro, opUsuario como caracter
+	Definir columna, resultados, i, indice, cantidad, opUsuarioNum Como Entero
 	Definir criterio como Cadena
 	Dimension resultados[cantLibros]
 	
@@ -1235,8 +1160,9 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 	FinPara
 	
 	Repetir
-		Escribir ""
+		espacio
 		Escribir "**BÚSQUEDA DE LIBRO**"
+		espacio
 		Escribir "Elija un criterio de búsqueda"
 		Escribir "1. Id"
 		Escribir "2. Título"
@@ -1244,64 +1170,70 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 		Escribir "4. Género"
 		Escribir "5. Año de publicación"
 		Escribir "6. Volver"
-		Escribir ""
+		espacio
 		Escribir Sin Saltar "Ingrese una opción (1-6): "
 		Leer opUsuario
 		
 		Segun opUsuario Hacer
-			1:
+			"1":
 				columna<-0
 				Escribir Sin Saltar "Ingrese id a buscar: "
 				Leer criterio
-			2:
+			"2":
 				columna<-1
 				Escribir Sin Saltar "Ingrese título a buscar: "
 				Leer criterio			
 				criterio<-Mayusculas(criterio)
-			3:
+			"3":
 				columna<-2
 				Escribir Sin Saltar "Ingrese autor a buscar: "
 				Leer criterio			
 				criterio<-Mayusculas(criterio)
-			4:
+			"4":
 				columna<-3
 				Escribir Sin Saltar "Ingrese género a buscar: "
 				Leer criterio			
 				criterio<-Mayusculas(criterio)
-			5:
+			"5":
 				columna<-4
 				Escribir Sin Saltar "Ingrese año de publicación a buscar: "
 				Leer criterio
-			6:
-				Escribir "Volviendo al menú de Libros..."
+			"6":
+				Escribir "Volviendo al menú anterior..."
 				Limpiar Pantalla
 			De Otro Modo:
-				Escribir "Eligió una opción inválida."
+				esperarLimpiar("Eligió una opción inválida.")
 		Fin Segun
-	Hasta Que opUsuario>=1 y opUsuario<=6
-	
-	
-	Si opUsuario >=1 y opUsuario <=5 Entonces
-		cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados, cantLibros)	
 		
-		// Mostrar resultados si hay coincidencias
-		Si cantidad = 0 Entonces
-			Escribir "No se encontraron libros con ese criterio."
-		Sino
-			Para i <- 0 Hasta cantidad - 1 Hacer
-				indice <- resultados[i]
-				Escribir "Libro encontrado:"
-				Escribir "Id: ", libros[indice, 0]
-				Escribir "Título: ", libros[indice, 1]
-				Escribir "Autor: ", libros[indice, 2]
-				Escribir "Género: ", libros[indice, 3]
-				Escribir "Año: ", libros[indice, 4]
-				Escribir "Disponible: ", libros[indice, 5]
-				Escribir "Stock: ", libros[indice, 7]
-				Escribir ""
-			FinPara
-		FinSi			
-	FinSi  
+		Si opUsuario=="1" o opUsuario=="2" o opUsuario=="3" o opUsuario=="4" o  opUsuario=="5"  Entonces
+			cantidad<-filtrarPorCriterio(libros, columna, criterio, resultados, cantLibros)	
+			
+			// Mostrar resultados si hay coincidencias
+			Si cantidad = 0 Entonces
+				esperarLimpiar("No se encontraron libros con ese criterio.")
+			Sino
+				Para i <- 0 Hasta cantidad - 1 Hacer
+					indice <- resultados[i]
+					Escribir""
+					Escribir "Libro encontrado:"
+					Escribir "Id: ", libros[indice, 0]
+					Escribir "Título: ", libros[indice, 1]
+					Escribir "Autor: ", libros[indice, 2]
+					Escribir "Género: ", libros[indice, 3]
+					Escribir "Año: ", libros[indice, 4]
+					Escribir "Disponible: ", libros[indice, 5]
+					Escribir "Stock: ", libros[indice, 7]
+					espacio
+				FinPara
+				Escribir "------------------------------------------------------------"
+				Escribir "FIN DEL LISTADO DE LIBROS ENCONTRADOS"
+				Escribir "Presione una tecla para volver..."
+				Esperar Tecla
+				esperarLimpiar("")
+			FinSi			
+		FinSi 
+	Mientras Que opUsuario !="6"		
+	 
 FinFuncion
 
 //Modificar Libro
@@ -1311,9 +1243,10 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
 	Definir datoValido Como Logico
 	
     // Pedir el ID del libro a modificar
-	Escribir ""
+	espacio
 	Escribir "**MODIFICACIÓN DE LIBRO**"
-    Escribir "Ingrese el ID del libro a modificar: "
+	espacio
+    Escribir Sin Saltar "Ingrese el ID del libro a modificar: "
     Leer idBuscado
 	
     // Buscar el libro en la matriz
@@ -1370,9 +1303,9 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
 			
 			stockLibro <- pedirNumeroComoTextoOpcional("Nueva cantidad de ejemplares: ", stockLibro)
 
-			Esperar 2 segundos
-            Limpiar Pantalla
+			esperarLimpiar("")
             Escribir "***DATOS DEL LIBRO MODIFICADOS***"
+			espacio
             Escribir "ID: ", libros[indice,0]
             Escribir "Titulo: ", tituloLibro
             Escribir "Autor: ", autorLibro
@@ -1390,10 +1323,8 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
 				Escribir "Cambios no confirmados"
 				confirmar <- 1
             FinSi
-			Escribir""
-			Escribir"Volviendo a Sub Menu Consulta de Libros..."
-			Esperar 2 segundo
-			Limpiar Pantalla
+			espacio
+			esperarLimpiar("Volviendo a Sub Menu Consulta de Libros...")
         FinMientras
 		
         // Guardo cambios en la matriz
@@ -1411,6 +1342,7 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 	Definir i Como Entero
 	
 	Escribir "*** LISTA DE LIBROS CARGADOS ***"	
+	espacio
 	Para i <- 0 Hasta cantLibros-1		
 		Si libros[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
@@ -1428,8 +1360,9 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 			FinSi
 		FinSi
 	FinPara
-	Escribir ""
+	espacio
 	Escribir "	--------------FIN DEL LISTADO DE LIBROS CARGADOS-----------------"	
+	espacio
 	Escribir "				Presione una tecla para volver"	
 	Esperar Tecla
 	esperarLimpiar("")
@@ -1444,8 +1377,9 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 	confirmar <- 0
 	indice <- buscarUltimo(socios, cantSocios) 
 	Mientras confirmar = 0 Hacer
-		Escribir ""
+		espacio
 		Escribir "***INGRESO DE NUEVO SOCIO***"
+		espacio
 		dniSocio <- pedirNumeroComoTexto("Ingrese DNI del socio: ")
 		nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")
 		telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
@@ -1453,6 +1387,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		Limpiar Pantalla
 		
 		Escribir "***DATOS DEL NUEVO SOCIO***"
+		espacio
 		Escribir Sin Saltar "DNI del socio: "
 		Escribir dniSocio
 		Escribir Sin Saltar "Nombre y Apellido: "
@@ -1462,7 +1397,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		Escribir sin saltar "Estado: "
 		Escribir estadoSocio
 		
-		Escribir ""
+		espacio
 		opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 		Esperar 1 segundo
 		
@@ -1494,14 +1429,15 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 	FinPara
 	
 	Repetir
-		Escribir ""
+		espacio
 		Escribir "**BÚSQUEDA DE SOCIO**"
+		espacio
 		Escribir "Elija un criterio de búsqueda"
 		Escribir "1. DNI"
 		Escribir "2. Nombre"
 		Escribir "3. Estado"
 		Escribir "4. Volver"
-		Escribir ""
+		espacio
 		Escribir Sin Saltar "Ingrese una opción (1-4): "
 		Leer opUsuario
 		
@@ -1550,7 +1486,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 				Escribir "Nombre y apellido: ", socios[indice, 1]
 				Escribir "Teléfono: ", socios[indice, 2]
 				Escribir "Estado: ", socios[indice, 3]
-				Escribir ""
+				espacio
 			FinPara
 		FinSi	
 	FinSi			
@@ -1562,8 +1498,9 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
     Definir opUsuario, nuevoDato, nombreSocio,telSocio,estadoSocio, penalizacionSocio, idBuscado Como Cadena
 	
     // Pedir el dni del socio a modificar
-	Escribir ""
+	espacio
 	Escribir "**MODIFICACIÓN DE SOCIO**"
+	espacio
     idBuscado <- pedirNumeroComoTexto("Ingrese el DNI del socio a modificar: ")
 	
     // Buscar el socio en la matriz
@@ -1592,7 +1529,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "Teléfono: ", telSocio
             Escribir "Estado: ", estadoSocio
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
-			Escribir ""
+			espacio
 			
 			nuevoDato <- pedirTextoOpcional("Nuevo Nombre y apellido: ", nombreSocio)
 			nuevoDato <- Mayusculas(nuevoDato)
@@ -1629,7 +1566,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
             Escribir "2. Teléfono: ", telSocio
             Escribir "3. Estado: ", estadoSocio
 			
-			Escribir ""
+			espacio
 			opUsuario <- confirmarInformacion("Confirma los cambios? (S/N)")            
 			Esperar 1 segundo
 			
@@ -1667,8 +1604,9 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 				FinSi
 		FinSi
 	FinPara
-	Escribir ""
+	espacio
 	Escribir "				FIN DEL LISTADO DE SOCIOS CARGADOS"
+	espacio
 	Escribir "				Presione una tecla para volver al menú de Consulta de Socios"
 	Esperar Tecla
 	esperarLimpiar("")
@@ -1685,7 +1623,7 @@ Funcion fechasPrestamo(fechaInicio Por Referencia, fechaFinPrestamo Por Referenc
     mes <- trunc((fecha MOD 10000) / 100)
     dia <- fecha MOD 100
 	
-	Escribir ""
+	espacio
 	Escribir "Fecha de inicio del préstamo: ", dia, "/", mes, "/", anio
 	si (dia<10) Entonces
 		diaTemp <- "0"+ConvertirATexto(dia)
@@ -1753,14 +1691,14 @@ FinFuncion
 //Muestro Libro - para préstamos y devoluciones
 SubProceso mostrarLibroEncontrado(libros Por Referencia, indiceLibro)
 	
-	Escribir ""
+	espacio
 	Escribir "-------------Datos del Libro---------------"
 	Escribir "ID: ", libros[indiceLibro,0]
 	Escribir "Titulo: ", libros[indiceLibro,1]
 	Escribir "Autor: ", libros[indiceLibro,2]
 	Escribir "Genero: ", libros[indiceLibro,3]
 	Escribir "Año de Publicacion: ", libros[indiceLibro,4]
-	Escribir ""
+	espacio
 FinSubProceso
 
 
@@ -1772,7 +1710,6 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 	
 	Escribir "Ingrese su DNI para ver préstamos activos"
 	Leer dniSocio
-	Escribir prestamos[0,0] 
 	
 	Para i <- 0 Hasta cantPrestamos-1 Hacer
 		Si dniSocio = prestamos[i,1]  Entonces
@@ -1798,6 +1735,30 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 	FinSi			
 FinSubProceso
 
+//Mostrar Estado - para socios
+SubProceso mostrarEstadoSocio(socios Por Referencia, cantSocios)
+	Definir i, indice Como Entero
+	definir dniSocio, estadoSocio como Cadena
+	indice <- -1
+	
+	Escribir sin saltar "Ingrese DNI para ver su estado"
+	Leer dniSocio
+	
+	Para i <- 0 Hasta cantSocios-1 Hacer
+		Si dniSocio == socios[i,0]  Entonces
+			indice <- i
+			estadoSocio <- socios[i,3]			
+		FinSi
+	FinPara	
+	Si indice = -1 Entonces
+		Escribir "No se encontro el socio con DNI ", dniSocio 
+	Sino	
+		Escribir "El estado del socio DNI ", dniSocio, " es: ", estadoSocio
+	FinSi
+	espacio
+	esperarLimpiar("Volviendo al menu anterior...")	
+FinSubProceso
+
 
 //Registrar préstamo
 Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos)
@@ -1807,9 +1768,9 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
     indiceSocio <- -1
     p <- 0
 	
-	Escribir ""
+	espacio
     Escribir "REGISTRAR PRÉSTAMO DE LIBRO"
-	Escribir ""
+	espacio
     Escribir Sin Saltar "Ingrese id del libro a prestar: "
     Leer idBuscado
 	
@@ -1884,7 +1845,7 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                                 socios[indiceSocio,3] <- "INHABILITADO" // tiene préstamo activo
 								socios[indiceSocio,4] <- "0"  // Reiniciar días de penalizacion
                                 Escribir "Préstamo para el socio ", socios[indiceSocio,1] " registrado con éxito"
-								Escribir ""
+								espacio
 								Escribir "Stock restante del libro: ", stockActual
 								esperar 2 segundos
 								esperarLimpiar("")
@@ -1910,9 +1871,9 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	Definir i, totalPrestamos Como Entero
 	totalPrestamos <- 0
 	
-	Escribir ""
+	espacio
 	Escribir "*** LISTA DE PRÉSTAMOS ***"	
-		
+	espacio	
 	Para i <- 0 Hasta cantPrestamos-1   
 		Si prestamos[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
@@ -1920,7 +1881,7 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 			Escribir "DNI SOCIO: ", prestamos[i,1]
 			Escribir "Fecha de inicio: ", prestamos[i,2]
 			Escribir "Fecha de devolucion pactada: ", prestamos[i,3]	
-			Escribir ""
+			espacio
 			totalPrestamos <- totalPrestamos + 1 
 		FinSi
 	FinPara
@@ -2018,7 +1979,7 @@ Funcion fechaFinPenalidad <- calcularPenalidad(diasAtraso, fechaDevolucion)
         
         Escribir "Fin de penalidad: ", dia, "/", mes, "/", anio
         Escribir "Podrá retirar libros nuevamente a partir de esta fecha"
-        Escribir ""
+        espacio
     FinSi
 FinFuncion
 
@@ -2032,8 +1993,9 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
     indiceSocio <- -1
     indicePrestamo <- -1
     
-    Escribir ""
+    espacio
     Escribir "REGISTRAR DEVOLUCIÓN DE LIBRO"
+	espacio
     dniSocio <- pedirNumeroComoTexto("Ingrese el dni del socio que quiere devolver: ")
     
     // BUSCAR SOCIO
@@ -2114,8 +2076,9 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 						libros[indiceLibro,5] <- "1"
 					FinSi
 					
-					Escribir ""
+					espacio
 					Escribir "Devolución registrada con éxito."
+					espacio
 					Escribir "Stock actualizado del libro con id ", idLibro ": ", stockActual	
 				FinSi
 			Sino
@@ -2126,6 +2089,89 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 		FinSi
 	FinSi 
 FinFuncion
+
+
+
+//*******************************************MENUES PARA MOSTRAR*******************************************************
+SubProceso  mostrarMenuAcceso
+	
+	Escribir "Indique su tipo de usuario (0 para Salir del Sistema): "
+	espacio
+	Escribir "	1. ADMIN"
+	Escribir "	2. BIBLIOTECARIO"
+	Escribir "	3. SOCIO"
+	Escribir "	0. Salir"
+	espacio
+FinSubProceso
+
+SubProceso mostrarMenuPpalAdmin
+	espacio
+	Escribir "Elija el módulo al que quiere acceder (4 para Volver): "
+	espacio
+	Escribir "	1. ADMINs"
+	Escribir "	2. BIBLIOTECARIOS"
+	Escribir "	3. SOCIOS"
+	Escribir "4. Volver"
+	espacio
+FinSubProceso
+
+SubProceso mostrarMenuPpalBibliotecario
+	espacio
+	Escribir "Elija el módulo al que quiere acceder (3 para Volver): "
+	espacio
+	Escribir "	1. LIBROS"
+	Escribir "	2. SOCIOS"
+	Escribir "	3. Volver"
+	espacio
+FinSubProceso
+
+SubProceso mostrarMenuLibros
+	espacio
+	Escribir "**** MENU LIBROS ****"
+	espacio
+	Escribir "1. Agregar libros"		
+	Escribir "2. Consultar libros"
+	Escribir "3. Volver al menu principal"
+	espacio
+	Escribir Sin Saltar "Elija la opcion: "	
+FinSubProceso
+
+SubProceso  mostrarSubMenuConsultaLibros
+	espacio
+	Escribir "***Sub Menu Consulta de Libros***"
+	espacio
+	Escribir "1. Buscar Libro"
+	Escribir "2. Modificar datos de libro"
+	Escribir "3. Listado de Libros"
+	Escribir "4. Registrar Préstamo"
+	Escribir "5. Listado de Préstamos"
+	Escribir "6. Registrar Devolución"
+	Escribir "7. Volver"
+	espacio
+	Escribir Sin Saltar "Elija la opcion: "
+FinSubProceso
+
+SubProceso mostrarMenuSocios
+	espacio
+	Escribir "**** MENU SOCIOS ****"
+	Escribir "1. Agregar socio"		
+	Escribir "2. Consultar socios"
+	Escribir "3. Volver al menu principal"
+	espacio
+	Escribir Sin Saltar "Elija la opcion: "	
+FinSubProceso
+
+SubProceso  mostrarSubMenuConsultaSocios	
+	espacio
+	Escribir "***Sub Menu Consulta de Socios***"
+	espacio
+	Escribir "1. Buscar Socio"
+	Escribir "2. Modificar datos del socio"
+	Escribir "3. Listado de Socios"
+	Escribir "4. Volver"
+	espacio
+	Escribir Sin Saltar "Elija la opcion: "
+FinSubProceso
 
 
 //LIBROS PRECARGADOS
