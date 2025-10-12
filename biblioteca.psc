@@ -73,7 +73,7 @@ Algoritmo biblioteca
 	Repetir
 		mostrarMenuAcceso
 		Leer opAcceso
-		//esperarLimpiar("")
+		esperarLimpiar("")
 		
 		Segun opAcceso Hacer
 			"1":	//Acceso Admin
@@ -185,20 +185,19 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	Definir resp, opAdmin Como Caracter
 	Definir dato como Cadena
 	//Bibliotecarios
-	Definir indice, confirmar, totalBibliotecarios Como Entero	
+	Definir indice, confirmar, totalBibliotecarios, cantAdmins Como Entero	
     Definir nombreBibliotecario, claveBibliotecario, opUsuario Como Cadena
 	//Admins
 	Definir nombreIngresado, claveIngresada, nombreAdmin, claveAdmin Como Cadena
 	Definir intentos, accesoValido, totalAdministradores Como Entero
 	Definir administradorExiste, hayAdministradores, hayBibliotecarios, bibliotecarioExiste Como Logico
 	
-	definir cantAdmins Como Entero
-	cantAdmins <- 0
+	cantAdmins <- 3 //los precargados
 	intentos <- 0
 	accesoValido <- 0
+	totalBibliotecarios <- 3
 	
 	Repetir
-		esperarLimpiar("")
         Escribir "*** MENÚ ADMINISTRADOR ***"
         Escribir "1. Gestionar Bibliotecarios"
         Escribir "2. Gestionar Socios"
@@ -206,19 +205,21 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 		Escribir "4. Volver al menú principal"
         Escribir "Elija una opción (1-4): "
         Leer opAdmin
+		esperarLimpiar("")
 		
 		Segun opAdmin Hacer
 			"1":
 				//Gestiono Bibliotecarios
-				Repetir
-					espacio
+				Repetir					
                     Escribir "*** GESTIÓN DE BIBLIOTECARIOS ***"
                     Escribir "1. Agregar Bibliotecario"
                     Escribir "2. Eliminar Bibliotecario"
                     Escribir "3. Listar Bibliotecarios"
                     Escribir "4. Volver"
-                    Escribir "Elija una opción (1-4): "
+					espacio
+                    Escribir Sin Saltar "Elija una opción (1-4): "
                     Leer resp
+					esperarLimpiar("")
 					
 					Segun resp Hacer
 						"1": 	//Agrego Bibliotecario
@@ -232,10 +233,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinSi
 								FinPara
 								
-								Si indice = -1 Entonces
-									Escribir "No hay espacio disponible para agregar más bibliotecarios."
-								Sino
+								Si indice != -1 Entonces
 									confirmar <- 0
+									
 									Mientras confirmar = 0 Hacer
 										nombreBibliotecario <- pedirTexto("Ingrese nombre del bibliotecario: ")
 										claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
@@ -247,7 +247,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										FinMientras
 										
 										// Verifico si el usuario ya existe
-										//Definir bibliotecarioExiste Como Logico
 										bibliotecarioExiste <- Falso
 										Para i <- 0 Hasta cantBibliotecarios-1 Hacer
 											Si bibliotecarios[i, 0] = nombreBibliotecario Entonces
@@ -276,6 +275,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 											FinSi
 										FinSi
 									FinMientras
+								SiNo									
+									Escribir "No hay espacio disponible para agregar más bibliotecarios."
 								FinSi
 								
 								opUsuario <- confirmarInformacion("Desea agregar otro bibliotecario? (S/N)")
@@ -283,14 +284,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								Si opUsuario = "S" Entonces
 									Limpiar Pantalla
 								Sino 	
-									Escribir "Volviendo a Gestión de Bibliotecarios..."
+									esperarLimpiar("Volviendo al Menú Anterior..")
 								FinSi
 								
 							Hasta Que Mayusculas(opUsuario) = "N"
-								
-							//Escribir "Volviendo a Gestión de Bibliotecarios..."
-							Esperar 2 segundos
-							Limpiar Pantalla
 							
 						"2":	//Elimino Bibliotecario							
 							espacio
@@ -298,7 +295,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                             espacio
                             // Mostrar bibliotecarios existentes
                             Escribir "Bibliotecarios registrados:"
-                           //Definir hayBibliotecarios Como Logico
                             hayBibliotecarios <- Falso
 							
                             Para i <- 0 Hasta cantBibliotecarios-1 Hacer
@@ -307,9 +303,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                     hayBibliotecarios <- Verdadero
                                 FinSi
                             FinPara
-                            
-                            Si hayBibliotecarios Entonces
-                                Escribir "Ingrese el nombre del bibliotecario a eliminar: "
+                            espacio
+                            Si (hayBibliotecarios y totalBibliotecarios >1) Entonces 
+								espacio
+                                Escribir Sin Saltar "Ingrese el nombre del bibliotecario a eliminar: "
                                 Leer nombreBibliotecario
 								nombreBibliotecario <- Mayusculas(nombreBibliotecario)
                                 
@@ -331,35 +328,38 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                     Si Mayusculas(opUsuario) = "S" Entonces
                                         bibliotecarios[indice, 0] <- ""
                                         bibliotecarios[indice, 1] <- ""
-                                        Escribir "Bibliotecario eliminado exitosamente."
+										totalBibliotecarios <- totalBibliotecarios - 1
+                                        Escribir "Bibliotecario ", bibliotecarios[indice, 0], " eliminado exitosamente."
+										espacio
                                     Sino
                                         Escribir "Eliminación de bibliotecario ", bibliotecarios[indice, 0], " cancelada."
                                     FinSi
                                 FinSi
+								pedirTecla
                             Sino
-                                Escribir "No hay bibliotecarios registrados."
+                                Escribir "No puede borrar a todos los Bibliotecarios."
                             FinSi			
-							
+							pedirTecla
 						"3":
 							//Muestro Bibliotecarios
 							espacio
-                            Escribir "*** LISTADO DE BIBLIOTECARIOS ***"                            
-                            totalBibliotecarios <- 0
+                            Escribir "*** LISTADO DE BIBLIOTECARIOS ***"          
 							
                             Para i <- 0 Hasta cantBibliotecarios-1 Hacer
                                 Si bibliotecarios[i, 0] <> "" Entonces
                                     Escribir "----------------------------------------"
                                     Escribir "Nombre: ", bibliotecarios[i, 0]
                                     Escribir "Clave: ", bibliotecarios[i, 1]
-                                    totalBibliotecarios <- totalBibliotecarios + 1
+                                    //totalBibliotecarios <- totalBibliotecarios + 1
                                 FinSi
                             FinPara
                             
                             Si totalBibliotecarios = 0 Entonces
-                                Escribir "No hay bibliotecarios registrados."
+                                Escribir "No hay bibliotecarios registrados." //NO DEbERIA PASAR
                             Sino
 								Escribir "----------------------------------------"
                                 Escribir "Total de bibliotecarios registrados: ", totalBibliotecarios
+								pedirTecla
                             FinSi
                             
 						"4":
@@ -367,6 +367,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							
 						De Otro Modo:
 							Escribir "Eligió una opción inválida."
+							espacio
+							esperarLimpiar("Volviendo al menú Anterior...")
 					Fin Segun
 				Hasta Que resp == "4"
 			"2": //Gestiono Socios
@@ -1269,9 +1271,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 				FinPara
 				Escribir "------------------------------------------------------------"
 				Escribir "FIN DEL LISTADO DE LIBROS ENCONTRADOS"
-				Escribir "Presione una tecla para volver..."
-				Esperar Tecla
-				esperarLimpiar("")
+				pedirTecla
 			FinSi			
 		FinSi 
 	Mientras Que opUsuario <>"6"		
@@ -1404,10 +1404,7 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 	FinPara
 	espacio
 	Escribir "	--------------FIN DEL LISTADO DE LIBROS CARGADOS-----------------"	
-	espacio
-	Escribir "				Presione una tecla para volver"	
-	Esperar Tecla
-	esperarLimpiar("")
+	pedirTecla
 FinFuncion
 
 
@@ -1652,10 +1649,7 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 	FinPara
 	espacio
 	Escribir "				FIN DEL LISTADO DE SOCIOS CARGADOS"
-	espacio
-	Escribir "				Presione una tecla para volver al menú de Consulta de Socios"
-	Esperar Tecla
-	esperarLimpiar("")
+	pedirTecla
 FinFuncion
 
 
@@ -1777,8 +1771,7 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 			mostrarLibroEncontrado(libros, i)
 			FinSi
 		FinPara
-		Escribir "Presione una tecla para volver"
-		Esperar Tecla
+		pedirTecla
 	FinSi			
 FinSubProceso
 
@@ -2166,6 +2159,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 					Escribir "Error: La fecha de devolución no puede ser anterior a la fecha de préstamo."
 					Escribir "Fecha de préstamo: ", prestamos[indicePrestamo,2]				
 				FinSi
+				pedirTecla
 			Sino
 				Si op = "N" Entonces
 					esperarLimpiar("Volviendo a consultas...")
