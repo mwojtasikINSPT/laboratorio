@@ -1,5 +1,4 @@
-Algoritmo biblioteca
-	
+Algoritmo biblioteca	
 	
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp, opAcceso Como Caracter
@@ -16,9 +15,10 @@ Algoritmo biblioteca
 	
 	//VARIABLES BIBLIOTECARIOS
 	Definir cantBibliotecarios, camposBibliotecarios, intentos, accesoValido Como Entero 
-	Definir nombreIngresado, claveIngresada Como CAdena
+	Definir nombreIngresado, claveIngresada, fechaFinPenalidad Como Cadena
     intentos <- 0
 	accesoValido <- 0
+	fechaFinPenalidad <- ""
 	
 	//VARIABLES ADMINISTRADORES
 	Definir administradores Como Cadena
@@ -31,11 +31,11 @@ Algoritmo biblioteca
 	Dimension libros[cantLibros, camposLibros]
 	
 	cantSocios <- 200
-	camposSocios <- 5 //dni, nombre, telefono, estado, diasPenalizacion
+	camposSocios <- 5 //dni, nombre, telefono, estado, fechaPenalizacion
 	Dimension socios[cantSocios, camposSocios]
 	
 	cantPrestamos <- 200
-	camposPrestamos  <- 4 //  idLibro, dniSocio, fechaPrestamo, fechaFin 
+	camposPrestamos  <- 5 //  idLibro, dniSocio, fechaPrestamo, fechaFin, nombreSocio
 	Dimension prestamos[cantPrestamos, camposPrestamos] 
 	
 	camposBibliotecarios <- 2 //nombreBibliotecario, claveBibliotecario
@@ -130,7 +130,7 @@ Algoritmo biblioteca
 				Limpiar Pantalla
 			FinSi
 				
-			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
+			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos, fechaFinPenalidad)
 		"3":
 			//Acceso Socios
 			Escribir "*** ACCESO SOCIOS ***"			
@@ -190,7 +190,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	//Admins
 	Definir nombreIngresado, claveIngresada, nombreAdmin, claveAdmin Como Cadena
 	Definir intentos, accesoValido, totalAdministradores Como Entero
-	Definir administradorExiste, hayAdministradores Como Logico
+	Definir administradorExiste, hayAdministradores, hayBibliotecarios, bibliotecarioExiste Como Logico
+	
 	definir cantAdmins Como Entero
 	cantAdmins <- 0
 	intentos <- 0
@@ -246,7 +247,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										FinMientras
 										
 										// Verifico si el usuario ya existe
-										Definir bibliotecarioExiste Como Logico
+										//Definir bibliotecarioExiste Como Logico
 										bibliotecarioExiste <- Falso
 										Para i <- 0 Hasta cantBibliotecarios-1 Hacer
 											Si bibliotecarios[i, 0] = nombreBibliotecario Entonces
@@ -297,7 +298,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                             espacio
                             // Mostrar bibliotecarios existentes
                             Escribir "Bibliotecarios registrados:"
-                            Definir hayBibliotecarios Como Logico
+                           //Definir hayBibliotecarios Como Logico
                             hayBibliotecarios <- Falso
 							
                             Para i <- 0 Hasta cantBibliotecarios-1 Hacer
@@ -511,7 +512,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							FinPara
 							
 							Si hayAdministradores Entonces
-								Si cantAdmins = 0 Entonces
+								Si cantAdmins = 1 Entonces
 									espacio
 									Escribir "NO SE PUEDE ELIMINAR AL ADMIN"
 									Escribir "Debe haber al menos un administrador del Sistema"
@@ -583,7 +584,7 @@ FinSubAlgoritmo
 
 
 //Vista Bibliotecario
-SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos)
+SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos, fechaFinPenalidad)
 	Definir resp, modulo, op, opLibros, opSocios Como Caracter
 	//Definir i, j Como Entero 
 	
@@ -630,7 +631,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 									"5":	
 										mostrarPrestamos(prestamos, cantPrestamos)
 									"6":
-										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
+										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos, fechaFinPenalidad)
 										espacio
 									"7":
 										esperarLimpiar("Volviendo a menu anterior...")
@@ -747,6 +748,14 @@ SubProceso esperarLimpiar(mensaje)
 	Limpiar Pantalla
 FinSubProceso
 
+SubProceso pedirTecla
+	espacio
+	Escribir "Presione una tecla para volver..."
+	Esperar Tecla
+	Esperar 2 Segundos
+	Limpiar Pantalla	
+FinSubProceso
+
 //Respuesta S/N
 Funcion respuesta<-confirmarInformacion(mensaje) 
 	Definir respuesta Como Caracter	
@@ -779,7 +788,7 @@ Funcion posicion<-buscarUltimo(libros, cantLibros)
     FinSi
 FinFuncion
 
-//Valido Texto
+//Valido Texto (para ingresos por 1ra vez)
 Funcion esTextoValido <- ValidarTexto(cadenaAVerificar)
 	Definir i Como Entero
 	Definir letra Como Caracter
@@ -865,7 +874,7 @@ Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
 	
 	Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer
 		letra <- Subcadena(cadenaAVerificar,i,i) //recorro x caracter
-		Si (letra > "9" o letra < "0") Entonces
+		Si (letra > "9" o letra < "0") o Longitud(cadenaAVerificar)>=11 Entonces //ver condicion
 			esNumero <- Falso		
 		FinSi		
 	FinPara
@@ -899,13 +908,13 @@ Funcion num <- pedirNumero(mensaje)
 			input <- (numInput)		
 		FinSi	
 		
-		Si (EsNumeroEnteroPositivo(input)=Verdadero) Entonces
+		Si (EsNumeroEnteroPositivo(numInput)=Verdadero) Entonces
 			esNumero <- Verdadero
 		SiNo
 			Escribir "Ingrese un numero válido"
 		FinSi
 	FinMientras
-	num <- ConvertirANumero(input)
+	num <- ConvertirANumero(numInput)
 FinFuncion
 
 // Pido un número pero lo devuelvo como texto
@@ -927,14 +936,23 @@ Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
 	
     Si Longitud(resp) = 0 Entonces
         numTexto <- valorActual
-    Sino
-        esNumero <- EsNumeroEnteroPositivo(resp)
-        Si esNumero Entonces
-            numero <- ConvertirANumero(resp)
-            numTexto <- ConvertirATexto(num)
-        Sino
-            Escribir "Entrada inválida. Ingrese un número. "
+    Sino Si Longitud(resp)>11 Entonces
+			Escribir "Entrada inválida. Ingrese un número. "
             numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
+		sino	
+			esNumero <- EsNumeroEnteroPositivo(resp)
+			Si esNumero Entonces
+				num <- ConvertirANumero(resp)
+				numTexto <- ConvertirATexto(num)
+			FinSi			
+//		
+//        esNumero <- EsNumeroEnteroPositivo(resp)
+//        Si esNumero Entonces
+//            num <- ConvertirANumero(resp)
+//            numTexto <- ConvertirATexto(num)
+//        Sino
+//            Escribir "Entrada inválida. Ingrese un número. "
+//            numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
         FinSi
     FinSi
 FinFuncion
@@ -947,6 +965,17 @@ Funcion fechaDev <- pedirFechaDevolucion
     espacio
     Escribir "*** FECHA DE DEVOLUCIÓN ***"
     anio <- pedirNumero("Ingrese el año de devolución (AAAA): ")
+	Mientras  anio<2025 o anio > 2026
+		Si anio<2025 Entonces
+			Escribir "No puede registrar devolución con fecha anterior"
+			anio <- pedirNumero("Ingrese el año de devolución (AAAA): ")
+		SiNo si anio > 2026		
+				Escribir "No puede registrar devoluciones tan atrasadas"
+				anio <- pedirNumero("Ingrese el año de devolución (AAAA): ")		
+			FinSi	
+		FinSi
+	FinMientras
+		
     mes <- pedirNumero("Ingrese el mes de devolución (1-12): ")
     
     Mientras mes < 1 O mes > 12
@@ -997,6 +1026,19 @@ Funcion fechaDev <- pedirFechaDevolucion
     FinSi
     
     Escribir "Fecha de devolución: ", fechaDev
+FinFuncion
+
+//Guardo fechaDev como entero para calcularPenalidad
+Funcion fechaDevNum <- convertirFechaEntero(fechaDev)
+	Definir fechaDevNum, dia, mes, anio Como Entero
+	
+	//Extraigo datos de cadena fechaDev
+	dia <- ConvertirANumero(SubCadena(fechaDev, 0, 1))
+    mes <- ConvertirANumero(SubCadena(fechaDev, 3, 4))
+    anio <- ConvertirANumero(SubCadena(fechaDev, 6, 9))
+	
+	// Convierto a formato AAAAMMDD
+    fechaDevNum <- anio * 10000 + mes * 100 + dia	
 FinFuncion
 
 Funcion esValida <- validarFechaDevolucion(fechaPrestamo, fechaDevolucion)
@@ -1221,7 +1263,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 					Escribir "Autor: ", libros[indice, 2]
 					Escribir "Género: ", libros[indice, 3]
 					Escribir "Año: ", libros[indice, 4]
-					Escribir "Disponible: ", libros[indice, 5]
+					//Escribir "Disponible: ", libros[indice, 5]
 					Escribir "Stock: ", libros[indice, 7]
 					espacio
 				FinPara
@@ -1232,7 +1274,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 				esperarLimpiar("")
 			FinSi			
 		FinSi 
-	Mientras Que opUsuario !="6"		
+	Mientras Que opUsuario <>"6"		
 	 
 FinFuncion
 
@@ -1278,9 +1320,9 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
             Escribir "Genero: ", generoLibro
             Escribir "Año de Publicacion: ", anoPublicacionLibro
 			Escribir "Ejemplares disponibles: ", stockLibro
-			
+			espacio
             Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
-			
+			espacio
 			nuevoDato <- pedirTextoOpcional("Nuevo Título: ", tituloLibro)
 			nuevoDato <- Mayusculas(nuevoDato)
 			Si Longitud(nuevoDato) > 0 Entonces
@@ -1351,7 +1393,7 @@ Funcion mostrarLibros(libros Por Referencia, cantLibros)
 			Escribir "Autor: ", libros[i,2]
 			Escribir "Genero: ", libros[i,3]
 			Escribir "Año de Publicacion: ", libros[i,4]
-			Escribir "Disponible: ", libros[i,5]
+			//Escribir "Disponible: ", libros[i,5]
 			Escribir "Cantidad de ejemplares disponibles para préstamo: ", libros[i,7]
 			Si libros[i,8]="" Entonces
 				Escribir "No hay ejemplares de este libro en préstamo"
@@ -1486,6 +1528,10 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 				Escribir "Nombre y apellido: ", socios[indice, 1]
 				Escribir "Teléfono: ", socios[indice, 2]
 				Escribir "Estado: ", socios[indice, 3]
+				si socios[indice, 3] =  "MULTADO" Entonces
+					Escribir "Multado hasta: ", socios[indice, 4]
+				FinSi
+				
 				espacio
 			FinPara
 		FinSi	
@@ -1600,7 +1646,7 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 			Escribir "Teléfono: ", socios[i,2]
 			Escribir "Estado: ", socios[i,3]
 				Si socios[i,3] = "MULTADO" Entonces
-					Escribir "Días de penalización: ", socios[i,4]
+					Escribir "Multado hasta: ", socios[i,4]
 				FinSi
 		FinSi
 	FinPara
@@ -1671,6 +1717,7 @@ Funcion fechasPrestamo(fechaInicio Por Referencia, fechaFinPrestamo Por Referenc
     FinMientras
 	
     Escribir "Fecha de finalización del préstamo: ", dia, "/", mes, "/", anio
+	espacio
 	
     // Convierto fechas numéricas a texto
 	si (dia<10) Entonces
@@ -1763,16 +1810,17 @@ FinSubProceso
 //Registrar préstamo
 Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos)
     Definir i, j, disponible, indiceLibro, indiceSocio, k, p, stockActual Como Entero
-    Definir idBuscado, dniBuscado, op, fechaPrestamo, fechaFinPrestamo Como Cadena
+    Definir idBuscado, dniBuscado, op, fechaPrestamo, fechaFinPrestamo, fechaFormateada Como Cadena
     disponible <- -1
     indiceSocio <- -1
     p <- 0
 	
-	espacio
+	esperarLimpiar("")
     Escribir "REGISTRAR PRÉSTAMO DE LIBRO"
 	espacio
     Escribir Sin Saltar "Ingrese id del libro a prestar: "
     Leer idBuscado
+	espacio
 	
     // Buscar libro
     Para i <- 0 Hasta cantLibros-1 Hacer
@@ -1841,23 +1889,26 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 								prestamos[p,1] <- dniBuscado
                                 prestamos[p,2] <- fechaPrestamo
                                 prestamos[p,3] <- fechaFinPrestamo
+								prestamos[p,4] <- socios[indiceSocio,1]
                                 libros[indiceLibro,6] <- fechaFinPrestamo
                                 socios[indiceSocio,3] <- "INHABILITADO" // tiene préstamo activo
 								socios[indiceSocio,4] <- "0"  // Reiniciar días de penalizacion
                                 Escribir "Préstamo para el socio ", socios[indiceSocio,1] " registrado con éxito"
 								espacio
 								Escribir "Stock restante del libro: ", stockActual
-								esperar 2 segundos
-								esperarLimpiar("")
+								pedirTecla
                             "N":
 								esperarLimpiar("Volviendo a consultas...")
                             De Otro Modo:
                                 Escribir "Opción inválida"
                         Fin Segun
                     "INHABILITADO":
-                        Escribir "Socio INHABILITADO: ya tiene un préstamo activo"
-                    "MULTADO":
-                        Escribir "Socio MULTADO: no puede sacar libros por ", socios[indiceSocio,4], " días"
+                        Escribir "Socio INHABILITADO, ya tiene un préstamo activo"
+						pedirTecla
+                    "MULTADO":						
+						fechaFormateada <- formatearFecha(socios[indiceSocio,4])
+                        Escribir "Socio MULTADO, no puede sacar libros hasta el día ", fechaFormateada
+						pedirTecla
                 FinSegun
             FinSi
         Sino
@@ -1877,8 +1928,9 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	Para i <- 0 Hasta cantPrestamos-1   
 		Si prestamos[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
-			Escribir "ID LIBRO: ", prestamos[i,0]
-			Escribir "DNI SOCIO: ", prestamos[i,1]
+			Escribir "ID libro: ", prestamos[i,0]
+			Escribir "DNI socio: ", prestamos[i,1]
+			Escribir "Nombre del socio: ", prestamos[i,4]
 			Escribir "Fecha de inicio: ", prestamos[i,2]
 			Escribir "Fecha de devolucion pactada: ", prestamos[i,3]	
 			espacio
@@ -1889,6 +1941,7 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	Si totalPrestamos = 0 Entonces
 		esperarLimpiar("No hay préstamos activos en este momento.")
 	FinSi
+	pedirTecla
 FinFuncion
 
 
@@ -1916,7 +1969,7 @@ Funcion diasAtraso <- chequearPenalidad(fechaFinPrestamo, fechaDev)
         // Calcular días de atraso
         Si fechaDevNum > fechaFin Entonces
             diasAtraso <- (fechaDevNum - fechaFin)
-            Escribir "Días de atraso: ", diasAtraso
+            //Escribir "Días de atraso: ", diasAtraso
         Sino
             diasAtraso <- 0
             Escribir "No hay penalidad - Devolución a tiempo"
@@ -1930,16 +1983,19 @@ FinFuncion
 
 //Calculo penalidad
 Funcion fechaFinPenalidad <- calcularPenalidad(diasAtraso, fechaDevolucion)
-    Definir fechaFinPenalidad Como Entero
+    Definir fechaFinPenalidad Como Cadena
+	Definir fechaFinPena como Entero
     Definir diasPenalidad, diasMes, diasRestantesMes Como Entero
 	Definir anio, mes, dia Como Entero
     
     Si diasAtraso > 0 Entonces
         diasPenalidad <- diasAtraso * 2
         
-        Escribir "PENALIDAD POR DEVOLUCIÓN TARDÍA"
+		espacio
+        Escribir "***PENALIDAD POR DEVOLUCIÓN TARDÍA***"
+		espacio
         Escribir "Días de atraso: ", diasAtraso
-        Escribir "Penalidad: No puede retirar libros por ", diasPenalidad, " días"        
+        Escribir "No puede retirar libros por ", diasPenalidad, " días"        
 		
 		anio <- trunc(fechaDevolucion / 10000)
 		mes <- trunc((fechaDevolucion MOD 10000) / 100)  
@@ -1975,26 +2031,54 @@ Funcion fechaFinPenalidad <- calcularPenalidad(diasAtraso, fechaDevolucion)
 			FinSi
 		FinMientras
 		
-        fechaFinPenalidad <- anio * 10000 + mes * 100 + dia
-        
+        fechaFinPena <- anio * 10000 + mes * 100 + dia
+        fechaFinPenalidad <- ConvertirATexto(fechaFinPena) 
         Escribir "Fin de penalidad: ", dia, "/", mes, "/", anio
         Escribir "Podrá retirar libros nuevamente a partir de esta fecha"
         espacio
+    FinSi	
+FinFuncion
+
+//Reacomodo fechaFinPenalidad para Mostrar como fecha DD/MM/AAAA
+Funcion fechaFormateada <- formatearFecha(fechaFinPenalidad)
+    Definir fechaFormateada Como Cadena
+    Definir anio, mes, dia Como Entero
+    
+    //Recibo AAAAMMDD
+    anio <- trunc (ConvertirANumero(fechaFinPenalidad) / 10000)
+    mes <- trunc (ConvertirANumero(fechaFinPenalidad) MOD 10000 / 100)
+    dia <- ConvertirANumero(fechaFinPenalidad) MOD 100
+    
+    Si dia < 10 Entonces
+        Si mes < 10 Entonces
+            fechaFormateada <- "0" + ConvertirATexto(dia) + "/0" + ConvertirATexto(mes) + "/" + ConvertirATexto(anio)
+        Sino
+            fechaFormateada <- "0" + ConvertirATexto(dia) + "/" + ConvertirATexto(mes) + "/" + ConvertirATexto(anio)
+        FinSi
+    Sino
+        Si mes < 10 Entonces
+            fechaFormateada <- ConvertirATexto(dia) + "/0" + ConvertirATexto(mes) + "/" + ConvertirATexto(anio)
+        Sino
+            fechaFormateada <- ConvertirATexto(dia) + "/" + ConvertirATexto(mes) + "/" + ConvertirATexto(anio)
+        FinSi
     FinSi
+	
 FinFuncion
 
 
+//
+
 //Gestiono devolución
-Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
-    Definir i, j, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad, stockActual Como Entero
+Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos, camposPrestamos, fechaFinPenalidad)
+    Definir i, j, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad, stockActual, fechaDevNum Como Entero
     Definir idLibro, dniSocio, op, fechaFinPrestamo, fechaPrestamo, fechaDev Como Cadena
     Definir fechaValida Como Logico
     
     indiceSocio <- -1
     indicePrestamo <- -1
     
-    espacio
-    Escribir "REGISTRAR DEVOLUCIÓN DE LIBRO"
+    esperarLimpiar("")
+    Escribir "***REGISTRAR DEVOLUCIÓN DE LIBRO***"
 	espacio
     dniSocio <- pedirNumeroComoTexto("Ingrese el dni del socio que quiere devolver: ")
     
@@ -2008,7 +2092,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
     Si indiceSocio = -1 Entonces
         Escribir "Error: Socio no encontrado"
     Sino
-		// BUSCAR PRÉSTAMO ACTIVO DEL SOCIO
+		// Busco préstamo activo del socio
 		Para i <- 0 Hasta cantPrestamos-1 Hacer
 			Si prestamos[i,1] = dniSocio Entonces
 				indicePrestamo <- i
@@ -2016,10 +2100,11 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 				fechaPrestamo <- prestamos[i,2]
 			FinSi
 		FinPara
+		
         Si indicePrestamo  = -1 Entonces
             Escribir "El socio no tiene préstamos activos."
 		SiNo
-			// BUSCAR EL PRÉSTAMO ACTIVO PARA ESTE LIBRO
+			// Busco préstamo del libro
 			Para i <- 0 Hasta cantLibros-1 Hacer
 				Si libros[i,0] = idLibro Entonces
 					indiceLibro <- i
@@ -2027,40 +2112,37 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 				FinSi
 			FinPara
 			
+			//Pido confirmación devolución
 			op <- confirmarInformacion("Desea registrar devolución (S/N)?")
-				
+			
 			Si op = "S" Entonces
 				Escribir "Registrando Devolución..."
 				Esperar 1 Segundo
 				
-				// PEDIR FECHA DE DEVOLUCIÓN Y VALIDAR
+				//Ingreso fecha devolución
 				fechaDev <- pedirFechaDevolucion()
 				
-				// VERIFICAR QUE LA FECHA DE DEVOLUCIÓN NO SEA ANTERIOR AL PRÉSTAMO
+				//Guardo fecha como numero para calcular penalidad (si corresponde)
+				fechaDevNum <- convertirFechaEntero(fechaDev)				
+				
+				// Verifico fecha devolución no sea anterior a préstamo
 				fechaValida <- validarFechaDevolucion(prestamos[indicePrestamo,2], fechaDev)
 				
-				Si No fechaValida Entonces
-					Escribir "Error: La fecha de devolución no puede ser anterior a la fecha de préstamo."
-					Escribir "Fecha de préstamo: ", prestamos[indicePrestamo,2]
-				Sino
-					// 2. CALCULAR PENALIZACIÓN SI HAY ATRASO
+				Si fechaValida Entonces					
+					// Calculo penalización si hay atraso
 					fechaFinPrestamo <- libros[indiceLibro,6]
 					diasAtraso <- chequearPenalidad(fechaFinPrestamo, fechaDev)
 					
-					// 3. ACTUALIZAR ESTADO Y PENALIZACIÓN DEL SOCIO
+					// Actualizo estado del socio
 					Si diasAtraso > 0 Entonces
-						diasPenalidad <- diasAtraso * 2
-						socios[indiceSocio,3] <- "MULTADO"
-						socios[indiceSocio,4] <- ConvertirATexto(diasPenalidad)
-						Escribir "Devolución con atraso. Socio multado por ", diasPenalidad, " días"
+						//diasPenalidad <- diasAtraso * 2 esto está dos veces!
+						socios[indiceSocio,3] <- "MULTADO"	
+						socios[indiceSocio,4] <- calcularPenalidad(diasAtraso, fechaDevNum)	
 					Sino
 						socios[indiceSocio,3] <- "HABILITADO"
 						socios[indiceSocio,4] <- "0"
 						Escribir "Devolución en término. Socio habilitado para nuevos préstamos"
 					FinSi
-					
-					// 4. LIMPIAR FECHA DE DEVOLUCIÓN DEL LIBRO 
-					//libros[indiceLibro,6] <- "" 
 					
 					// Elimino el préstamo
 					Para j <- 0 Hasta camposPrestamos-1 Hacer
@@ -2071,15 +2153,18 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 					stockActual <- ConvertirANumero(libros[indiceLibro,7])
 					stockActual <- stockActual + 1
 					libros[indiceLibro,7] <- ConvertirATexto(stockActual)
+					
 					//Si no quedaban libros, actualizo dispo							
 					Si stockActual = 1 Entonces
 						libros[indiceLibro,5] <- "1"
-					FinSi
-					
+					FinSi					
 					espacio
 					Escribir "Devolución registrada con éxito."
-					espacio
 					Escribir "Stock actualizado del libro con id ", idLibro ": ", stockActual	
+				SiNo
+					espacio
+					Escribir "Error: La fecha de devolución no puede ser anterior a la fecha de préstamo."
+					Escribir "Fecha de préstamo: ", prestamos[indicePrestamo,2]				
 				FinSi
 			Sino
 				Si op = "N" Entonces
@@ -2187,10 +2272,10 @@ Funcion librosPrecargados(libros Por Referencia, cantLibros, camposLibros)
 	
 	//Cargo libros
 	libros[0,0] <- "10000"
-	libros[0,1] <- "DON QUIJOTE"
-	libros[0,2] <- "MIGUEL DE CERVANTES"
+	libros[0,1] <- "RAFAELA"
+	libros[0,2] <- "MARIANA FURIASSE"
 	libros[0,3] <- "NOVELA"
-	libros[0,4] <- "1605"
+	libros[0,4] <- "2002"
 	libros[0,5] <- "1"
 	libros[0,7] <- "2"
 	
