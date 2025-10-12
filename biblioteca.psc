@@ -18,7 +18,6 @@ Algoritmo biblioteca
 	Definir nombreIngresado, claveIngresada, fechaFinPenalidad Como Cadena
     intentos <- 0
 	accesoValido <- 0
-	fechaFinPenalidad <- ""
 	
 	//VARIABLES ADMINISTRADORES
 	Definir administradores Como Cadena
@@ -130,7 +129,7 @@ Algoritmo biblioteca
 				Limpiar Pantalla
 			FinSi
 				
-			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos, fechaFinPenalidad)
+			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
 		"3":
 			//Acceso Socios
 			Escribir "*** ACCESO SOCIOS ***"			
@@ -233,7 +232,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									FinSi
 								FinPara
 								
-								Si indice != -1 Entonces
+								Si indice <> -1 Entonces
 									confirmar <- 0
 									
 									Mientras confirmar = 0 Hacer
@@ -267,6 +266,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 											Si Mayusculas(opUsuario) = "S" Entonces
 												bibliotecarios[indice, 0] <- nombreBibliotecario
 												bibliotecarios[indice, 1] <- claveBibliotecario
+												totalBibliotecarios <- totalBibliotecarios + 1
 												Escribir "Bibliotecario agregado exitosamente."
 												confirmar <- 1
 											SiNo
@@ -290,7 +290,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
 						"2":	//Elimino Bibliotecario							
-							espacio
                             Escribir "*** ELIMINAR BIBLIOTECARIO ***"
                             espacio
                             // Mostrar bibliotecarios existentes
@@ -330,7 +329,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                         bibliotecarios[indice, 1] <- ""
 										totalBibliotecarios <- totalBibliotecarios - 1
                                         Escribir "Bibliotecario ", bibliotecarios[indice, 0], " eliminado exitosamente."
-										espacio
                                     Sino
                                         Escribir "Eliminación de bibliotecario ", bibliotecarios[indice, 0], " cancelada."
                                     FinSi
@@ -339,7 +337,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                             Sino
                                 Escribir "No puede borrar a todos los Bibliotecarios."
                             FinSi			
-							pedirTecla
+							//pedirTecla
 						"3":
 							//Muestro Bibliotecarios
 							espacio
@@ -355,7 +353,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                             FinPara
                             
                             Si totalBibliotecarios = 0 Entonces
-                                Escribir "No hay bibliotecarios registrados." //NO DEbERIA PASAR
+                                Escribir "No hay bibliotecarios registrados." //No deberia pasar
                             Sino
 								Escribir "----------------------------------------"
                                 Escribir "Total de bibliotecarios registrados: ", totalBibliotecarios
@@ -372,7 +370,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Fin Segun
 				Hasta Que resp == "4"
 			"2": //Gestiono Socios
-				Escribir "Gestión de Socios En proceso..." //Terminar
 				Repetir
 					espacio
 					Escribir "*** GESTIÓN DE SOCIOS ***"
@@ -382,8 +379,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Escribir "3. Eliminar Socio"
 					Escribir "4. Listar Socios"
 					Escribir "5. Volver"
-					Escribir "Elija una opción (1-5): "
+					Escribir Sin Saltar "Elija una opción (1-5): "
 					Leer resp
+					esperarLimpiar("")
 					
 					Segun resp Hacer
 						"1":
@@ -400,8 +398,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								
 							Mientras Que (opUsuario <> "N")
 						"2":
-							Escribir "Modificar socio... (en proceso)"
-							Esperar 1 segundos
+							modificarSocio(socios, cantSocios)
 						"3":
 							Escribir "Eliminar socio... (en proceso)"
 							Esperar 1 segundos
@@ -427,9 +424,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Escribir "2. Eliminar Administrador"
 					Escribir "3. Listar Administradores"
 					Escribir "4. Volver"
+					espacio
 					Escribir Sin Saltar "Elija una opción (1-4): "
 					Leer resp
-					
+					esperarLimpiar("")
 					Segun resp Hacer
 						"1":  // Agregar Administrador							
 							Repetir
@@ -586,13 +584,14 @@ FinSubAlgoritmo
 
 
 //Vista Bibliotecario
-SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos, fechaFinPenalidad)
+SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos)
 	Definir resp, modulo, op, opLibros, opSocios Como Caracter
 	//Definir i, j Como Entero 
 	
 	Repetir
 		mostrarMenuPpalBibliotecario
-		Leer modulo
+		Leer modulo		
+		esperarLimpiar("")
 		
 		Segun modulo Hacer
 			"1":
@@ -618,7 +617,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 						"2": //Consultar Libros
 							Repetir
 								mostrarSubMenuConsultaLibros
-								Leer op 
+								Leer op 			
 								
 								Segun op Hacer
 									"1":
@@ -633,7 +632,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 									"5":	
 										mostrarPrestamos(prestamos, cantPrestamos)
 									"6":
-										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos, fechaFinPenalidad)
+										registrarDevolucion(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
 										espacio
 									"7":
 										esperarLimpiar("Volviendo a menu anterior...")
@@ -673,6 +672,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 							Repetir
 								mostrarSubMenuConsultaSocios
 								Leer op 
+								esperarLimpiar("")
 								Segun op Hacer
 									"1":
 										buscarSocio(socios, cantSocios)
@@ -709,7 +709,7 @@ SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia,
 	Definir op Como Caracter
 	
 	Repetir		
-		espacio
+		
         Escribir "*** MENÚ SOCIOS ***"
 		espacio
         Escribir "1. Ver Libros Disponibles"
@@ -717,23 +717,20 @@ SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia,
         Escribir "3. Ver mis préstamos activos"
         Escribir "4. Ver mi estado"
 		Escribir "5. Volver al menú principal"
-        Escribir "Elija una opción (1-5): "
-        Leer op
+		espacio
+        Escribir Sin Saltar "Elija una opción (1-5): "
+        Leer op		
+		esperarLimpiar("")
 		
 		Segun op Hacer
 			"1":
-				esperarLimpiar("")
 				mostrarLibros(libros, cantLibros)
 			"2":
-				esperarLimpiar("")
 				buscarLibro(libros, cantLibros)
 			"3":
-				esperarLimpiar("")
 				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros)
-				esperarLimpiar("")
 			"4":
-				mostrarEstadoSocio(socios, cantSocios)
-				esperarLimpiar("")
+				mostrarEstadoSocio(socios, cantSocios)				
 			"5":	
 				esperarLimpiar("Volviendo a Menú anterior...")
 			De Otro Modo:
@@ -846,6 +843,7 @@ Funcion txtOpcional <- pedirTextoOpcional(mensaje, valorActual)
 		
 		Si Longitud(resp) = 0 Entonces
 			txtOpcional <- valorActual 
+			Escribir "Se mantendrá el valor actual: ", valorActual
 			esTextoValido <- Verdadero
 		Sino
 			Para i<-0 Hasta Longitud(resp)-1 Con Paso 1 Hacer
@@ -869,43 +867,47 @@ FinFuncion
 
 //Valido Números
 Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
-	Definir i, valorNum Como Entero
+	Definir i, valorNum, cantMaxDigitos Como Entero
 	Definir letra Como Caracter
 	Definir esNumero Como Logico
-	esNumero <- Verdadero
+	esNumero <- Falso
+	cantMaxDigitos <- 15
 	
-	Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer
-		letra <- Subcadena(cadenaAVerificar,i,i) //recorro x caracter
-		Si (letra > "9" o letra < "0") o Longitud(cadenaAVerificar)>=11 Entonces //ver condicion
-			esNumero <- Falso		
-		FinSi		
-	FinPara
-	
-	Si esNumero Entonces
-		valorNum <- ConvertirANumero(cadenaAVerificar)
-		Si valorNum>=0
-			esNumero <- Verdadero
-		SiNo
-			esNumero <- Falso
-		FinSi	
-	FinSi
-	
+	Si Longitud(cadenaAVerificar) <= cantMaxDigitos Entonces        
+        esNumero <- Verdadero
+		
+		Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer
+			letra <- Subcadena(cadenaAVerificar,i,i) //recorro x caracter
+			Si (letra > "9" o letra < "0") o Longitud(cadenaAVerificar) > cantMaxDigitos Entonces 
+				esNumero <- Falso		
+			FinSi		
+		FinPara
+		Si esNumero Entonces
+			valorNum <- ConvertirANumero(cadenaAVerificar)
+			Si valorNum>=0
+				esNumero <- Verdadero
+			SiNo
+				esNumero <- Falso
+			FinSi	
+		FinSi
+	FinSi	
 FinFuncion
 
 
 //Pido numeros
 Funcion num <- pedirNumero(mensaje)
-	definir num Como Entero
+	definir num, cantMaxDigitos Como Entero
 	Definir esNumero Como Logico
 	definir numInput, input como cadena
 	esNumero <- Falso	
+	cantMaxDigitos <- 15
 	
 	Mientras !esNumero Hacer
 		Escribir Sin Saltar mensaje
 		
 		leer numInput
-		Si Longitud(numInput)>11 Entonces
-			Escribir "El número debe tener hasta 11 dìgitos"
+		Si Longitud(numInput)>cantMaxDigitos Entonces
+			Escribir "El número es demasiado largo"
 		SiNo
 			input <- (numInput)		
 		FinSi	
@@ -929,17 +931,19 @@ FinFuncion
 
 //Pido un número (opcional) y devuelvo como texto - para modificaciones
 Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
-    Definir num Como Entero
+    Definir num, cantMaxDigitos Como Entero
     Definir numTexto, resp Como Cadena
     Definir esNumero Como Logico
+	cantMaxDigitos <- 15
 	
+	espacio
     Escribir Sin Saltar mensaje
     Leer resp
 	
     Si Longitud(resp) = 0 Entonces
         numTexto <- valorActual
-    Sino Si Longitud(resp)>11 Entonces
-			Escribir "Entrada inválida. Ingrese un número. "
+    Sino Si Longitud(resp) > cantMaxDigitos Entonces
+			Escribir "El número es demasiado largo"
             numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
 		sino	
 			esNumero <- EsNumeroEnteroPositivo(resp)
@@ -947,14 +951,6 @@ Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
 				num <- ConvertirANumero(resp)
 				numTexto <- ConvertirATexto(num)
 			FinSi			
-//		
-//        esNumero <- EsNumeroEnteroPositivo(resp)
-//        Si esNumero Entonces
-//            num <- ConvertirANumero(resp)
-//            numTexto <- ConvertirATexto(num)
-//        Sino
-//            Escribir "Entrada inválida. Ingrese un número. "
-//            numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
         FinSi
     FinSi
 FinFuncion
@@ -1175,19 +1171,54 @@ FinFuncion
 
 
 //Cuenta coincidencias segun filtro
-Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados, cantLibros)
-    Definir i, cantResultados Como Entero
-    i <- 0
-    cantResultados <- 0	
-    Mientras i < cantLibros Hacer
-        Si libros[i, 0] <> "" Entonces
-            Si libros[i, columna] = filtro Entonces
+//Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados, cantLibros)
+//    Definir i, cantResultados Como Entero
+//    i <- 0
+//    cantResultados <- 0	
+//    Mientras i < cantLibros Hacer
+//        Si libros[i, 0] <> "" Entonces
+//            Si libros[i, columna] = filtro Entonces
+//                resultados[cantResultados] <- i
+//                cantResultados <- cantResultados + 1
+//            FinSi
+//        FinSi
+//        i <- i + 1
+//    FinMientras	
+//FinFuncion
+
+//Cuenta coincidencias segun filtro parcial en cadena
+Funcion cantResultados<-filtrarPorCriterio(matriz, columna, filtro, resultados, cantDefinida)
+	Definir i, j, cantResultados, longFiltro, longTexto Como Entero
+	Definir txt como Cadena
+	Definir encontrado Como Logico
+	
+	i <- 0
+	cantResultados <- 0
+	longFiltro <- Longitud(filtro)
+	
+	Mientras i < cantDefinida Hacer
+        Si matriz[i, 0] <> "" Entonces
+			//Cuento caracteres de columna no vacía en la que voy a buscar
+            longTexto <- Longitud(matriz[i, columna])
+            encontrado <- Falso
+			//busco subcadena en cada columna (similar al de nros cuando verifico)
+			j <- 0
+            Mientras j <= longTexto - longFiltro y !encontrado Hacer
+                txt <- SubCadena(matriz[i, columna], j, j + longFiltro - 1)
+                Si txt = filtro Entonces
+                    encontrado <- Verdadero
+                FinSi
+                j <- j + 1
+            FinMientras			
+			
+            Si encontrado Entonces
                 resultados[cantResultados] <- i
                 cantResultados <- cantResultados + 1
             FinSi
         FinSi
         i <- i + 1
     FinMientras	
+	
 FinFuncion
 
 
@@ -1204,7 +1235,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 	FinPara
 	
 	Repetir
-		espacio
+		esperaLimpiar("")
 		Escribir "**BÚSQUEDA DE LIBRO**"
 		espacio
 		Escribir "Elija un criterio de búsqueda"
@@ -1216,7 +1247,8 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 		Escribir "6. Volver"
 		espacio
 		Escribir Sin Saltar "Ingrese una opción (1-6): "
-		Leer opUsuario
+		Leer opUsuario		
+		esperarLimpiar("")
 		
 		Segun opUsuario Hacer
 			"1":
@@ -1468,7 +1500,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 	FinPara
 	
 	Repetir
-		espacio
+		esperaLimpiar("")
 		Escribir "**BÚSQUEDA DE SOCIO**"
 		espacio
 		Escribir "Elija un criterio de búsqueda"
@@ -1528,7 +1560,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 				si socios[indice, 3] =  "MULTADO" Entonces
 					Escribir "Multado hasta: ", socios[indice, 4]
 				FinSi
-				
+				pedirTecla
 				espacio
 			FinPara
 		FinSi	
@@ -2062,7 +2094,7 @@ FinFuncion
 //
 
 //Gestiono devolución
-Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos, camposPrestamos, fechaFinPenalidad)
+Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
     Definir i, j, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad, stockActual, fechaDevNum Como Entero
     Definir idLibro, dniSocio, op, fechaFinPrestamo, fechaPrestamo, fechaDev Como Cadena
     Definir fechaValida Como Logico
@@ -2162,7 +2194,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 				pedirTecla
 			Sino
 				Si op = "N" Entonces
-					esperarLimpiar("Volviendo a consultas...")
+					esperarLimpiar("Volviendo a Menú Anterior...")
 				FinSi
 			FinSi
 		FinSi
