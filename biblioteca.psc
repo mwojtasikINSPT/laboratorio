@@ -811,6 +811,7 @@ Funcion txt <- pedirTexto(mensaje)
 	esTextoValido <-  Falso
 	
 	Mientras !esTextoValido Hacer
+		espacio
 		Escribir Sin Saltar mensaje
 		Leer input
 		input<-Mayusculas(input)
@@ -871,16 +872,18 @@ Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
 	cantMaxDigitos <- 15
 	
 	Si Longitud(cadenaAVerificar) <= cantMaxDigitos Entonces        
-        esNumero <- Verdadero
+        //esNumero <- Falso
 		
 		Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer
 			letra <- Subcadena(cadenaAVerificar,i,i) //recorro x caracter
-			Si (letra > "9" o letra < "0") o Longitud(cadenaAVerificar) > cantMaxDigitos Entonces 
-				esNumero <- Falso		
+			Si (letra > "0" y letra < "9") y Longitud(cadenaAVerificar) < cantMaxDigitos Entonces 
+				esNumero <- Verdadero	
+			SiNo
+				esNumero <- Falso
 			FinSi		
 		FinPara
 		Si esNumero Entonces
-			valorNum <- ConvertirANumero(cadenaAVerificar)
+			valorNum <- trunc(ConvertirANumero(cadenaAVerificar))
 			Si valorNum>=0
 				esNumero <- Verdadero
 			SiNo
@@ -900,6 +903,7 @@ Funcion num <- pedirNumero(mensaje)
 	cantMaxDigitos <- 15
 	
 	Mientras !esNumero Hacer
+		espacio
 		Escribir Sin Saltar mensaje
 		
 		leer numInput
@@ -1441,12 +1445,12 @@ FinFuncion
 Funcion crearSocio(socios Por Referencia, cantSocios)
 	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado como caracter
 	Definir i, confirmar, indice, numTemporal Como Entero
-	Definir existeSocio Como Logico
+	Definir existeSocio, confirma Como Logico
 	existeSocio <- Falso 
-	confirmar <- 0
+	confirma <- Falso
 	indice <- buscarUltimo(socios, cantSocios) 
 	
-	Mientras confirmar = 0 Hacer
+	Mientras !confirma Hacer
 		espacio
 		Escribir "***INGRESO DE NUEVO SOCIO***"
 		espacio
@@ -1454,51 +1458,50 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		
 		Para i<-0 Hasta cantSocios-1 Con Paso 1 Hacer
 			Si dniSocio = socios[i, 0] Entonces
+				socioRegistrado <- socios[i, 1]
 				existeSocio <- Verdadero				
 			FinSi
 		Fin Para
 		
 		Si existeSocio Entonces
-			Escribir "Ya existe un socio registrado con ese DNI: "
+			Escribir "Ya existe el socio ", socioRegistrado " registrado con ese DNI"
+			confirma <- Verdadero
+			esperarLimpiar("")
 		Sino	
+			nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")
+			telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
+			condSocio <- "HABILITADO"
+			Limpiar Pantalla
 			
-		FinSi
-		
-		nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")
-		telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
-		condSocio <- "HABILITADO"
-		Limpiar Pantalla
-		
-		Escribir "***DATOS DEL NUEVO SOCIO***"
-		espacio
-		Escribir Sin Saltar "DNI del socio: "
-		Escribir dniSocio
-		Escribir Sin Saltar "Nombre y Apellido: "
-		Escribir nombreSocio
-		Escribir sin saltar "Teléfono: "
-		Escribir telSocio
-		Escribir sin saltar "Condición: "
-		Escribir condSocio
-		
-		espacio
-		opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
-		Esperar 1 segundo
-		
-		Si Mayusculas(opUsuario) = "S" Entonces
-			confirmar <- 1
-			Escribir "Ingreso del Socio ", nombreSocio " confirmado"				
-		Sino	
-			Escribir "Ingreso del Socio ", nombreSocio " cancelado"
-			confirmar <- 1
+			Escribir "***DATOS DEL NUEVO SOCIO***"
+			espacio
+			Escribir Sin Saltar "DNI del socio: "
+			Escribir dniSocio
+			Escribir Sin Saltar "Nombre y Apellido: "
+			Escribir nombreSocio
+			Escribir sin saltar "Teléfono: "
+			Escribir telSocio
+			Escribir sin saltar "Condición: "
+			Escribir condSocio			
+			espacio
+			opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
+			Esperar 1 segundo
+			
+			Si Mayusculas(opUsuario) = "S" Entonces
+				confirma <- Verdadero
+				Escribir "Ingreso del Socio ", nombreSocio " confirmado"		
+				// Guardo cambios en la matriz
+				socios[indice, 0] <- dniSocio
+				socios[indice, 1] <- nombreSocio
+				socios[indice, 2] <- telSocio
+				socios[indice, 3] <- condSocio
+			Sino	
+				Escribir "Ingreso del Socio ", nombreSocio " cancelado"
+				confirmar <- 1
+			FinSi
 		FinSi
 		esperarLimpiar("")		
-	FinMientras
-	
-	// Guardo cambios en la matriz
-	socios[indice, 0] <- dniSocio
-	socios[indice, 1] <- nombreSocio
-	socios[indice, 2] <- telSocio
-	socios[indice, 3] <- condSocio
+	FinMientras	
 FinFuncion
 
 //Buscar Socio
