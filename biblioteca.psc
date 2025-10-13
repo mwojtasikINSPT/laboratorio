@@ -86,6 +86,7 @@ Algoritmo biblioteca
 					Leer claveIngresada
 					
 					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
+						espacio
 						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
 						accesoValido <- 1
 						esperarLimpiar("")				
@@ -114,6 +115,7 @@ Algoritmo biblioteca
 				Leer claveIngresada						
 				
 				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
+					espacio
 					accesoValido <- 1
 					esperarLimpiar("Acceso concedido. Bienvenido " + nombreIngresado)
 				Sino					
@@ -196,11 +198,13 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	
 	Repetir
         Escribir "*** MENÚ ADMINISTRADOR ***"
+		espacio
         Escribir "1. Gestionar Bibliotecarios"
         Escribir "2. Gestionar Socios"
         Escribir "3. Gestionar Administradores"
 		Escribir "0. Volver al menú principal"
-        Escribir "Elija una opción: "
+		espacio
+        Escribir Sin Saltar "Elija una opción: "
         Leer opAdmin
 		esperarLimpiar("")
 		
@@ -399,8 +403,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 						"3":
 							darDeBajaSocio(socios, cantSocios)
 						"4":	
-							Escribir "Listar socios... (en proceso)"
-							Esperar 1 segundos
+							mostrarSocios(socios, cantSocios)
 						"0":	
 							esperarLimpiar("Volviendo al menú de Administrador...")
 						De Otro Modo:
@@ -863,33 +866,34 @@ Funcion txtOpcional <- pedirTextoOpcional(mensaje, valorActual)
 FinFuncion
 
 //Valido Números
-Funcion esNumero <- EsNumeroEnteroPositivo(cadenaAVerificar)
-	Definir i, valorNum, cantMaxDigitos Como Entero
+Funcion esNumero <- esNumeroEnteroPositivo(cadenaAVerificar)
+	Definir i, valorNum Como Entero
 	Definir letra Como Caracter
 	Definir esNumero Como Logico
 	esNumero <- Falso
-	cantMaxDigitos <- 15
 	
-	Si Longitud(cadenaAVerificar) <= cantMaxDigitos Entonces        
-        //esNumero <- Falso
+	//Ya valide en pedirNum que la longitud sea la adecuada
 		
-		Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer
-			letra <- Subcadena(cadenaAVerificar,i,i) //recorro x caracter
-			Si (letra > "0" y letra < "9") y Longitud(cadenaAVerificar) < cantMaxDigitos Entonces 
-				esNumero <- Verdadero	
-			SiNo
-				esNumero <- Falso
-			FinSi		
-		FinPara
-		Si esNumero Entonces
-			valorNum <- trunc(ConvertirANumero(cadenaAVerificar))
-			Si valorNum>=0
-				esNumero <- Verdadero
-			SiNo
-				esNumero <- Falso
-			FinSi	
-		FinSi
-	FinSi	
+	Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer		
+		letra <- Subcadena(cadenaAVerificar, i, i) //recorro x caracter
+		Si (letra >= "0" y letra <= "9") Entonces 
+			esNumero <- Verdadero	
+		SiNo
+			esNumero <- Falso
+			i <- Longitud(cadenaAVerificar) -1
+		FinSi		
+		Escribir "pos=", i, " -> ", Subcadena(cadenaAVerificar, i, i)
+	FinPara
+	
+	Si esNumero Entonces
+		valorNum <- trunc(ConvertirANumero(cadenaAVerificar))
+//		Si valorNum>=0
+//			esNumero <- Verdadero
+//		SiNo
+//			esNumero <- Falso
+//		FinSi	
+	FinSi
+		
 FinFuncion
 
 
@@ -897,28 +901,30 @@ FinFuncion
 Funcion num <- pedirNumero(mensaje)
 	definir num, cantMaxDigitos Como Entero
 	Definir esNumero Como Logico
-	definir numInput, input como cadena
+	definir numInput como cadena
 	esNumero <- Falso	
-	cantMaxDigitos <- 15
+	cantMaxDigitos <- 10
 	
 	Mientras !esNumero Hacer
 		espacio
-		Escribir Sin Saltar mensaje
-		
+		Escribir Sin Saltar mensaje		
 		leer numInput
+		
 		Si Longitud(numInput)>cantMaxDigitos Entonces
-			Escribir "El número es demasiado largo"
-		SiNo
-			input <- (numInput)		
+			Repetir
+				Escribir "El número es demasiado largo"
+				Escribir Sin Saltar mensaje		
+				leer numInput
+			Hasta Que Longitud(numInput)<=cantMaxDigitos	
 		FinSi	
 		
-		Si (EsNumeroEnteroPositivo(numInput)=Verdadero) Entonces
+		Si (esNumeroEnteroPositivo(numInput)) Entonces
 			esNumero <- Verdadero
 		SiNo
 			Escribir "Ingrese un numero válido"
 		FinSi
 	FinMientras
-	num <- ConvertirANumero(numInput)
+	num <- trunc(ConvertirANumero(numInput))
 FinFuncion
 
 // Pido un número pero lo devuelvo como texto
@@ -934,7 +940,7 @@ Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
     Definir num, cantMaxDigitos Como Entero
     Definir numTexto, resp Como Cadena
     Definir esNumero Como Logico
-	cantMaxDigitos <- 15
+	cantMaxDigitos <- 10
 	
 	espacio
     Escribir Sin Saltar mensaje
@@ -1451,8 +1457,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 	
 	Mientras !confirma Hacer
 		espacio
-		Escribir "***INGRESO DE NUEVO SOCIO***"
-		espacio
+		Escribir "***INGRESO DE NUEVO SOCIO***"		
 		dniSocio <- pedirNumeroComoTexto("Ingrese DNI del socio: ")
 		
 		Para i<-0 Hasta cantSocios-1 Con Paso 1 Hacer
@@ -1505,8 +1510,8 @@ FinFuncion
 
 //Buscar Socio
 Funcion buscarSocio(socios Por Referencia, cantSocios)
-	Definir opUsuario, columna, resultados, i, indice, cantidad Como Entero
-	Definir criterio como Cadena
+	Definir columna, resultados, i, indice, cantidad Como Entero
+	Definir opUsuario, criterio como Cadena
 	Dimension resultados[cantSocios]
 	//Inicializo resultados
 	Para i <- 0 Hasta cantSocios-1 Hacer		
@@ -1514,28 +1519,28 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 	FinPara
 	
 	Repetir
-		esperarLimpiar("")
 		Escribir "**BÚSQUEDA DE SOCIO**"
 		espacio
 		Escribir "Elija un criterio de búsqueda"
 		Escribir "1. DNI"
 		Escribir "2. Nombre"
 		Escribir "3. Condición"
-		Escribir "4. Volver"
+		Escribir "4. Estado"
+		Escribir "0. Volver"
 		espacio
-		Escribir Sin Saltar "Ingrese una opción (1-4): "
+		Escribir Sin Saltar "Ingrese una opción: "
 		Leer opUsuario
 		
 		Segun opUsuario Hacer
-			1:
+			"1":
 				columna<-0
 				criterio <- pedirNumeroComoTexto("Ingrese DNI a buscar: ")
-			2:
+			"2":
 				columna<-1
 				Escribir Sin Saltar "Ingrese nombre a buscar: "
 				Leer criterio				
 				criterio <- Mayusculas(criterio)				
-			3:
+			"3":
 				columna <- 3
 				Repetir
 					Escribir "Ingrese Condición a buscar (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
@@ -1551,37 +1556,46 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 					De Otro Modo:
 						criterio <- "MULTADO"
 				Fin Segun
-			4:	
+			"4":
+				//buscar  x estado
+				columna<-5
+				Escribir Sin Saltar "Ingrese estado a buscar: "
+				Leer criterio	
+				criterio <- Mayusculas(criterio)
+			"0":	
 				esperarLimpiar("Volviendo al menú de Socios...")
 			De Otro Modo:
-				Escribir "Eligió una opción inválida."				
+				Escribir "Eligió una opción inválida."	
+				esperarLimpiar("")
 		Fin Segun	
-	Hasta Que opUsuario >= 1 Y opUsuario <= 4
-	
-	Si opUsuario >= 1 Y opUsuario <= 3 Entonces
-		cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados, cantSocios)
-		// Mostrar resultados si hay coincidencias
-		Si cantidad = 0 Entonces
-			Escribir "No se encontraron socios con ese criterio."
-		Sino
-			Para i <- 0 Hasta cantidad - 1 Hacer
-				indice <- resultados[i]
-				espacio
-				Escribir "-------------Socio encontrado-------------"
-				espacio
-				Escribir "DNI: ", socios[indice, 0]
-				Escribir "Nombre y apellido: ", socios[indice, 1]
-				Escribir "Teléfono: ", socios[indice, 2]
-				Escribir "Condición: ", socios[indice, 3]
-				si socios[indice, 3] =  "MULTADO" Entonces
-					Escribir "Multado hasta: ", socios[indice, 4]
-				FinSi
-				Escribir "Estado: ", socios[indice, 5]  
+		
+		Si opUsuario = "1" o opUsuario = "2" o opUsuario = "3" o opUsuario = "4" Entonces
+			cantidad<-filtrarPorCriterio(socios, columna, criterio, resultados, cantSocios)
+			// Mostrar resultados si hay coincidencias
+			Si cantidad = 0 Entonces
+				Escribir "No se encontraron socios con ese criterio."
 				pedirTecla
-				espacio
-			FinPara
-		FinSi	
-	FinSi			
+			Sino
+				Para i <- 0 Hasta cantidad - 1 Hacer
+					indice <- resultados[i]
+					espacio
+					Escribir "-------------Socio encontrado-------------"
+					espacio
+					Escribir "DNI: ", socios[indice, 0]
+					Escribir "Nombre y apellido: ", socios[indice, 1]
+					Escribir "Teléfono: ", socios[indice, 2]
+					Escribir "Condición: ", socios[indice, 3]
+					si socios[indice, 3] =  "MULTADO" Entonces
+						Escribir "Multado hasta: ", socios[indice, 4]
+					FinSi
+					Escribir "Estado: ", socios[indice, 5]  					
+					espacio
+				FinPara
+				pedirTecla
+			FinSi	
+		FinSi
+		
+	Mientras Que opUsuario != "0"	
 FinFuncion
 
 //Modificar Socio
@@ -1783,7 +1797,7 @@ Funcion mostrarSocios(socios Por Referencia, cantSocios)
 				Si socios[i,3] = "MULTADO" Entonces
 					Escribir "Multado hasta: ", socios[i,4]
 				FinSi
-			Escribir "Estado: ", socios[indice, 5]  
+			Escribir "Estado: ", socios[i, 5]  
 		FinSi
 	FinPara
 	espacio
