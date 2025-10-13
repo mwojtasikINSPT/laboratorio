@@ -381,6 +381,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 					Escribir "3. Dar de Baja Socio"
 					Escribir "4. Listar Socios"
 					Escribir "0. Volver"
+					espacio
 					Escribir Sin Saltar "Elija una opción: "
 					Leer resp
 					esperarLimpiar("")
@@ -1175,6 +1176,26 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 	libros[indice, 7] <- stockLibro
 FinFuncion
 
+//Quito tildes de texto para comparar
+Funcion textoSintildes <- quitarTildes(cadenaAVerificar)
+    Definir i Como Entero
+    Definir letra, textoSintildes Como Cadena
+    textoSintildes <- ""
+	
+    Para i <- 0 Hasta Longitud(cadenaAVerificar)-1 Hacer
+        letra <- Subcadena(cadenaAVerificar, i, i)
+		
+        Segun letra Hacer
+            "Á": letra <- "A"
+            "É": letra <- "E"
+            "Í": letra <- "I"
+            "Ó": letra <- "O"
+            "Ú": letra <- "U"
+        Fin Segun		
+        textoSintildes <- textoSintildes + letra
+    FinPara
+FinFuncion
+
 //Cuenta coincidencias segun filtro
 //Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados, cantLibros)
 //    Definir i, cantResultados Como Entero
@@ -1194,12 +1215,13 @@ FinFuncion
 //Cuenta coincidencias segun filtro parcial en cadena
 Funcion cantResultados<-filtrarPorCriterio(matriz, columna, filtro, resultados, cantDefinida)
 	Definir i, j, cantResultados, longFiltro, longTexto Como Entero
-	Definir txt como Cadena
+	Definir txt, inputSinTilde, txtSinTilde como Cadena
 	Definir encontrado Como Logico
 	
 	i <- 0
 	cantResultados <- 0
 	longFiltro <- Longitud(filtro)
+	inputSinTilde <- quitarTildes(filtro)
 	
 	Mientras i < cantDefinida Hacer
         Si matriz[i, 0] <> "" Entonces
@@ -1210,7 +1232,8 @@ Funcion cantResultados<-filtrarPorCriterio(matriz, columna, filtro, resultados, 
 			j <- 0
             Mientras j <= longTexto - longFiltro y !encontrado Hacer
                 txt <- SubCadena(matriz[i, columna], j, j + longFiltro - 1)
-                Si txt = filtro Entonces
+				txtSinTilde <- quitarTildes(txt)
+                Si txtSinTilde = inputSinTilde Entonces
                     encontrado <- Verdadero
                 FinSi
                 j <- j + 1
@@ -1307,7 +1330,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 					espacio
 				FinPara
 				Escribir "------------------------------------------------------------"
-				Escribir "FIN DEL LISTADO DE LIBROS ENCONTRADOS"
+				Escribir "FIN DEL LISTADO DE LIBROS ENCONTRADOS" 
 				pedirTecla
 			FinSi			
 		FinSi 
