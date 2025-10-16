@@ -883,7 +883,7 @@ Funcion esNumero <- esNumeroEnteroPositivo(cadenaAVerificar)
 			esNumero <- Falso
 			i <- Longitud(cadenaAVerificar) -1
 		FinSi		
-		Escribir "pos=", i, " -> ", Subcadena(cadenaAVerificar, i, i)
+		//Escribir "pos=", i, " -> ", Subcadena(cadenaAVerificar, i, i)
 	FinPara
 	
 	Si esNumero Entonces
@@ -1618,7 +1618,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 			FinSi	
 		FinSi
 		
-	Mientras Que opUsuario != "0"	
+	Mientras Que opUsuario <> "0"	
 FinFuncion
 
 //Modificar Socio
@@ -1738,7 +1738,7 @@ FinFuncion
 
 //Dar de Baja Socio
 Funcion darDeBajaSocio(socios Por Referencia, cantSocios)
-    Definir dniSocio, opUsuario, nombreSocio Como Caracter
+    Definir dniBaja, opUsuario, nombreSocio Como Caracter
     Definir i, indice Como Entero
 	Definir confirmar como Logico
     confirmar <- Falso
@@ -1747,12 +1747,12 @@ Funcion darDeBajaSocio(socios Por Referencia, cantSocios)
         espacio
         Escribir "***DAR DE BAJA SOCIO***"
         espacio
-        dniSocio <- pedirNumeroComoTexto("Ingrese DNI del socio a dar de baja: ")
+        dniBaja <- pedirNumeroComoTexto("Ingrese DNI del socio a dar de baja: ")
         
         // Busco el socio
         indice <- -1
         Para i <- 0 Hasta cantSocios - 1 Hacer
-            Si socios[i, 0] = dniSocio Entonces
+            Si socios[i, 0] = dniBaja Entonces
                 indice <- i
                 i <- cantSocios 
             FinSi
@@ -1760,46 +1760,50 @@ Funcion darDeBajaSocio(socios Por Referencia, cantSocios)
         
         Si indice = -1 Entonces
             Escribir "No se encontró ningún socio con DNI: ", dniBaja
-            esperarLimpiar("Presione una tecla para continuar...")            
+            esperarLimpiar("Volviendo al menú anterior...")  
+			confirmar <-Verdadero
+		SiNo
+			nombreSocio <- socios[indice, 1]
+			// Verifico que no tenga libros en préstamo
+			Si socios[indice, 4] <> "" Entonces
+				Escribir "El socio ", nombreSocio, " tiene un libro en préstamo."
+				Escribir "No se puede dar de baja hasta que devuelva el libro."
+				esperarLimpiar("Presione una tecla para continuar...")
+			SiNo
+				Limpiar Pantalla
+				Escribir "***DATOS DEL SOCIO A DAR DE BAJA***"
+				espacio
+				Escribir Sin Saltar "DNI del socio: "
+				Escribir socios[indice, 0]
+				Escribir Sin Saltar "Nombre y Apellido: "
+				Escribir socios[indice, 1]
+				Escribir sin saltar "Teléfono: "
+				Escribir socios[indice, 2]
+				Escribir sin saltar "Condición actual: "
+				Escribir socios[indice, 3]
+				Escribir "No tiene Libros en préstamo"
+				
+				espacio
+				opUsuario <- confirmarInformacion("¿Confirma la baja del socio? (S/N)")
+				Esperar 1 segundo
+				
+				Si Mayusculas(opUsuario) = "S" Entonces
+					confirmar <- Verdadero
+					// Cambio estado
+					socios[indice, 3] <- "INHABILITADO"
+					socios[indice, 5] <- "BAJA"
+					Escribir "Baja del Socio ", nombreSocio, " confirmada"    
+					pedirTecla
+				Sino    
+					Escribir "Baja del Socio ", nombreSocio, " cancelada"
+					confirmar <- Verdadero
+				FinSi
+			FinSi     
         FinSi
         
-        nombreSocio <- socios[indice, 1]
         
-        // Verifico que no tenga libros en préstamo
-        Si socios[indice, 4] <> "" Entonces
-            Escribir "El socio ", nombreSocio, " tiene un libro en préstamo."
-            Escribir "No se puede dar de baja hasta que devuelva el libro."
-            esperarLimpiar("Presione una tecla para continuar...")
-		SiNo
-			Limpiar Pantalla
-			Escribir "***DATOS DEL SOCIO A DAR DE BAJA***"
-			espacio
-			Escribir Sin Saltar "DNI del socio: "
-			Escribir socios[indice, 0]
-			Escribir Sin Saltar "Nombre y Apellido: "
-			Escribir socios[indice, 1]
-			Escribir sin saltar "Teléfono: "
-			Escribir socios[indice, 2]
-			Escribir sin saltar "Condición actual: "
-			Escribir socios[indice, 3]
-			Escribir "No tiene Libros en préstamo"
-			
-			espacio
-			opUsuario <- confirmarInformacion("¿Confirma la baja del socio? (S/N)")
-			Esperar 1 segundo
-			
-			Si Mayusculas(opUsuario) = "S" Entonces
-				confirmar <- Verdadero
-				// Cambio estado
-				socios[indice, 3] <- "INHABILITADO"
-				socios[indice, 5] <- "BAJA"
-				Escribir "Baja del Socio ", nombreSocio, " confirmada"    
-				pedirTecla
-			Sino    
-				Escribir "Baja del Socio ", nombreSocio, " cancelada"
-				confirmar <- Verdadero
-			FinSi
-        FinSi     
+        
+        
         
         esperarLimpiar("")        
     FinMientras
