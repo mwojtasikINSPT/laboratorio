@@ -98,10 +98,15 @@ Algoritmo biblioteca
 				FinMientras
 				
 				Si accesoValido = 0 Entonces
-					esperarLimpiar("Demasiados intentos fallidos. Volviendo al menú principal...")	
+					esperarLimpiar("Demasiados intentos fallidos. Volviendo al menú principal...")
+					intentos<- 0
+					Limpiar Pantalla
+				Sino 
+					administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios) 
+					accesoValido<- 0 
 				FinSi
 				
-				administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios) 		
+					
 				
 			"2":  //Acceso Bibliotecario		
 				Mientras intentos < 3 Y accesoValido = 0 Hacer
@@ -126,11 +131,14 @@ Algoritmo biblioteca
 			
 			Si accesoValido = 0 Entonces
 				Escribir "Demasiados intentos fallidos. Volviendo al menú principal..."
+				intentos<- 0
 				Esperar 2 Segundos
 				Limpiar Pantalla
+			SiNo
+				bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
 			FinSi
 				
-			bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
+			
 		"3":
 			//Acceso Socios
 			Escribir "*** ACCESO SOCIOS ***"			
@@ -337,7 +345,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                 FinSi
 								pedirTecla
                             Sino
-                                Escribir "No puede borrar a todos los Bibliotecarios."
+                                esperarLimpiar("No puede borrar a todos los Bibliotecarios.")
+								
                             FinSi			
 							//pedirTecla
 						"3":
@@ -373,7 +382,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 				Hasta Que resp == "0"
 			"2": //Gestiono Socios
 				Repetir
-					espacio
 					Escribir "*** GESTIÓN DE SOCIOS ***"
 					espacio
 					Escribir "1. Agregar Socio"
@@ -575,10 +583,11 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 			"0":	
 				esperarLimpiar("Volviendo al Menú principal...")
 			De Otro Modo:
-				Escribir "Eligió una opción inválida."
+				esperarLimpiar("Eligió una opción inválida.")				
 		Fin Segun		
 		
 	Hasta Que opAdmin == "0"	
+	
 FinSubAlgoritmo
 
 
