@@ -2,7 +2,7 @@ Algoritmo biblioteca
 	
 	Definir libros, socios, prestamos, bibliotecarios como Cadena 
 	Definir resp, opAcceso Como Caracter
-	Definir op, modulo, opLibros, opSocios, i, j Como Entero 
+	Definir op, modulo, opLibros, opSocios Como Entero 
 	
 	//VARIABLES PRESTAMOS
 	Definir cantPrestamos, camposPrestamos Como Entero
@@ -30,7 +30,7 @@ Algoritmo biblioteca
 	Dimension libros[cantLibros, camposLibros]
 	
 	cantSocios <- 200
-	camposSocios <- 6 //dni, nombre, telefono, Condición, fechaPenalizacion, Estado
+	camposSocios <- 7 //dni, nombre, telefono, Condición, fechaPenalizacion, Estado, contraseña
 	Dimension socios[cantSocios, camposSocios]
 	
 	cantPrestamos <- 200
@@ -44,14 +44,9 @@ Algoritmo biblioteca
 	cantAdministradores <- 10
 	camposAdministradores <- 2 //NombreAdmin, clave
     Dimension administradores[cantAdministradores, camposAdministradores]
-	i<- 0
 	
 	//Inicializo matriz de prestamos 
-	Para i <- 0 Hasta cantPrestamos - 1 Hacer		
-		Para j <- 0 Hasta camposPrestamos - 1 Hacer
-			prestamos[i, j] <- ""
-		FinPara
-	FinPara	
+	inicializarPrestamos(prestamos, camposPrestamos, cantPrestamos)
 	
 	//Precargo Libros para pruebas
 	librosPrecargados(libros, cantLibros, camposLibros)
@@ -892,18 +887,11 @@ Funcion esNumero <- esNumeroEnteroPositivo(cadenaAVerificar)
 			esNumero <- Falso
 			i <- Longitud(cadenaAVerificar) -1
 		FinSi		
-		//Escribir "pos=", i, " -> ", Subcadena(cadenaAVerificar, i, i)
 	FinPara
 	
 	Si esNumero Entonces
 		valorNum <- trunc(ConvertirANumero(cadenaAVerificar))
-//		Si valorNum>=0
-//			esNumero <- Verdadero
-//		SiNo
-//			esNumero <- Falso
-//		FinSi	
 	FinSi
-		
 FinFuncion
 
 
@@ -951,7 +939,6 @@ Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
     Definir numTexto, resp Como Cadena
     Definir esNumero Como Logico
 	cantMaxDigitos <- 10
-	
 	espacio
     Escribir Sin Saltar mensaje
     Leer resp
@@ -1480,7 +1467,7 @@ FinFuncion
 //***************************************************** FUNCIONES SOCIOS****************************************************************
 //Crear socio
 Funcion crearSocio(socios Por Referencia, cantSocios)
-	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado como caracter
+	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado, pwdSocio como caracter
 	Definir i, confirmar, indice, numTemporal Como Entero
 	Definir existeSocio, confirma Como Logico
 	existeSocio <- Falso 
@@ -1507,6 +1494,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")
 			telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
 			condSocio <- "HABILITADO"
+			pwdSocio <- pedirNumeroComoTexto("Ingrese la contraseña: ")
 			Limpiar Pantalla
 			
 			Escribir "***DATOS DEL NUEVO SOCIO***"
@@ -1518,7 +1506,9 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			Escribir sin saltar "Teléfono: "
 			Escribir telSocio
 			Escribir sin saltar "Condición: "
-			Escribir condSocio			
+			Escribir condSocio	
+			Escribir Sin Saltar "Contraseña: "
+			Escribir pwdSocio
 			espacio
 			opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 			Esperar 1 segundo
@@ -1633,7 +1623,7 @@ FinFuncion
 //Modificar Socio
 Funcion modificarSocio(socios Por Referencia, cantSocios)
     Definir i, indice, confirmar Como Entero
-    Definir op, opUsuario, nuevoDato, nombreSocio,telSocio,condSocio, penalizacionSocio, idBuscado Como Cadena
+    Definir op, opUsuario, nuevoDato, nombreSocio,telSocio,condSocio, penalizacionSocio, idBuscado, pwdSocio Como Cadena
 	
     // Pedir el dni del socio a modificar
 	espacio
@@ -1656,7 +1646,8 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
         // Cargo datos actuales en variables temporales
         nombreSocio<- socios[indice,1]
         telSocio <- socios[indice,2]
-        condSocio <- socios[indice,3]		
+        condSocio <- socios[indice,3]	
+		pwdSocio <- socios[indice,6]	
         confirmar <- 0
 		
 		Si socios[indice, 5]  = "BAJA" Entonces
@@ -1668,76 +1659,75 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 				esperarLimpiar("Reactivando socio...")
 				socios[indice, 5] <- "ACTIVO"
 				condSocio <- "HABILITADO"
-				
-				Mientras confirmar = 0 Hacer
-					esperarLimpiar("")
-					Escribir "***DATOS ACTUALES DEL SOCIO***"
-					Escribir "DNI: ", socios[indice,0]
-					Escribir "Nombre y apellido: ", nombreSocio
-					Escribir "Teléfono: ", telSocio
-					Escribir "Condición: ", condSocio
-					Escribir "Estado: ", socios[indice, 5]  
-					Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
-					espacio					
-					nuevoDato <- pedirTextoOpcional("Nuevo Nombre y apellido: ", nombreSocio)
-					nuevoDato <- Mayusculas(nuevoDato)
-					Si Longitud(nuevoDato)>0 Entonces
-						nombreSocio <-  nuevoDato				
-					FinSi			
-					
-					telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
-					
-					Escribir Sin Saltar "Nueva Condición (H = HABILITADO / I = INHABILITADO / M = MULTADO): " //habría que ver, si está inhabilitado o multado es x causa
-					Leer nuevoDato	
-					nuevoDato <- Mayusculas(nuevoDato)
-					Si Longitud(nuevoDato) > 0 Entonces
-						Si (nuevoDato <> "H" y nuevoDato <> "I" y nuevoDato <> "M")
-							Escribir "Eligió una condición inválida, permanecerá la anterior"
-						SiNo					
-							condSocio <- nuevoDato
-						FinSi
-						Segun condSocio Hacer
-							"H":
-								condSocio <- "HABILITADO"
-							"I":
-								condSocio <- "INHABILITADO"
-							"M":
-								condSocio <- "MULTADO"
-								Escribir "Ingrese los dias de penalización: "
-								leer penalizacionSocio
-						Fin Segun
-					FinSi			
-					esperarLimpiar("")
-					Escribir "***DATOS DEL SOCIO MODIFICADOS***"
-					Escribir "DNI: ", socios[indice,0]
-					Escribir "Nombre y apellido: ", nombreSocio
-					Escribir "Teléfono: ", telSocio
-					Escribir "Condición: ", condSocio
-					Escribir "Estado: ", socios[indice,5]
-					espacio
-					opUsuario <- confirmarInformacion("Confirma los cambios? (S/N)")            
-					espacio
-					Esperar 1 segundo
-					
-					Si Mayusculas(opUsuario) = "S" Entonces
-						confirmar <- 1
-						Escribir "Cambios del Socio ", nombreSocio " confirmados"				
-					Sino	
-						Escribir "Cambios no confirmados"
-						confirmar <- 1
-					FinSi
-					esperarLimpiar("")
-				FinMientras
-				
-				pedirTecla
-				
 			"N":
 				Escribir "El socio ", nombreSocio " continúa dado de baja."
 				pedirTecla
 			FinSegun
-			
-		FinSi        
+		FinSi
 		
+		Mientras confirmar = 0 Hacer
+			esperarLimpiar("")
+			Escribir "***DATOS ACTUALES DEL SOCIO***"
+			Escribir "DNI: ", socios[indice,0]
+			Escribir "Nombre y apellido: ", nombreSocio
+			Escribir "Teléfono: ", telSocio
+			Escribir "Condición: ", condSocio
+			Escribir "Estado: ", socios[indice, 5]  
+			Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
+			espacio					
+			nuevoDato <- pedirTextoOpcional("Nuevo Nombre y apellido: ", nombreSocio)
+			nuevoDato <- Mayusculas(nuevoDato)
+			Si Longitud(nuevoDato)>0 Entonces
+				nombreSocio <-  nuevoDato				
+			FinSi			
+			
+			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
+			
+			Escribir Sin Saltar "Nueva Condición (H = HABILITADO / I = INHABILITADO / M = MULTADO): " //habría que ver, si está inhabilitado o multado es x causa
+			Leer nuevoDato	
+			nuevoDato <- Mayusculas(nuevoDato)
+			Si Longitud(nuevoDato) > 0 Entonces
+				Si (nuevoDato <> "H" y nuevoDato <> "I" y nuevoDato <> "M")
+					Escribir "Eligió una condición inválida, permanecerá la anterior"
+				SiNo					
+					condSocio <- nuevoDato
+				FinSi
+				Segun condSocio Hacer
+					"H":
+						condSocio <- "HABILITADO"
+					"I":
+						condSocio <- "INHABILITADO"
+					"M":
+						condSocio <- "MULTADO"
+						Escribir "Ingrese los dias de penalización: "
+						leer penalizacionSocio
+				Fin Segun
+			FinSi	
+			pwdSocio <- pedirNumeroComoTextoOpcional("Nueva contraseña: ", pwdSocio)		
+			esperarLimpiar("")
+			Escribir "***DATOS DEL SOCIO MODIFICADOS***"
+			Escribir "DNI: ", socios[indice,0]
+			Escribir "Nombre y apellido: ", nombreSocio
+			Escribir "Teléfono: ", telSocio
+			Escribir "Condición: ", condSocio
+			Escribir "Estado: ", socios[indice,5]
+			Escribir "Contraseña: ", pwdSocio
+			espacio
+			opUsuario <- confirmarInformacion("Confirma los cambios? (S/N)")            
+			espacio
+			Esperar 1 segundo
+			
+			Si Mayusculas(opUsuario) = "S" Entonces
+				confirmar <- 1
+				Escribir "Cambios del Socio ", nombreSocio " confirmados"				
+			Sino	
+				Escribir "Cambios no confirmados"
+				confirmar <- 1
+			FinSi
+			esperarLimpiar("")
+		FinMientras
+		
+		pedirTecla
         // Guardo cambios en la matriz
         socios[indice,1] <- nombreSocio
         socios[indice,2] <- telSocio
@@ -2883,6 +2873,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[0, 3] <- "HABILITADO"
 	socios[0, 4] <- "6"
 	socios[0, 5] <- "ACTIVO"
+	socios[0, 6] <- "1234"
 	
 	socios[1, 0] <- "45263568"
 	socios[1, 1] <- "MAR GOMEZ"
@@ -2890,6 +2881,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[1, 3] <- "HABILITADO"
 	socios[1, 4] <- ""
 	socios[1, 5] <- "ACTIVO"
+	socios[1, 6] <- "1234"
 	
 	socios[2, 0] <- "77463568"
 	socios[2, 1] <- "MARTIN PIX"
@@ -2897,6 +2889,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[2, 3] <- "HABILITADO"
 	socios[2, 4] <- ""
 	socios[2, 5] <- "ACTIVO"
+	socios[2, 6] <- "1234"
 	
 	socios[3, 0] <- "7062019"
 	socios[3, 1] <- "COPITO WOJTASIK"
@@ -2904,6 +2897,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[3, 3] <- "HABILITADO"
 	socios[3, 4] <- ""
 	socios[3, 5] <- "ACTIVO"
+	socios[3, 6] <- "1234"
 	
 	socios[4, 0] <- "23122019"
 	socios[4, 1] <- "TAMBOR MENDEZ"
@@ -2911,6 +2905,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[4, 3] <- "HABILITADO"
 	socios[4, 4] <- ""
 	socios[4, 5] <- "ACTIVO"
+	socios[4, 6] <- "1234"
 	
 	socios[5, 0] <- "26091984"
 	socios[5, 1] <- "EMA ANCANS"
@@ -2918,6 +2913,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[5, 3] <- "HABILITADO"
 	socios[5, 4] <- ""
 	socios[5, 5] <- "ACTIVO"
+	socios[5, 6] <- "1234"
 	
 	socios[6, 0] <- "13051985"
 	socios[6, 1] <- "TOTA BOLLA"
@@ -2925,6 +2921,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[6, 3] <- "HABILITADO"
 	socios[6, 4] <- ""
 	socios[6, 5] <- "ACTIVO"
+	socios[6, 6] <- "1234"
 	
 	socios[7, 0] <- "34862157"
 	socios[7, 1] <- "LUIS CARRASCO"
@@ -2932,6 +2929,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[7, 3] <- "HABILITADO"
 	socios[7, 4] <- ""
 	socios[7, 5] <- "ACTIVO"
+	socios[7, 6] <- "1234"
 	
 	socios[8, 0] <- "25987456"
 	socios[8, 1] <- "MARTA SALAS"
@@ -2939,6 +2937,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[8, 3] <- "HABILITADO"
 	socios[8, 4] <- ""
 	socios[8, 5] <- "ACTIVO"
+	socios[8, 6] <- "1234"
 	
 	socios[9, 0] <- "37658942"
 	socios[9, 1] <- "DIEGO PEREYRA"
@@ -2946,6 +2945,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[9, 3] <- "HABILITADO"
 	socios[9, 4] <- ""
 	socios[9, 5] <- "ACTIVO"
+	socios[9, 6] <- "1234"
 	
 	socios[10, 0] <- "40785621"
 	socios[10, 1] <- "CARLA ACUÑA"
@@ -2953,6 +2953,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[10, 3] <- "HABILITADO"
 	socios[10, 4] <- "3"
 	socios[10, 5] <- "ACTIVO"
+	socios[10, 6] <- "1234"
 	
 	socios[11, 0] <- "42235897"
 	socios[11, 1] <- "JUAN CRUZ"
@@ -2960,6 +2961,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[11, 3] <- "HABILITADO"
 	socios[11, 4] <- ""
 	socios[11, 5] <- "ACTIVO"
+	socios[11, 6] <- "1234"
 	
 	socios[12, 0] <- "43987564"
 	socios[12, 1] <- "SOFIA NUÑEZ"
@@ -2967,6 +2969,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[12, 3] <- "HABILITADO"
 	socios[12, 4] <- ""
 	socios[12, 5] <- "ACTIVO"
+	socios[12, 6] <- "1234"
 	
 	socios[13, 0] <- "45896237"
 	socios[13, 1] <- "RICARDO DIAZ"
@@ -2974,6 +2977,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[13, 3] <- "HABILITADO"
 	socios[13, 4] <- ""
 	socios[13, 5] <- "ACTIVO"
+	socios[13, 6] <- "1234"
 	
 	socios[14, 0] <- "46985327"
 	socios[14, 1] <- "ANA MARQUEZ"
@@ -2981,6 +2985,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[14, 3] <- "HABILITADO"
 	socios[14, 4] <- "2"
 	socios[14, 5] <- "ACTIVO"
+	socios[14, 6] <- "1234"
 	
 	socios[15, 0] <- "47856231"
 	socios[15, 1] <- "PABLO RAMOS"
@@ -2988,6 +2993,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[15, 3] <- "HABILITADO"
 	socios[15, 4] <- ""
 	socios[15, 5] <- "ACTIVO"
+	socios[15, 6] <- "1234"
 	
 	socios[16, 0] <- "48975623"
 	socios[16, 1] <- "VICTOR HERRERA"
@@ -2995,6 +3001,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[16, 3] <- "HABILITADO"
 	socios[16, 4] <- ""
 	socios[16, 5] <- "ACTIVO"
+	socios[16, 6] <- "1234"
 	
 	socios[17, 0] <- "49785263"
 	socios[17, 1] <- "LAURA VEGA"
@@ -3002,6 +3009,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[17, 3] <- "HABILITADO"
 	socios[17, 4] <- ""
 	socios[17, 5] <- "ACTIVO"
+	socios[17, 6] <- "1234"
 	
 	socios[18, 0] <- "50789563"
 	socios[18, 1] <- "ANDRES PONCE"
@@ -3009,6 +3017,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[18, 3] <- "HABILITADO"
 	socios[18, 4] <- ""
 	socios[18, 5] <- "ACTIVO"
+	socios[18, 6] <- "1234"
 	
 	socios[19, 0] <- "51628974"
 	socios[19, 1] <- "ELENA FARIAS"
@@ -3016,6 +3025,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[19, 3] <- "HABILITADO"
 	socios[19, 4] <- ""
 	socios[19, 5] <- "ACTIVO"
+	socios[19, 6] <- "1234"
 	
 	socios[20, 0] <- "52369847"
 	socios[20, 1] <- "SERGIO RUIZ"
@@ -3023,6 +3033,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[20, 3] <- "HABILITADO"
 	socios[20, 4] <- ""
 	socios[20, 5] <- "ACTIVO"
+	socios[20, 6] <- "1234"
 	
 	socios[21, 0] <- "53478562"
 	socios[21, 1] <- "DANIELA MARTIN"
@@ -3030,7 +3041,16 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[21, 3] <- "HABILITADO"
 	socios[21, 4] <- ""
 	socios[21, 5] <- "ACTIVO"
+	socios[21, 6] <- "1234"
+FinFuncion
 
+Funcion inicializarPrestamos(prestamos Por Referencia, camposPrestamos, cantPrestamos)
+	Definir i, j Como Entero
+	Para i <- 0 Hasta cantPrestamos - 1 Hacer		
+		Para j <- 0 Hasta camposPrestamos - 1 Hacer
+			prestamos[i, j] <- ""
+		FinPara
+	FinPara	
 FinFuncion
 
 //BIBLIOTECARIOS PRECARGADOS
