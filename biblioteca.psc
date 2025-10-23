@@ -1494,7 +1494,11 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")
 			telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
 			condSocio <- "HABILITADO"
-			pwdSocio <- pedirNumeroComoTexto("Ingrese la contraseña: ")
+			pwdSocio <- pedirNumeroComoTexto("Ingrese la contraseña (4 dígitos): ")
+			Mientras Longitud(pwdSocio) <> 4
+				Escribir "La clave debe tener exactamente 4 dígitos."
+				pwdSocio <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+			FinMientras
 			Limpiar Pantalla
 			
 			Escribir "***DATOS DEL NUEVO SOCIO***"
@@ -1673,6 +1677,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 			Escribir "Teléfono: ", telSocio
 			Escribir "Condición: ", condSocio
 			Escribir "Estado: ", socios[indice, 5]  
+			Escribir "Contraseña: ", socios[indice, 6]
 			Escribir "Ingrese los nuevos datos (dejar vacío para no cambiar):"
 			espacio					
 			nuevoDato <- pedirTextoOpcional("Nuevo Nombre y apellido: ", nombreSocio)
@@ -1704,6 +1709,10 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 				Fin Segun
 			FinSi	
 			pwdSocio <- pedirNumeroComoTextoOpcional("Nueva contraseña: ", pwdSocio)		
+			Mientras Longitud(pwdSocio) <> 4
+				Escribir "La clave debe tener exactamente 4 dígitos."
+				pwdSocio <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+			FinMientras
 			esperarLimpiar("")
 			Escribir "***DATOS DEL SOCIO MODIFICADOS***"
 			Escribir "DNI: ", socios[indice,0]
