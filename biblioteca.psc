@@ -69,10 +69,8 @@ Algoritmo biblioteca
 		Leer opAcceso
 		esperarLimpiar("")
 		Segun opAcceso Hacer
-			"1":	//Acceso Admin
-				// La función intentarAcceso maneja los 3 intentos.
+			"1": //Acceso Admin
 				Si intentarAcceso(administradores, cantAdministradores, "ADMINISTRADOR", dniSocioActual) Entonces
-					// Si es Verdadero, llama la función de acción (administrador)
 					administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios)
 				FinSi
 				
@@ -95,13 +93,11 @@ Algoritmo biblioteca
 	Hasta Que opAcceso == "0"
 FinAlgoritmo
 
-SubProceso espacio
-	Escribir ""
-FinSubProceso
 
 //******************************************* VALIDACION DE ACCESO *******************************************************
 
 //Intentos de acceso 3 veces y devuelve si el acceso fue exitoso (Verdadero/Falso).
+
 Funcion accesoExitoso <- intentarAcceso(listaUsuarios, cantUsuarios, nombreRol,dniSocioEncontrado Por Referencia)
     Definir accesoExitoso Como Logico
     Definir intentos, indiceEncontrado Como Entero
@@ -112,31 +108,39 @@ Funcion accesoExitoso <- intentarAcceso(listaUsuarios, cantUsuarios, nombreRol,d
 	dniSocioEncontrado <- ""
     
     Mientras intentos < 3 Y accesoExitoso = Falso Hacer
-        Escribir "*** ACCESO ", Mayusculas(nombreRol), " ***"	
-        
+		DibujarLineaConTexto("*** ACCESO " + Mayusculas(nombreRol) + " ***")
         espacio 
         Escribir "Intento ", intentos + 1, " de 3"
+		espacio
         Escribir Sin Saltar "Ingrese su Nombre: "
-        Leer nombreIngresado
+        Leer nombreIngresado	
         nombreIngresado <- Mayusculas(nombreIngresado)
         Escribir Sin Saltar "Ingrese su Clave: "
         Leer claveIngresada
+		espacio
 		
-        Si validarAcceso(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol) Entonces
-            Escribir "Acceso concedido. Bienvenido ", nombreIngresado
-            esperarLimpiar("")
-            accesoExitoso <- Verdadero
-			
-			// Si el acceso fue exitoso y es un SOCIO, obtener su DNI
-            Si nombreRol = "SOCIO" Entonces
-                indiceEncontrado <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol)
-                dniSocioEncontrado <- listaUsuarios[indiceEncontrado, 0] 
-            FinSi
-        Sino
-            Escribir "Nombre o clave incorrectos."
-            intentos <- intentos + 1
-            esperarLimpiar("")	
-        FinSi
+		Si Longitud(nombreIngresado)=0 o Longitud(claveIngresada)=0 Entonces
+			Escribir "Error: No puede dejar campos vacios."
+			espacio
+			intentos <- intentos + 1
+		SiNo
+			Si validarAcceso(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol) Entonces
+				Escribir "Acceso concedido. Bienvenido ", nombreIngresado
+				esperarLimpiar("")
+				accesoExitoso <- Verdadero
+				
+				// Si el acceso fue exitoso y es un SOCIO, obtener su DNI
+				Si nombreRol = "SOCIO" Entonces
+					indiceEncontrado <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol)
+					dniSocioEncontrado <- listaUsuarios[indiceEncontrado, 0] 
+				FinSi
+			Sino
+				Escribir "Nombre o clave incorrectos."
+				intentos <- intentos + 1
+				esperarLimpiar("")	
+			FinSi
+		FinSi
+		
     FinMientras
     
     Si accesoExitoso = Falso Entonces
@@ -181,6 +185,8 @@ Funcion esValido <- validarAcceso(nombreIngresada, claveIngresada, listaUsuarios
     FinSi
     
 FinFuncion
+
+
 //***************************************************************Vista Administrador*********************************************************
 SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, administradores Por Referencia, cantAdministradores, socios Por Referencia, cantSocios)
 	Definir i Como Entero
@@ -200,8 +206,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 	totalBibliotecarios <- 3
 	
 	Repetir
-        Escribir "*** MENÚ ADMINISTRADOR ***"
-		espacio
+		DibujarLineaConTexto("*** MENÚ ADMINISTRADOR ***")
+        espacio
         Escribir "1. Gestionar Bibliotecarios"
         Escribir "2. Gestionar Socios"
         Escribir "3. Gestionar Administradores"
@@ -214,8 +220,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 		Segun opAdmin Hacer
 			"1":
 				//Gestiono Bibliotecarios
-				Repetir					
-                    Escribir "*** GESTIÓN DE BIBLIOTECARIOS ***"
+				Repetir	
+					DibujarLineaConTexto("*** GESTIÓN DE BIBLIOTECARIOS ***")                     
                     Escribir "1. Agregar Bibliotecario"
                     Escribir "2. Eliminar Bibliotecario"
                     Escribir "3. Listar Bibliotecarios"
@@ -239,7 +245,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								
 								Si indice <> -1 Entonces
 									confirmar <- 0
-									
+									DibujarLineaConTexto("*** AGREGAR NUEVO BIBLIOTECARIO ***")
 									Mientras confirmar = 0 Hacer
 										nombreBibliotecario <- pedirTexto("Ingrese nombre del bibliotecario: ")
 										claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
@@ -256,10 +262,11 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										FinPara
 										
 										Si bibliotecarioExiste Entonces
+											espacio
 											Escribir "Ese Bibliotecario ya se encuentra registrado."
 										Sino
 											Limpiar Pantalla
-											Escribir "*** DATOS DEL NUEVO BIBLIOTECARIO ***"
+											DibujarLineaConTexto("*** DATOS DEL NUEVO BIBLIOTECARIO ***")
 											Escribir "Nombre: ", nombreBibliotecario
 											Escribir "Clave: ", claveBibliotecario
 											
@@ -291,9 +298,9 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
-						"2":	//Elimino Bibliotecario							
-                            Escribir "*** ELIMINAR BIBLIOTECARIO ***"
-                            espacio
+						"2":	//Elimino Bibliotecario	
+							DibujarLineaConTexto("*** ELIMINAR BIBLIOTECARIO ***")                             
+                            
                             // Mostrar bibliotecarios existentes
                             Escribir "Bibliotecarios registrados:"
                             hayBibliotecarios <- Falso
@@ -337,13 +344,13 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                 FinSi
 								pedirTecla
                             Sino
-                                esperarLimpiar("No puede borrar a todos los Bibliotecarios.")
+                                esperarLimpiar("No puede eliminar a todos los Bibliotecarios.")
 								
                             FinSi			
 						"3":
 							//Muestro Bibliotecarios
-							espacio
-                            Escribir "*** LISTADO DE BIBLIOTECARIOS ***"          
+							
+							DibujarLineaConTexto("*** LISTADO DE BIBLIOTECARIOS ***")                                   
 							
                             Para i <- 0 Hasta cantBibliotecarios-1 Hacer
                                 Si bibliotecarios[i, 0] <> "" Entonces
@@ -354,7 +361,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                             FinPara
                             
                             Si totalBibliotecarios = 0 Entonces
-                                Escribir "No hay bibliotecarios registrados." //No deberia pasar
+                                Escribir "No hay bibliotecarios registrados." //Nunca deberia llegar x valid cant Bibl
                             Sino
 								Escribir "----------------------------------------"
                                 Escribir "Total de bibliotecarios registrados: ", totalBibliotecarios
@@ -372,8 +379,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 				Hasta Que resp == "0"
 			"2": //Gestiono Socios
 				Repetir
-					Escribir "*** GESTIÓN DE SOCIOS ***"
-					espacio
+					DibujarLineaConTexto("*** GESTIÓN DE SOCIOS ***")					
 					Escribir "1. Agregar Socio"
 					Escribir "2. Modificar Socio"
 					Escribir "3. Dar de Baja Socio"
@@ -406,7 +412,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 						"0":	
 							esperarLimpiar("Volviendo al menú de Administrador...")
 						De Otro Modo:
-							esperarLimpiar("Opción incorrecta. Volviendo a Menú Administrador...")
+							esperarLimpiar("Opción incorrecta. Volviendo a Menú anterior...")
 					Fin Segun
 					
 				Hasta Que resp = "0"			
@@ -737,9 +743,13 @@ SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia,
 FinSubAlgoritmo
 
 //*******************************************************FUNCIONES AUXILIARES****************************************************************************
+SubProceso espacio
+	Escribir ""
+FinSubProceso
+
 SubProceso esperarLimpiar(mensaje)
 	Escribir mensaje
-	Esperar 2 segundos
+	Esperar 1 segundos
 	Limpiar Pantalla
 FinSubProceso
 
@@ -750,6 +760,25 @@ SubProceso pedirTecla
 	Esperar 2 Segundos
 	Limpiar Pantalla	
 FinSubProceso
+
+
+SubProceso DibujarLineaConTexto(texto)
+    Definir long, i Como Entero
+    
+    long <- Longitud(texto) + 10  // con espacios extras
+    espacio
+    Para i <- 1 Hasta long Hacer
+        Escribir Sin Saltar "="
+    FinPara
+    espacio
+    Escribir "     ", texto, "     "	
+    Para i <- 1 Hasta long Hacer
+        Escribir Sin Saltar "="
+    FinPara
+    espacio
+	
+FinSubProceso
+
 
 //Respuesta S/N
 Funcion respuesta<-confirmarInformacion(mensaje) 
@@ -765,6 +794,7 @@ Funcion respuesta<-confirmarInformacion(mensaje)
 			Leer respuesta
 			respuesta <- Mayusculas(respuesta)	
 		FinMientras
+		espacio
 	Hasta Que (respuesta == "S" O respuesta == "N")
 FinFuncion
 
@@ -2334,6 +2364,7 @@ FinFuncion
 
 //*****************************************************MENUES PARA MOSTRAR************************************************************************
 SubProceso  mostrarMenuAcceso
+	
 	
 	Escribir "Indique su tipo de usuario (0 para Salir del Sistema): "
 	espacio
