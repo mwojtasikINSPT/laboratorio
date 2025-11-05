@@ -120,7 +120,7 @@ Funcion accesoExitoso <- intentarAcceso(listaUsuarios, cantUsuarios, nombreRol,d
 		espacio
 		
 		Si Longitud(nombreIngresado)=0 o Longitud(claveIngresada)=0 Entonces
-			Escribir "Error: No puede dejar campos vacios."
+			esperarLimpiar( "Error: No puede dejar campos vacios.")
 			espacio
 			intentos <- intentos + 1
 		SiNo
@@ -135,16 +135,24 @@ Funcion accesoExitoso <- intentarAcceso(listaUsuarios, cantUsuarios, nombreRol,d
 					dniSocioEncontrado <- listaUsuarios[indiceEncontrado, 0] 
 				FinSi
 			Sino
-				Escribir "Nombre o clave incorrectos."
-				intentos <- intentos + 1
-				esperarLimpiar("")	
+				indiceEncontrado <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol)
+				Si nombreRol = "SOCIO" y listaUsuarios[indiceEncontrado, 5] = "BAJA" Entonces
+					esperarLimpiar("Usuario dado de baja.")	
+					accesoExitoso <- Falso
+					intentos <- 3 
+				SiNo
+					Escribir "Nombre o clave incorrectos."
+					intentos <- intentos + 1					
+					esperarLimpiar("")	
+				FinSi
+				
 			FinSi
 		FinSi
 		
     FinMientras
     
     Si accesoExitoso = Falso Entonces
-        esperarLimpiar("Demasiados intentos fallidos. Volviendo al menú principal...")
+        esperarLimpiar("No pudo acceder. Volviendo al menú principal...")
         Limpiar Pantalla
     FinSi
     
@@ -183,6 +191,11 @@ Funcion esValido <- validarAcceso(nombreIngresada, claveIngresada, listaUsuarios
     Sino
         esValido <- Falso
     FinSi
+	
+	//Si esta dado de baja, no accede socio
+	Si (rolUsuario = "SOCIO" y listaUsuarios[indiceEncontrado, 5] = "BAJA") Entonces
+		esValido <- Falso
+	FinSi
     
 FinFuncion
 
@@ -530,6 +543,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									
 									Si indice = -1 Entonces
 										Escribir "No se encontró un Administrador con ese nombre."
+										pedirTecla
 									Sino
 										Escribir "Administrador encontrado: ", administradores[indice, 0]
 										dato <-administradores[indice, 0]
@@ -538,9 +552,10 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										Si Mayusculas(opUsuario) = "S" Entonces
 											administradores[indice, 0] <- ""
 											administradores[indice, 1] <- ""
-											Escribir "Administrador eliminado exitosamente."
+											esperarLimpiar("Administrador " +dato+ " eliminado exitosamente.")
+											pedirTecla
 										Sino
-											Escribir "Eliminación cancelada."
+											esperarLimpiar("Eliminación cancelada.")
 										FinSi
 									FinSi
 								FinSi										
@@ -565,6 +580,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Sino
 								Escribir "----------------------------------------"
 								Escribir "Total de Administradores registrados: ", totalAdministradores
+								pedirTecla
 							FinSi
 						"0": 
 							esperarLimpiar("Volviendo al menú de Administrador...")
@@ -904,8 +920,7 @@ Funcion esNumero <- esNumeroEnteroPositivo(cadenaAVerificar)
 	Definir esNumero Como Logico
 	esNumero <- Falso
 	
-	//Ya valide en pedirNum que la longitud sea la adecuada
-		
+	//Ya valide en pedirNum que la longitud sea la adecuada		
 	Para i <- 0 Hasta Longitud(cadenaAVerificar) -1 Hacer		
 		letra <- Subcadena(cadenaAVerificar, i, i) //recorro x caracter
 		Si (letra >= "0" y letra <= "9") Entonces 
@@ -926,7 +941,7 @@ FinFuncion
 Funcion num <- pedirNumero(mensaje)
 	definir num, cantMaxDigitos Como Entero
 	Definir esNumero Como Logico
-	definir numInput como cadena
+	definir numInput, numTexto como cadena
 	esNumero <- Falso	
 	cantMaxDigitos <- 10
 	
@@ -969,6 +984,8 @@ Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
 	espacio
     Escribir Sin Saltar mensaje
     Leer resp
+	//PRUEBA
+	esNumero<-Falso
 	
     Si Longitud(resp) = 0 Entonces
         numTexto <- valorActual
@@ -980,6 +997,9 @@ Funcion numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual)
 			Si esNumero Entonces
 				num <- ConvertirANumero(resp)
 				numTexto <- ConvertirATexto(num)
+			SiNo
+				Escribir "Debe ingresar solo números"
+				numTexto <- pedirNumeroComoTextoOpcional(mensaje, valorActual) 
 			FinSi			
         FinSi
     FinSi
@@ -1654,10 +1674,9 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
     Definir i, indice, confirmar Como Entero
     Definir op, opUsuario, nuevoDato, nombreSocio,telSocio,condSocio, penalizacionSocio, idBuscado, pwdSocio Como Cadena
 	
-    // Pedir el dni del socio a modificar
-	espacio
-	Escribir "**MODIFICACIÓN DE SOCIO**"
-	espacio
+    // Pedir el dni del socio a modificar	
+	DibujarLineaConTexto("**MODIFICACIÓN DE SOCIO**")
+	
     idBuscado <- pedirNumeroComoTexto("Ingrese el DNI del socio a modificar: ")
 	
     // Buscar el socio en la matriz
@@ -1696,7 +1715,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 		
 		Mientras confirmar = 0 Hacer
 			esperarLimpiar("")
-			Escribir "***DATOS ACTUALES DEL SOCIO***"
+			DibujarLineaConTexto("***DATOS ACTUALES DEL SOCIO***")
 			Escribir "DNI: ", socios[indice,0]
 			Escribir "Nombre y apellido: ", nombreSocio
 			Escribir "Teléfono: ", telSocio
@@ -1710,7 +1729,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
 			Si Longitud(nuevoDato)>0 Entonces
 				nombreSocio <-  nuevoDato				
 			FinSi			
-			
+			//ver ingreso texto
 			telSocio <- pedirNumeroComoTextoOpcional("Nuevo Teléfono: ", telSocio)		
 			
 			Escribir Sin Saltar "Nueva Condición (H = HABILITADO / I = INHABILITADO / M = MULTADO): " //habría que ver, si está inhabilitado o multado es x causa
@@ -1766,6 +1785,7 @@ Funcion modificarSocio(socios Por Referencia, cantSocios)
         socios[indice,1] <- nombreSocio
         socios[indice,2] <- telSocio
         socios[indice,3] <- condSocio
+		socios[indice,6] <- pwdSocio
     FinSi
 FinFuncion
 
@@ -1999,7 +2019,7 @@ SubProceso mostrarCondicionSocio(socios Por Referencia, cantSocios, dniSocioActu
 	Si indice = -1 Entonces
 		Escribir "Error del programa, contacte a un Admin para soporte" 
 	Sino	
-		Escribir "Su condición es: ", condSocio, " puede solicitar prestamo de Libros."
+		Escribir "Su condición es: ", condSocio
 	FinSi
 	espacio
 	esperarLimpiar("Volviendo al menu anterior...")	
