@@ -1944,7 +1944,7 @@ FinSubProceso
 
 //Muestro préstamo activo - para Socios
 SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros Por Referencia, cantLibros, dniSocioActual)
-	Definir i, indicePrestamo Como Entero
+	Definir i, indicePrestamo, indiceLibro Como Entero
 	definir idLibro, fechaPrestamo como Cadena
 	indicePrestamo <- -1
 	
