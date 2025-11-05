@@ -399,7 +399,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 								Si opUsuario = "S" Entonces
 									Limpiar Pantalla
 								Sino 	
-									Escribir "Volviendo a Gestión de Socios..."
+									esperarLimpiar("Volviendo a Gestión de Socios...")
+									//Escribir "Volviendo a Gestión de Socios..."
 								FinSi
 								
 							Mientras Que (opUsuario <> "N")
@@ -1482,7 +1483,7 @@ FinFuncion
 //***************************************************** FUNCIONES SOCIOS****************************************************************
 //Crear socio
 Funcion crearSocio(socios Por Referencia, cantSocios)
-	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado, pwdSocio como caracter
+	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado, claveSocio como caracter
 	Definir i, confirmar, indice, numTemporal Como Entero
 	Definir existeSocio, confirma Como Logico
 	existeSocio <- Falso 
@@ -1490,8 +1491,8 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 	indice <- buscarUltimo(socios, cantSocios) 
 	
 	Mientras !confirma Hacer
-		espacio
-		Escribir "***INGRESO DE NUEVO SOCIO***"		
+		
+		DibujarLineaConTexto("***INGRESO DE NUEVO SOCIO***")		
 		dniSocio <- pedirNumeroComoTexto("Ingrese DNI del socio: ")
 		
 		Para i<-0 Hasta cantSocios-1 Con Paso 1 Hacer
@@ -1506,20 +1507,19 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			confirma <- Verdadero
 			esperarLimpiar("")
 		Sino	
-			nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")
+			nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")			
+			claveSocio <- pedirNumeroComoTexto("Ingrese una contraseña (4 dígitos): ")
+			validarClave(claveSocio)
 			telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
 			condSocio <- "HABILITADO"
-			pwdSocio <- pedirNumeroComoTexto("Ingrese la contraseña (4 dígitos): ")
-			validarClave(pwdSocio)
-			Limpiar Pantalla
+			esperarLimpiar("")
 			
-			Escribir "***DATOS DEL NUEVO SOCIO***"
-			espacio
+			DibujarLineaConTexto("***DATOS DEL NUEVO SOCIO***")
 			Escribir "DNI del socio: ", dniSocio
 			Escribir "Nombre y Apellido: ", nombreSocio
 			Escribir "Teléfono: ",telSocio
 			Escribir "Condición: ",condSocio	
-			Escribir "Contraseña: ", pwdSocio
+			Escribir "Contraseña: ", claveSocio
 			espacio
 			opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 			Esperar 1 segundo
@@ -1532,6 +1532,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 				socios[indice, 1] <- nombreSocio
 				socios[indice, 2] <- telSocio
 				socios[indice, 3] <- condSocio
+				socios[indice, 6] <- claveSocio
 			Sino	
 				Escribir "Ingreso del Socio ", nombreSocio " cancelado"
 				confirmar <- 1
