@@ -1270,18 +1270,19 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 	FinPara
 	
 	Repetir
-		esperarLimpiar("")
+		//esperarLimpiar("")
 		DibujarLineaConTexto("**BÚSQUEDA DE LIBRO**")
 		espacio
 		Escribir "Elija un criterio de búsqueda"
+		espacio
 		Escribir "1. Id"
 		Escribir "2. Título"
 		Escribir "3. Autor"
 		Escribir "4. Género"
 		Escribir "5. Año de publicación"
-		Escribir "6. Volver"
+		Escribir "0. Volver"
 		espacio
-		Escribir Sin Saltar "Ingrese una opción (1-6): "
+		Escribir Sin Saltar "Ingrese una opción: "
 		Leer opUsuario		
 		esperarLimpiar("")
 		
@@ -1309,7 +1310,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 				columna<-4
 				Escribir Sin Saltar "Ingrese año de publicación a buscar: "
 				Leer criterio
-			"6":
+			"0":
 				Escribir "Volviendo al menú anterior..."
 				Limpiar Pantalla
 			De Otro Modo:
@@ -1341,7 +1342,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 				pedirTecla
 			FinSi			
 		FinSi 
-	Mientras Que opUsuario <>"6"		
+	Mientras Que opUsuario <>"0"		
 	 
 FinFuncion
 
@@ -1996,9 +1997,9 @@ SubProceso mostrarCondicionSocio(socios Por Referencia, cantSocios, dniSocioActu
 		FinSi
 	FinPara	
 	Si indice = -1 Entonces
-		Escribir "Error" 
+		Escribir "Error del programa, contacte a un Admin para soporte" 
 	Sino	
-		Escribir "Su condición es: ", condSocio
+		Escribir "Su condición es: ", condSocio, " puede solicitar prestamo de Libros."
 	FinSi
 	espacio
 	esperarLimpiar("Volviendo al menu anterior...")	
