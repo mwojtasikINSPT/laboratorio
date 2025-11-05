@@ -9,6 +9,7 @@ Algoritmo biblioteca
 	
 	//VARIABLES SOCIOS
 	Definir cantSocios, camposSocios Como Entero
+	Definir dniSocioActual Como Caracter //para usar en vista socios
 	
 	//VARIABLES LIBROS
 	Definir disponible, cantLibros, camposLibros Como Entero
@@ -67,120 +68,119 @@ Algoritmo biblioteca
 		mostrarMenuAcceso
 		Leer opAcceso
 		esperarLimpiar("")
-		
 		Segun opAcceso Hacer
 			"1":	//Acceso Admin
-				Mientras intentos < 3 Y accesoValido = 0 Hacer
-					Escribir "*** ACCESO ADMINISTRADOR ***"	
-					espacio
-					Escribir "Intento ", intentos + 1, " de 3"
-					Escribir Sin Saltar "Ingrese su Nombre: "
-					Leer nombreIngresado
-					nombreIngresado <- Mayusculas(nombreIngresado)
-					Escribir Sin Saltar "Ingrese su Clave: "
-					Leer claveIngresada
-					
-					Si validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores) Entonces
-						espacio
-						Escribir "Acceso concedido. Bienvenido ", nombreIngresado
-						accesoValido <- 1
-						esperarLimpiar("")				
-					Sino
-						Escribir "Nombre o clave incorrectos."
-						intentos <- intentos + 1
-						esperarLimpiar("")	
-					FinSi
-				FinMientras
-				
-				Si accesoValido = 0 Entonces
-					esperarLimpiar("Demasiados intentos fallidos. Volviendo al menú principal...")
-					intentos<- 0
-					Limpiar Pantalla
-				Sino 
-					administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios) 
-					accesoValido<- 0 
+				// La función intentarAcceso maneja los 3 intentos.
+				Si intentarAcceso(administradores, cantAdministradores, "ADMINISTRADOR", dniSocioActual) Entonces
+					// Si es Verdadero, llama la función de acción (administrador)
+					administrador(bibliotecarios, cantBibliotecarios, administradores, cantAdministradores, socios, cantSocios)
 				FinSi
 				
-					
-				
-			"2":  //Acceso Bibliotecario		
-				Mientras intentos < 3 Y accesoValido = 0 Hacer
-				Escribir "*** ACCESO BIBLIOTECARIO ***"	
-				espacio
-				Escribir "Intento ", intentos + 1, " de 3"
-				Escribir Sin Saltar "Ingrese su nombre: "
-				Leer nombreIngresado
-				nombreIngresado <- Mayusculas(nombreIngresado)
-				Escribir Sin Saltar "Ingrese su clave: "
-				Leer claveIngresada						
-				
-				Si validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios) Entonces
-					espacio
-					accesoValido <- 1
-					esperarLimpiar("Acceso concedido. Bienvenido " + nombreIngresado)
-				Sino					
-					intentos <- intentos + 1
-					esperarLimpiar("Nombre o clave incorrectos")
+			"2": //Acceso Bibliotecario		
+				Si intentarAcceso(bibliotecarios, cantBibliotecarios, "BIBLIOTECARIO", dniSocioActual) Entonces
+					bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
 				FinSi
-			FinMientras
-			
-			Si accesoValido = 0 Entonces
-				Escribir "Demasiados intentos fallidos. Volviendo al menú principal..."
-				intentos<- 0
-				Esperar 2 Segundos
-				Limpiar Pantalla
-			SiNo
-				bibliotecario(libros, cantLibros, socios, cantSocios, prestamos, cantPrestamos, camposPrestamos)
-			FinSi
 				
-			
-		"3":
-			//Acceso Socios
-			Escribir "*** ACCESO SOCIOS ***"			
-			socio(libros, cantLibros, prestamos, cantPrestamos, socios, cantSocios)
-		"0":
-			despedidaSistema
-			esperarLimpiar("")
-		De Otro Modo:
-			esperarLimpiar("Eligió una opción inválida.")
-	Fin Segun
-	
+			"3": //Acceso Socio
+				Si intentarAcceso(socios, cantSocios, "SOCIO", dniSocioActual) Entonces
+					socio(libros, cantLibros, prestamos, cantPrestamos, socios, cantSocios, dniSocioActual)
+				FinSi
+                
+			"0":
+				despedidaSistema
+				esperarLimpiar("")
+			De Otro Modo:
+				esperarLimpiar("Eligió una opción inválida.")
+		Fin Segun
 	Hasta Que opAcceso == "0"
-	
 FinAlgoritmo
 
 SubProceso espacio
 	Escribir ""
 FinSubProceso
 
-//******************************************* FUNCIONES AUXILIARES - VALIDACION DE ACCESO *******************************************************
-Funcion esValido <- validarAccesoAdministrador(nombreIngresado, claveIngresada, administradores, cantAdministradores)
-    Definir esValido Como Logico
-    Definir i Como Entero
-    esValido <- Falso
+//******************************************* VALIDACION DE ACCESO *******************************************************
+
+//Intentos de acceso 3 veces y devuelve si el acceso fue exitoso (Verdadero/Falso).
+Funcion accesoExitoso <- intentarAcceso(listaUsuarios, cantUsuarios, nombreRol,dniSocioEncontrado Por Referencia)
+    Definir accesoExitoso Como Logico
+    Definir intentos, indiceEncontrado Como Entero
+    Definir nombreIngresado, claveIngresada Como Caracter
     
-    Para i <- 0 Hasta cantAdministradores-1 Hacer
-        Si administradores[i, 0] = nombreIngresado Y administradores[i, 1] = claveIngresada Entonces
-            esValido <- Verdadero
-            i <- cantAdministradores 
+    intentos <- 0
+    accesoExitoso <- Falso
+	dniSocioEncontrado <- ""
+    
+    Mientras intentos < 3 Y accesoExitoso = Falso Hacer
+        Escribir "*** ACCESO ", Mayusculas(nombreRol), " ***"	
+        
+        espacio 
+        Escribir "Intento ", intentos + 1, " de 3"
+        Escribir Sin Saltar "Ingrese su Nombre: "
+        Leer nombreIngresado
+        nombreIngresado <- Mayusculas(nombreIngresado)
+        Escribir Sin Saltar "Ingrese su Clave: "
+        Leer claveIngresada
+		
+        Si validarAcceso(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol) Entonces
+            Escribir "Acceso concedido. Bienvenido ", nombreIngresado
+            esperarLimpiar("")
+            accesoExitoso <- Verdadero
+			
+			// Si el acceso fue exitoso y es un SOCIO, obtener su DNI
+            Si nombreRol = "SOCIO" Entonces
+                indiceEncontrado <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, nombreRol)
+                dniSocioEncontrado <- listaUsuarios[indiceEncontrado, 0] 
+            FinSi
+        Sino
+            Escribir "Nombre o clave incorrectos."
+            intentos <- intentos + 1
+            esperarLimpiar("")	
         FinSi
-    FinPara
+    FinMientras
+    
+    Si accesoExitoso = Falso Entonces
+        esperarLimpiar("Demasiados intentos fallidos. Volviendo al menú principal...")
+        Limpiar Pantalla
+    FinSi
+    
 FinFuncion
 
-//Valido acceso Bibliotecario
-Funcion esValido <- validarAccesoBibliotecario(nombreIngresado, claveIngresada, bibliotecarios, cantBibliotecarios)
-	Definir esValido Como Logico
-	Definir i Como Entero
-	esValido <- Falso
+// Función que busca el indice (fila) del usuario en la matriz. Retorna -1 si no lo encuentra.
+Funcion indice <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsuarios, cantUsuarios, rolUsuario)
+	Definir indice, i, colNombre, colClave Como Entero
+    indice <- -1 
+    
+    Si rolUsuario = "SOCIO" Entonces
+        colNombre <- 1	// nombreSocio
+        colClave <- 6	// pwdSocio
+    Sino // Aplica para "ADMINISTRADOR" y "BIBLIOTECARIO"
+        colNombre <- 0	
+        colClave <- 1	
+    FinSi
 	
-	Para i <- 0 Hasta cantBibliotecarios-1 Hacer
-		Si bibliotecarios[i, 0] = nombreIngresado Y bibliotecarios[i, 1] = claveIngresada Entonces
-			esValido <- Verdadero
-			i <- cantBibliotecarios
+	Para i <- 0 Hasta cantUsuarios-1 Hacer
+		Si listaUsuarios[i, colNombre] = nombreIngresado Y listaUsuarios[i, colClave] = claveIngresada Entonces
+			indice <- i // Encontramos la fila
+			i <- cantUsuarios // Salir del bucle
 		FinSi
 	FinPara
 FinFuncion
 
+// La función solo indica si el acceso es VÁLIDO o NO.
+Funcion esValido <- validarAcceso(nombreIngresada, claveIngresada, listaUsuarios, cantUsuarios, rolUsuario)
+	Definir esValido Como Logico
+    Definir indiceEncontrado Como Entero
+    
+    // Llamada a la función de búsqueda
+    indiceEncontrado <- buscarIndiceUsuario(nombreIngresada, claveIngresada, listaUsuarios, cantUsuarios, rolUsuario)
+	Si indiceEncontrado >= 0 Entonces
+        esValido <- Verdadero
+    Sino
+        esValido <- Falso
+    FinSi
+    
+FinFuncion
 //***************************************************************Vista Administrador*********************************************************
 SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, administradores Por Referencia, cantAdministradores, socios Por Referencia, cantSocios)
 	Definir i Como Entero
@@ -245,10 +245,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
 										
 										// Valido que la clave tenga 4 dígitos
-										Mientras Longitud(claveBibliotecario) <> 4
-											Escribir "La clave debe tener exactamente 4 dígitos."
-											claveBibliotecario <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
-										FinMientras
+										validarClave(claveBibliotecario)
 										
 										// Verifico si el usuario ya existe
 										bibliotecarioExiste <- Falso
@@ -343,7 +340,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                 esperarLimpiar("No puede borrar a todos los Bibliotecarios.")
 								
                             FinSi			
-							//pedirTecla
 						"3":
 							//Muestro Bibliotecarios
 							espacio
@@ -354,7 +350,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
                                     Escribir "----------------------------------------"
                                     Escribir "Nombre: ", bibliotecarios[i, 0]
                                     Escribir "Clave: ", bibliotecarios[i, 1]
-                                    //totalBibliotecarios <- totalBibliotecarios + 1
                                 FinSi
                             FinPara
                             
@@ -450,10 +445,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 										nombreAdmin <- pedirTexto("Ingrese nombre del administrador: ")
 										claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
 										
-										Mientras Longitud(claveAdmin) <> 4
-											Escribir "La clave debe tener exactamente 4 dígitos."
-											claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
-										FinMientras
+										//Validar clave de 4 digitos
+										validarClave(claveAdmin)
 										
 										// Verifico si el usuario ya existe										
 										administradorExiste <- Falso
@@ -589,8 +582,7 @@ FinSubAlgoritmo
 //Vista Bibliotecario
 SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos)
 	Definir resp, modulo, op, opLibros, opSocios Como Caracter
-	//Definir i, j Como Entero 
-	
+
 	Repetir
 		mostrarMenuPpalBibliotecario
 		Leer modulo		
@@ -709,7 +701,7 @@ FinSubAlgoritmo
 
 //*******************************************SOCIOS*******************************************************
 //Vista Socios 
-SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia, cantPrestamos, socios Por Referencia, cantSocios)
+SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia, cantPrestamos, socios Por Referencia, cantSocios, dniSocioActual)
 	Definir op Como Caracter
 	
 	Repetir		
@@ -732,9 +724,9 @@ SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia,
 			"2":
 				buscarLibro(libros, cantLibros)
 			"3":
-				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros)
+				mostrarPrestamoSocio(prestamos, cantPrestamos, libros, cantlibros, dniSocioActual)
 			"4":
-				mostrarCondicionSocio(socios, cantSocios)				
+				mostrarCondicionSocio(socios, cantSocios, dniSocioActual)				
 			"0":	
 				esperarLimpiar("Volviendo a Menú anterior...")
 			De Otro Modo:
@@ -744,7 +736,7 @@ SubAlgoritmo socio (Libros Por Referencia, cantLibros, prestamos Por Referencia,
 	Hasta Que op == "0"		
 FinSubAlgoritmo
 
-//*********************************************************FUNCIONES AUXILIARES****************************************************************************
+//*******************************************************FUNCIONES AUXILIARES****************************************************************************
 SubProceso esperarLimpiar(mensaje)
 	Escribir mensaje
 	Esperar 2 segundos
@@ -775,6 +767,14 @@ Funcion respuesta<-confirmarInformacion(mensaje)
 		FinMientras
 	Hasta Que (respuesta == "S" O respuesta == "N")
 FinFuncion
+
+//Validar claves de acceso
+SubProceso validarClave(clave Por Referencia)
+	Mientras Longitud(clave) <> 4
+		Escribir "La clave debe tener exactamente 4 dígitos."
+		clave <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
+	FinMientras
+FinSubProceso
 
 
 //Asigno posición a nuevo ingreso en matriz
@@ -1192,21 +1192,6 @@ Funcion textoSintildes <- quitarTildes(cadenaAVerificar)
     FinPara
 FinFuncion
 
-//Cuenta coincidencias segun filtro
-//Funcion cantResultados<-filtrarPorCriterio(libros, columna, filtro, resultados, cantLibros)
-//    Definir i, cantResultados Como Entero
-//    i <- 0
-//    cantResultados <- 0	
-//    Mientras i < cantLibros Hacer
-//        Si libros[i, 0] <> "" Entonces
-//            Si libros[i, columna] = filtro Entonces
-//                resultados[cantResultados] <- i
-//                cantResultados <- cantResultados + 1
-//            FinSi
-//        FinSi
-//        i <- i + 1
-//    FinMientras	
-//FinFuncion
 
 //Cuenta coincidencias segun filtro parcial en cadena
 Funcion cantResultados<-filtrarPorCriterio(matriz, columna, filtro, resultados, cantDefinida)
@@ -1495,24 +1480,16 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
 			condSocio <- "HABILITADO"
 			pwdSocio <- pedirNumeroComoTexto("Ingrese la contraseña (4 dígitos): ")
-			Mientras Longitud(pwdSocio) <> 4
-				Escribir "La clave debe tener exactamente 4 dígitos."
-				pwdSocio <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
-			FinMientras
+			validarClave(pwdSocio)
 			Limpiar Pantalla
 			
 			Escribir "***DATOS DEL NUEVO SOCIO***"
 			espacio
-			Escribir Sin Saltar "DNI del socio: "
-			Escribir dniSocio
-			Escribir Sin Saltar "Nombre y Apellido: "
-			Escribir nombreSocio
-			Escribir sin saltar "Teléfono: "
-			Escribir telSocio
-			Escribir sin saltar "Condición: "
-			Escribir condSocio	
-			Escribir Sin Saltar "Contraseña: "
-			Escribir pwdSocio
+			Escribir "DNI del socio: ", dniSocio
+			Escribir "Nombre y Apellido: ", nombreSocio
+			Escribir "Teléfono: ",telSocio
+			Escribir "Condición: ",condSocio	
+			Escribir "Contraseña: ", pwdSocio
 			espacio
 			opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 			Esperar 1 segundo
@@ -1808,11 +1785,6 @@ Funcion darDeBajaSocio(socios Por Referencia, cantSocios)
 				FinSi
 			FinSi     
         FinSi
-        
-        
-        
-        
-        
         esperarLimpiar("")        
     FinMientras
 FinFuncion
@@ -1932,16 +1904,15 @@ FinSubProceso
 
 
 //Muestro préstamo activo - para Socios
-SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros Por Referencia, cantLibros)
+SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros Por Referencia, cantLibros, dniSocioActual)
 	Definir i, indicePrestamo Como Entero
-	definir dniSocio, idLibro, fechaPrestamo como Cadena
+	definir idLibro, fechaPrestamo como Cadena
 	indicePrestamo <- -1
 	
-	Escribir "Ingrese su DNI para ver préstamos activos"
-	Leer dniSocio
+	Escribir "Buscando préstamos activos para DNI: ", dniSocioActual
 	
 	Para i <- 0 Hasta cantPrestamos-1 Hacer
-		Si dniSocio = prestamos[i,1]  Entonces
+		Si dniSocioActual = prestamos[i,1]  Entonces
 			indicePrestamo <- i
 			idLibro <- prestamos[i,0]
 			fechaPrestamo <- prestamos[i,2]
@@ -1949,10 +1920,10 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 	FinPara
 	
 	Si indicePrestamo  = -1 Entonces
-		Escribir "El socio con DNI ", dniSocio " no tiene préstamos activos."
+		Escribir "No tiene préstamos activos."
 	SiNo
 		//Busco el préstamo activo para el socio
-		Escribir "El socio con DNI ", dniSocio " tiene en préstamo:"
+		Escribir "En préstamo:"
 		Para i <- 0 Hasta cantLibros-1 Hacer
 			Si libros[i,0] = idLibro Entonces
 			indiceLibro <- i
@@ -1964,24 +1935,23 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 FinSubProceso
 
 //Mostrar Condición - para socios
-SubProceso mostrarCondicionSocio(socios Por Referencia, cantSocios)
+SubProceso mostrarCondicionSocio(socios Por Referencia, cantSocios, dniSocioActual)
 	Definir i, indice Como Entero
-	definir dniSocio, condSocio como Cadena
+	definir condSocio como Cadena
 	indice <- -1
 	
-	Escribir sin saltar "Ingrese DNI para ver su condición"
-	Leer dniSocio
+	Escribir "Buscando condición para DNI: ", dniSocioActual
 	
 	Para i <- 0 Hasta cantSocios-1 Hacer
-		Si dniSocio == socios[i,0]  Entonces
+		Si dniSocioActual == socios[i,0]  Entonces
 			indice <- i
 			condSocio <- socios[i,3]			
 		FinSi
 	FinPara	
 	Si indice = -1 Entonces
-		Escribir "No se encontro el socio con DNI ", dniSocio 
+		Escribir "Error" 
 	Sino	
-		Escribir "La condición del socio DNI ", dniSocio, " es: ", condSocio
+		Escribir "Su condición es: ", condSocio
 	FinSi
 	espacio
 	esperarLimpiar("Volviendo al menu anterior...")	
