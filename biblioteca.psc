@@ -2135,7 +2135,7 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 				Escribir "Titulo: ", prestamos[i,5]
 				Escribir "DNI socio: ", prestamos[i,1]
 				Escribir "Nombre del socio: ", prestamos[i,4]
-				Escribir "Fecha de inicio: ", prestamos[i,2]
+				Escribir "Fecha de inicio préstamo: ", prestamos[i,2]
 				Escribir "Fecha de devolucion pactada: ", prestamos[i,3]					
 				Escribir "----------------------------------------"				
 				totalPrestamos <- totalPrestamos + 1 
