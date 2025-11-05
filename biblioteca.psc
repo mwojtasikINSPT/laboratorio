@@ -1478,7 +1478,7 @@ FinFuncion
 //Crear socio
 Funcion crearSocio(socios Por Referencia, cantSocios)
 	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado, claveSocio, estadoSocio como caracter
-	Definir i, confirmar, indice, numTemporal Como Entero
+	Definir i, confirmar, indice, numTemporal, indSocio Como Entero
 	Definir existeSocio, confirma Como Logico
 	existeSocio <- Falso 
 	confirma <- Falso
@@ -1489,25 +1489,22 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		DibujarLineaConTexto("***INGRESO DE NUEVO SOCIO***")		
 		dniSocio <- pedirNumeroComoTexto("Ingrese DNI del socio: ")
 		
-		definir ind Como entero
 		Para i<-0 Hasta cantSocios-1 Con Paso 1 Hacer
 			Si dniSocio = socios[i, 0] Entonces
 				socioRegistrado <- socios[i, 1]
 				estadoSocio <- socios[i, 5]
-				ind <- i
+				indSocio <- i
 				existeSocio <- Verdadero				
 			FinSi
 		Fin Para
-		
-		definir resp como caracter
 		
 		Si existeSocio Entonces
 			Escribir "Ya existe el socio ", socioRegistrado " registrado con ese DNI"
 			Escribir "Su estado actual es: ", estadoSocio
 			Si estadoSocio == "BAJA" Entonces
-				resp <- confirmarInformacion("Desea reactivar al socio? (S/N)")
-				si resp == "S" Entonces
-					socios[ind, 5] <- "ACTIVO"
+				opUsuario <- confirmarInformacion("Desea reactivar al socio? (S/N)")
+				si opUsuario == "S" Entonces
+					socios[indSocio, 5] <- "ACTIVO"
 					escribir "El usuario ", socioRegistrado " ha sido activado nuevamente"
 				SiNo
 					escribir "El usuario ", socioRegistrado " continua dado de baja"
