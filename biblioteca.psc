@@ -1959,7 +1959,8 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 	FinPara
 	
 	Si indicePrestamo  = -1 Entonces
-		Escribir "No tiene préstamos activos."
+		espacio
+		Escribir "No tiene préstamos activos."				
 	SiNo
 		//Busco el préstamo activo para el socio
 		Escribir "En préstamo:"
@@ -1969,8 +1970,8 @@ SubProceso mostrarPrestamoSocio(prestamos Por Referencia, cantPrestamos, libros 
 			mostrarLibroEncontrado(libros, i)
 			FinSi
 		FinPara
-		pedirTecla
-	FinSi			
+	FinSi	
+	pedirTecla
 FinSubProceso
 
 //Mostrar Condición - para socios
@@ -2026,6 +2027,7 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 	
     Si disponible = -1 Entonces
         Escribir "ID no encontrado"
+		pedirTecla
     SiNo
         Si disponible = 1 Entonces
             Escribir "El libro ", libros[indiceLibro, 1] " está disponible para préstamo"
@@ -2053,8 +2055,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 							
                         Segun op Hacer
                             "S":
-                                Escribir "Registrando préstamo..." 
-                                esperar 1 segundo
+                                esperarLimpiar("Registrando préstamo...") 
+                                //esperar 1 segundo
 								
 								//Actualizo stock
 								stockActual <- stockActual - 1
@@ -2066,7 +2068,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
 								//Agrego cantidad de prestados a matriz libro
 								libros[indiceLibro,8] <- ConvertirATexto(ConvertirANumero(libros[indiceLibro,8]) + 1)
 								
-                                fechasPrestamo(fechaPrestamo, fechaFinPrestamo)
+								DibujarLineaConTexto("Préstamo del Libro "+ libros[indiceLibro,1] +" para el socio " + socios[indiceSocio,1] + " registrado con éxito")
+								fechasPrestamo(fechaPrestamo, fechaFinPrestamo)
 								
 								// Busco la primera fila vacia en prestamos y guardamos el indice en p
 								Para k <- 0 Hasta cantPrestamos-1 Hacer
@@ -2086,8 +2089,7 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
                                 libros[indiceLibro,6] <- fechaFinPrestamo
                                 socios[indiceSocio,3] <- "INHABILITADO" // tiene préstamo activo
 								socios[indiceSocio,4] <- "0"  // Reinicio días de penalizacion
-                                Escribir "Préstamo del Libro ", libros[indiceLibro,1] " para el socio ", socios[indiceSocio,1] " registrado con éxito"
-								espacio
+                              //
 								Escribir "Stock restante del libro: ", stockActual
 								pedirTecla
                             "N":
@@ -2182,10 +2184,8 @@ Funcion fechaFinPenalidad <- calcularPenalidad(diasAtraso, fechaDevolucion)
     
     Si diasAtraso > 0 Entonces
         diasPenalidad <- diasAtraso * 2
-        
-		espacio
-        Escribir "***PENALIDAD POR DEVOLUCIÓN TARDÍA***"
-		espacio
+		
+        DibujarLineaConTexto("***PENALIDAD POR DEVOLUCIÓN TARDÍA***")		
         Escribir "Días de atraso: ", diasAtraso
         Escribir "No puede retirar libros por ", diasPenalidad, " días"        
 		
@@ -2258,7 +2258,6 @@ Funcion fechaFormateada <- formatearFecha(fechaFinPenalidad)
 FinFuncion
 
 
-
 //Gestiono devolución
 Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, prestamos Por Referencia, cantLibros, cantSocios, cantPrestamos, camposPrestamos)
     Definir i, j, indiceLibro, indiceSocio, indicePrestamo, diasAtraso, diasPenalidad, stockActual, fechaDevNum Como Entero
@@ -2273,7 +2272,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 	
     dniSocio <- pedirNumeroComoTexto("Ingrese el dni del socio que quiere devolver: ")
     
-    // BUSCAR SOCIO
+    // Busco Socio
     Para i <- 0 Hasta cantSocios -1 Hacer
         Si socios[i,0] = dniSocio Entonces
             indiceSocio <- i     
@@ -2372,8 +2371,7 @@ FinFuncion
 
 
 //*****************************************************MENUES PARA MOSTRAR************************************************************************
-SubProceso  mostrarMenuAcceso
-	
+SubProceso  mostrarMenuAcceso	
 	
 	Escribir "Indique su tipo de usuario (0 para Salir del Sistema): "
 	espacio
@@ -3059,6 +3057,7 @@ Funcion sociosPrecargados(socios Por Referencia, cantSocios, camposSocios)
 	socios[21, 6] <- "1234"
 FinFuncion
 
+// Inicializo matriz de prestamos
 Funcion inicializarPrestamos(prestamos Por Referencia, camposPrestamos, cantPrestamos)
 	Definir i, j Como Entero
 	Para i <- 0 Hasta cantPrestamos - 1 Hacer		
@@ -3068,7 +3067,7 @@ Funcion inicializarPrestamos(prestamos Por Referencia, camposPrestamos, cantPres
 	FinPara	
 FinFuncion
 
-//BIBLIOTECARIOS PRECARGADOS
+//Bibliotecarios Precargados
 Funcion bibliotecariosPrecargados(bibliotecarios Por Referencia, cantBibliotecarios, camposBibliotecarios)
 	Definir i, j Como Entero
 	// Inicializo matriz de bibliotecarios
@@ -3101,7 +3100,7 @@ Funcion administradoresPrecargados(administradores Por Referencia, cantAdministr
 		FinPara
 	FinPara	
 	
-	//Cargo bibliotecarios
+	//Cargo admins
 	administradores[0, 0] <- "GUADIX"
     administradores[0, 1] <- "1234"
 	
@@ -3114,6 +3113,7 @@ FinFuncion
 
 // *****************************************************VISUALES*******************************************************************
 
+//Pantalla comienzo del programa
 SubProceso bienvenidaSistema
 Definir ancho_pantalla, longitud_linea, i, j,k, espacios, espacios_izquierda, espacios_derecha, max_contenido Como Entero
 Definir linea_con_espacios Como Cadena
@@ -3209,11 +3209,11 @@ FinPara
 
 Escribir(borde_inferior)
 
-Esperar 2 Segundos
-Limpiar Pantalla
-
+esperarLimpiar("")
 FinSubproceso
 
+
+//Pantalla fin del programa
 SubProceso despedidaSistema
 	Escribir ""
 	Escribir "          $$$$$$\                               $$\                                                                                                              "
