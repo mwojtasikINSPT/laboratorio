@@ -1505,6 +1505,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 				opUsuario <- confirmarInformacion("Desea reactivar al socio? (S/N)")
 				si opUsuario == "S" Entonces
 					socios[indSocio, 5] <- "ACTIVO"
+					socios[indSocio, 3] <- "HABILITADO"
 					escribir "El usuario ", socioRegistrado " ha sido activado nuevamente"
 				SiNo
 					escribir "El usuario ", socioRegistrado " continua dado de baja"
@@ -1604,7 +1605,13 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 					Escribir Sin Saltar "Ingrese estado a buscar (A = Activo / B = Baja): "
 					Leer criterio	
 					criterio <- Mayusculas(criterio)
-				Hasta Que (criterio = "A" O criterio = "B") 				
+				Hasta Que (criterio = "A" O criterio = "B") 		
+				Segun criterio Hacer
+					"A":
+						criterio <- "ACTIVO"
+					"B":
+						criterio <- "BAJA"
+				Fin Segun
 			"0":	
 				esperarLimpiar("Volviendo al menú de Socios...")
 			De Otro Modo:
@@ -1795,8 +1802,8 @@ Funcion darDeBajaSocio(socios Por Referencia, cantSocios)
 				esperarLimpiar("Presione una tecla para continuar...")
 			SiNo
 				Limpiar Pantalla
-				Escribir "***DATOS DEL SOCIO A DAR DE BAJA***"
-				espacio
+				DibujarLineaConTexto("***DATOS DEL SOCIO A DAR DE BAJA***")
+				
 				Escribir Sin Saltar "DNI del socio: "
 				Escribir socios[indice, 0]
 				Escribir Sin Saltar "Nombre y Apellido: "
@@ -2438,7 +2445,7 @@ FinSubProceso
 SubProceso mostrarMenuSocios	
 	DibujarLineaConTexto("**** MENU SOCIOS ****")
 	Escribir "1. Agregar socio"		
-	Escribir "2. Consultar socios"
+	Escribir "2. Gestionar socios"
 	Escribir "0. Volver al menu principal"
 	espacio
 	Escribir Sin Saltar "Elija la opcion: "	
