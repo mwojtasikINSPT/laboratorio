@@ -2045,7 +2045,7 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
             FinPara
 			
             Si indiceSocio = -1 Entonces
-                Escribir "Socio no encontrado"
+                esperarLimpiar("Socio no encontrado")
             SiNo
                 Segun socios[indiceSocio,3] Hacer
                     "HABILITADO":
@@ -2118,18 +2118,26 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	totalPrestamos <- 0
 	
 	DibujarLineaConTexto("*** LISTA DE PRÉSTAMOS ***")	
+	//Cuento prestamos
+	Para i <- 0 Hasta cantPrestamos-1  
+		Si prestamos[i,0] <> "" Entonces
+			totalPrestamos <- totalPrestamos + 1 
+		FinSi
+	FinPara
+	
 	Si totalPrestamos = 0 Entonces
 		esperarLimpiar("No hay préstamos activos en este momento.")
 	Sino			
 		Para i <- 0 Hasta cantPrestamos-1   
 			Si prestamos[i,0] <> "" Entonces
-				Escribir "----------------------------------------"
+				espacio
 				Escribir "ID libro: ", prestamos[i,0]
+				Escribir "Titulo: ", prestamos[i,5]
 				Escribir "DNI socio: ", prestamos[i,1]
 				Escribir "Nombre del socio: ", prestamos[i,4]
 				Escribir "Fecha de inicio: ", prestamos[i,2]
-				Escribir "Fecha de devolucion pactada: ", prestamos[i,3]	
-				espacio
+				Escribir "Fecha de devolucion pactada: ", prestamos[i,3]					
+				Escribir "----------------------------------------"				
 				totalPrestamos <- totalPrestamos + 1 
 			FinSi
 		FinPara
@@ -2407,7 +2415,7 @@ SubProceso mostrarMenuLibros
 	
 	DibujarLineaConTexto("**** MENU LIBROS ****")	
 	Escribir "1. Agregar libros"		
-	Escribir "2. Consultar libros"
+	Escribir "2. Gestionar libros"
 	Escribir "0. Volver al menu principal"
 	espacio
 	Escribir Sin Saltar "Elija la opcion: "	
