@@ -157,7 +157,7 @@ Funcion indice <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsua
     
     Si rolUsuario = "SOCIO" Entonces
         colNombre <- 1	// nombreSocio
-        colClave <- 6	// pwdSocio
+        colClave <- 6	// claveSocio
     Sino // Aplica para "ADMINISTRADOR" y "BIBLIOTECARIO"
         colNombre <- 0	
         colClave <- 1	
@@ -165,13 +165,13 @@ Funcion indice <- buscarIndiceUsuario(nombreIngresado, claveIngresada, listaUsua
 	
 	Para i <- 0 Hasta cantUsuarios-1 Hacer
 		Si listaUsuarios[i, colNombre] = nombreIngresado Y listaUsuarios[i, colClave] = claveIngresada Entonces
-			indice <- i // Encontramos la fila
+			indice <- i
 			i <- cantUsuarios // Salir del bucle
 		FinSi
 	FinPara
 FinFuncion
 
-// La función solo indica si el acceso es VÁLIDO o NO.
+// Función que indica si el acceso es válido
 Funcion esValido <- validarAcceso(nombreIngresada, claveIngresada, listaUsuarios, cantUsuarios, rolUsuario)
 	Definir esValido Como Logico
     Definir indiceEncontrado Como Entero
@@ -400,7 +400,6 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									Limpiar Pantalla
 								Sino 	
 									esperarLimpiar("Volviendo a Gestión de Socios...")
-									//Escribir "Volviendo a Gestión de Socios..."
 								FinSi
 								
 							Mientras Que (opUsuario <> "N")
@@ -420,9 +419,8 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 				
 			"3":				
 				//Gestiono Admins
-				Repetir
-					espacio
-					Escribir "*** GESTIÓN DE ADMINISTRADORES ***"
+				Repetir					
+					DibujarLineaConTexto("*** GESTIÓN DE ADMINISTRADORES ***")
 					espacio
 					Escribir "1. Agregar Administrador"
 					Escribir "2. Eliminar Administrador"
@@ -450,12 +448,11 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									confirmar <- 0
 									Mientras confirmar = 0 Hacer
 										nombreAdmin <- pedirTexto("Ingrese nombre del administrador: ")
-										claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")
-										
+										claveAdmin <- pedirNumeroComoTexto("Ingrese clave numérica (4 dígitos): ")										
 										//Validar clave de 4 digitos
 										validarClave(claveAdmin)
 										
-										// Verifico si el usuario ya existe										
+										// Verifico si el admin ya existe										
 										administradorExiste <- Falso
 										Para i <- 0 Hasta cantAdministradores-1 Hacer
 											Si administradores[i, 0] = nombreAdmin Entonces
@@ -468,7 +465,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 											espacio
 										Sino
 											Limpiar Pantalla
-											Escribir "*** DATOS DEL NUEVO ADMINISTRADOR ***"
+											DibujarLineaConTexto("*** DATOS DEL NUEVO ADMINISTRADOR ***")
 											Escribir "Nombre: ", nombreAdmin
 											Escribir "Clave: ", claveAdmin
 											
@@ -498,11 +495,11 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 							Hasta Que Mayusculas(opUsuario) = "N"
 							
 						"2":  // Eliminar Administrador  
-							espacio
-							Escribir "*** ELIMINAR ADMINISTRADOR ***"
-							espacio
+							
+							DibujarLineaConTexto("*** ELIMINAR ADMINISTRADOR ***")
+							
 							// Mostrar admins existentes
-							Escribir "Administradores registrados:"
+							DibujarLineaConTexto("Administradores registrados")
 							hayAdministradores <- Falso
 							
 							Para i <- 0 Hasta cantAdministradores-1 Hacer
@@ -520,7 +517,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 									Escribir "Debe haber al menos un administrador del Sistema"
 								SiNo
 									espacio
-									Escribir "Ingrese el nombre del Administrador a eliminar: "
+									Escribir Sin Saltar "Ingrese el nombre del Administrador a eliminar: "
 									Leer nombreAdmin
 									nombreAdmin <- Mayusculas(nombreAdmin)
 									
@@ -586,7 +583,7 @@ SubAlgoritmo administrador(bibliotecarios Por Referencia, cantBibliotecarios, ad
 FinSubAlgoritmo
 
 
-//Vista Bibliotecario
+//***********************************************************Vista Bibliotecario***************************************************************************
 SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referencia, cantSocios, prestamos Por Referencia, cantPrestamos, camposPrestamos)
 	Definir resp, modulo, op, opLibros, opSocios Como Caracter
 
@@ -605,8 +602,7 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 					Segun opLibros Hacer
 						"1": //Agregar Libros
 							Repetir
-								crearLibro(libros, cantLibros)
-								
+								crearLibro(libros, cantLibros)								
 								resp <- confirmarInformacion("Desea agregar otro libro? (S/N)")
 								
 								Si resp = "S" Entonces
@@ -620,14 +616,14 @@ SubAlgoritmo bibliotecario(libros Por Referencia, cantLibros, socios Por Referen
 							Repetir
 								mostrarSubMenuConsultaLibros
 								Leer op 			
-								
+								esperarLimpiar("")
 								Segun op Hacer
 									"1":
 										buscarLibro(libros, cantLibros)
 									"2":
 										modificarLibro(libros, cantLibros)
 									"3":	
-										Limpiar Pantalla
+										esperarLimpiar("")
 										mostrarLibros(libros, cantLibros)
 									"4":
 										registrarPrestamo(libros, socios, prestamos, cantLibros, cantSocios, cantPrestamos)		
@@ -750,7 +746,7 @@ FinSubProceso
 
 SubProceso esperarLimpiar(mensaje)
 	Escribir mensaje
-	Esperar 1 segundos
+	Esperar 2 segundos
 	Limpiar Pantalla
 FinSubProceso
 
@@ -758,7 +754,7 @@ SubProceso pedirTecla
 	espacio
 	Escribir "Presione una tecla para volver..."
 	Esperar Tecla
-	Esperar 2 Segundos
+	Esperar 1 Segundos
 	Limpiar Pantalla	
 FinSubProceso
 
@@ -786,12 +782,12 @@ Funcion respuesta<-confirmarInformacion(mensaje)
 	Definir respuesta Como Caracter	
 	Repetir
 		espacio
-		Escribir mensaje
+		Escribir sin saltar mensaje
 		Leer respuesta
 		respuesta <- Mayusculas(respuesta)	
 		
 		Mientras respuesta <> "S" Y respuesta <> "N"
-			Escribir "Por favor ingrese S para Sí o N para No."	
+			Escribir Sin Saltar "Por favor ingrese S para Sí o N para No: "	
 			Leer respuesta
 			respuesta <- Mayusculas(respuesta)	
 		FinMientras
@@ -1148,9 +1144,8 @@ funcion crearLibro(libros Por Referencia, cantLibros)
 	confirmar <- 0
 	indice <- buscarUltimo(libros, cantLibros) 
 	Mientras confirmar = 0 Hacer
-		espacio
-		Escribir "***INGRESO DE NUEVO LIBRO***"
-		espacio
+		
+		DibujarLineaConTexto("***INGRESO DE NUEVO LIBRO***")		
 		idLibro<-generarId(cantLibros)
 		tituloLibro<-pedirTexto("Ingrese Nombre del libro: ")
 		autorLibro<-pedirTexto("Ingrese Autor: ")
@@ -1276,7 +1271,7 @@ Funcion buscarLibro(libros Por Referencia, cantLibros)
 	
 	Repetir
 		esperarLimpiar("")
-		Escribir "**BÚSQUEDA DE LIBRO**"
+		DibujarLineaConTexto("**BÚSQUEDA DE LIBRO**")
 		espacio
 		Escribir "Elija un criterio de búsqueda"
 		Escribir "1. Id"
@@ -1357,10 +1352,9 @@ Funcion modificarLibro(libros Por Referencia, cantLibros)
 	Definir datoValido Como Logico
 	
     // Pedir el ID del libro a modificar
-	espacio
-	Escribir "**MODIFICACIÓN DE LIBRO**"
-	espacio
-    Escribir Sin Saltar "Ingrese el ID del libro a modificar: "
+	
+	DibujarLineaConTexto("**MODIFICACIÓN DE LIBRO**")
+	Escribir Sin Saltar "Ingrese el ID del libro a modificar: "
     Leer idBuscado
 	
     // Buscar el libro en la matriz
@@ -1455,7 +1449,7 @@ FinFuncion
 Funcion mostrarLibros(libros Por Referencia, cantLibros)	
 	Definir i Como Entero
 	
-	Escribir "*** LISTA DE LIBROS CARGADOS ***"	
+	DibujarLineaConTexto("*** LISTA DE LIBROS CARGADOS ***")	
 	espacio
 	Para i <- 0 Hasta cantLibros-1		
 		Si libros[i,0] <> "" Entonces
@@ -1483,7 +1477,7 @@ FinFuncion
 //***************************************************** FUNCIONES SOCIOS****************************************************************
 //Crear socio
 Funcion crearSocio(socios Por Referencia, cantSocios)
-	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado, claveSocio como caracter
+	Definir opUsuario, dniSocio, nombreSocio, telSocio, condSocio, socioRegistrado, claveSocio, estadoSocio como caracter
 	Definir i, confirmar, indice, numTemporal Como Entero
 	Definir existeSocio, confirma Como Logico
 	existeSocio <- Falso 
@@ -1495,22 +1489,38 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 		DibujarLineaConTexto("***INGRESO DE NUEVO SOCIO***")		
 		dniSocio <- pedirNumeroComoTexto("Ingrese DNI del socio: ")
 		
+		definir ind Como entero
 		Para i<-0 Hasta cantSocios-1 Con Paso 1 Hacer
 			Si dniSocio = socios[i, 0] Entonces
 				socioRegistrado <- socios[i, 1]
+				estadoSocio <- socios[i, 5]
+				ind <- i
 				existeSocio <- Verdadero				
 			FinSi
 		Fin Para
 		
+		definir resp como caracter
+		
 		Si existeSocio Entonces
 			Escribir "Ya existe el socio ", socioRegistrado " registrado con ese DNI"
+			Escribir "Su estado actual es: ", estadoSocio
+			Si estadoSocio == "BAJA" Entonces
+				resp <- confirmarInformacion("Desea reactivar al socio? (S/N)")
+				si resp == "S" Entonces
+					socios[ind, 5] <- "ACTIVO"
+					escribir "El usuario ", socioRegistrado " ha sido activado nuevamente"
+				SiNo
+					escribir "El usuario ", socioRegistrado " continua dado de baja"
+				FinSi
+			FinSi
 			confirma <- Verdadero
-			esperarLimpiar("")
+			//esperarLimpiar("")
 		Sino	
 			nombreSocio<-pedirTexto("Ingrese Nombre y Apellido del socio: ")			
 			claveSocio <- pedirNumeroComoTexto("Ingrese una contraseña (4 dígitos): ")
 			validarClave(claveSocio)
 			telSocio <- pedirNumeroComoTexto("Ingrese el teléfono: ")
+			estadoSocio <- "ACTIVO"
 			condSocio <- "HABILITADO"
 			esperarLimpiar("")
 			
@@ -1520,7 +1530,6 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 			Escribir "Teléfono: ",telSocio
 			Escribir "Condición: ",condSocio	
 			Escribir "Contraseña: ", claveSocio
-			espacio
 			opUsuario <- confirmarInformacion("Confirma ingreso? (S/N)")
 			Esperar 1 segundo
 			
@@ -1532,6 +1541,7 @@ Funcion crearSocio(socios Por Referencia, cantSocios)
 				socios[indice, 1] <- nombreSocio
 				socios[indice, 2] <- telSocio
 				socios[indice, 3] <- condSocio
+				socios[indice, 5] <- estadoSocio
 				socios[indice, 6] <- claveSocio
 			Sino	
 				Escribir "Ingreso del Socio ", nombreSocio " cancelado"
@@ -1577,7 +1587,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 			"3":
 				columna <- 3
 				Repetir
-					Escribir "Ingrese Condición a buscar (H = HABILITADO / I = INHABILITADO / M = MULTADO): "
+					Escribir "Ingrese Condición a buscar (H = Habilitado / I = Inhabilitado / M = Multado): "
 					Leer criterio
 					criterio <- Mayusculas(criterio)
 				Hasta Que (criterio = "H" O criterio = "I" O criterio = "M")
@@ -1593,9 +1603,11 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 			"4":
 				//buscar  x estado
 				columna<-5
-				Escribir Sin Saltar "Ingrese estado a buscar: "
-				Leer criterio	
-				criterio <- Mayusculas(criterio)
+				Repetir
+					Escribir Sin Saltar "Ingrese estado a buscar (A = Activo / B = Baja): "
+					Leer criterio	
+					criterio <- Mayusculas(criterio)
+				Hasta Que (criterio = "A" O criterio = "B") 				
 			"0":	
 				esperarLimpiar("Volviendo al menú de Socios...")
 			De Otro Modo:
@@ -1613,7 +1625,7 @@ Funcion buscarSocio(socios Por Referencia, cantSocios)
 				Para i <- 0 Hasta cantidad - 1 Hacer
 					indice <- resultados[i]
 					espacio
-					Escribir "-------------Socio encontrado-------------"
+					Escribir "-------------Socio #",i+1, " encontrado-------------"
 					espacio
 					Escribir "DNI: ", socios[indice, 0]
 					Escribir "Nombre y apellido: ", socios[indice, 1]
@@ -1760,9 +1772,8 @@ Funcion darDeBajaSocio(socios Por Referencia, cantSocios)
     confirmar <- Falso
     
     Mientras !confirmar Hacer
-        espacio
-        Escribir "***DAR DE BAJA SOCIO***"
-        espacio
+        
+        DibujarLineaConTexto("***DAR DE BAJA SOCIO***")        
         dniBaja <- pedirNumeroComoTexto("Ingrese DNI del socio a dar de baja: ")
         
         // Busco el socio
@@ -1824,7 +1835,7 @@ FinFuncion
 //Muestro socios cargados
 Funcion mostrarSocios(socios Por Referencia, cantSocios)
 	Definir i Como Entero
-	Escribir "*** LISTA DE SOCIOS CARGADOS ***"	
+	DibujarLineaConTexto("*** LISTA DE SOCIOS CARGADOS ***")	
 	Para i <- 0 Hasta cantSocios-1   
 		Si socios[i,0] <> "" Entonces
 			Escribir "----------------------------------------"
@@ -1998,9 +2009,8 @@ Funcion registrarPrestamo(libros Por Referencia, socios Por Referencia, prestamo
     p <- 0
 	
 	esperarLimpiar("")
-    Escribir "REGISTRAR PRÉSTAMO DE LIBRO"
-	espacio
-    Escribir Sin Saltar "Ingrese id del libro a prestar: "
+    DibujarLineaConTexto("REGISTRAR PRÉSTAMO DE LIBRO")
+	Escribir Sin Saltar "Ingrese id del libro a prestar: "
     Leer idBuscado
 	espacio
 	
@@ -2108,26 +2118,25 @@ Funcion mostrarPrestamos(prestamos Por Referencia, cantPrestamos)
 	Definir i, totalPrestamos Como Entero
 	totalPrestamos <- 0
 	
-	espacio
-	Escribir "*** LISTA DE PRÉSTAMOS ***"	
-	espacio	
-	Para i <- 0 Hasta cantPrestamos-1   
-		Si prestamos[i,0] <> "" Entonces
-			Escribir "----------------------------------------"
-			Escribir "ID libro: ", prestamos[i,0]
-			Escribir "DNI socio: ", prestamos[i,1]
-			Escribir "Nombre del socio: ", prestamos[i,4]
-			Escribir "Fecha de inicio: ", prestamos[i,2]
-			Escribir "Fecha de devolucion pactada: ", prestamos[i,3]	
-			espacio
-			totalPrestamos <- totalPrestamos + 1 
-		FinSi
-	FinPara
-		
+	DibujarLineaConTexto("*** LISTA DE PRÉSTAMOS ***")	
 	Si totalPrestamos = 0 Entonces
 		esperarLimpiar("No hay préstamos activos en este momento.")
+	Sino			
+		Para i <- 0 Hasta cantPrestamos-1   
+			Si prestamos[i,0] <> "" Entonces
+				Escribir "----------------------------------------"
+				Escribir "ID libro: ", prestamos[i,0]
+				Escribir "DNI socio: ", prestamos[i,1]
+				Escribir "Nombre del socio: ", prestamos[i,4]
+				Escribir "Fecha de inicio: ", prestamos[i,2]
+				Escribir "Fecha de devolucion pactada: ", prestamos[i,3]	
+				espacio
+				totalPrestamos <- totalPrestamos + 1 
+			FinSi
+		FinPara
+		pedirTecla	
 	FinSi
-	pedirTecla
+	
 FinFuncion
 
 
@@ -2263,8 +2272,8 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
     indicePrestamo <- -1
     
     esperarLimpiar("")
-    Escribir "***REGISTRAR DEVOLUCIÓN DE LIBRO***"
-	espacio
+    DibujarLineaConTexto("***REGISTRAR DEVOLUCIÓN DE LIBRO***")
+	
     dniSocio <- pedirNumeroComoTexto("Ingrese el dni del socio que quiere devolver: ")
     
     // BUSCAR SOCIO
@@ -2276,6 +2285,7 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
     
     Si indiceSocio = -1 Entonces
         Escribir "Error: Socio no encontrado"
+		pedirTecla
     Sino
 		// Busco préstamo activo del socio
 		Para i <- 0 Hasta cantPrestamos-1 Hacer
@@ -2287,7 +2297,8 @@ Funcion registrarDevolucion(libros Por Referencia, socios Por Referencia, presta
 		FinPara
 		
         Si indicePrestamo  = -1 Entonces
-            Escribir "El socio no tiene préstamos activos."
+            esperarLimpiar("El socio no tiene préstamos activos.")
+				
 		SiNo
 			// Busco préstamo del libro
 			Para i <- 0 Hasta cantLibros-1 Hacer
@@ -2398,9 +2409,8 @@ SubProceso mostrarMenuPpalBibliotecario
 FinSubProceso
 
 SubProceso mostrarMenuLibros
-	espacio
-	Escribir "**** MENU LIBROS ****"
-	espacio
+	
+	DibujarLineaConTexto("**** MENU LIBROS ****")	
 	Escribir "1. Agregar libros"		
 	Escribir "2. Consultar libros"
 	Escribir "0. Volver al menu principal"
@@ -2409,9 +2419,8 @@ SubProceso mostrarMenuLibros
 FinSubProceso
 
 SubProceso  mostrarSubMenuConsultaLibros
-	espacio
-	Escribir "***Sub Menu Consulta de Libros***"
-	espacio
+	
+	DibujarLineaConTexto("***Sub Menu Consulta de Libros***")
 	Escribir "1. Buscar Libro"
 	Escribir "2. Modificar datos de libro"
 	Escribir "3. Listado de Libros"
@@ -2423,9 +2432,8 @@ SubProceso  mostrarSubMenuConsultaLibros
 	Escribir Sin Saltar "Elija la opcion: "
 FinSubProceso
 
-SubProceso mostrarMenuSocios
-	espacio
-	Escribir "**** MENU SOCIOS ****"
+SubProceso mostrarMenuSocios	
+	DibujarLineaConTexto("**** MENU SOCIOS ****")
 	Escribir "1. Agregar socio"		
 	Escribir "2. Consultar socios"
 	Escribir "0. Volver al menu principal"
@@ -2434,8 +2442,7 @@ SubProceso mostrarMenuSocios
 FinSubProceso
 
 SubProceso  mostrarSubMenuConsultaSocios		
-	Escribir "***Sub Menu Consulta de Socios***"
-	espacio
+	DibujarLineaConTexto("***Sub Menu Consulta de Socios***")	
 	Escribir "1. Buscar Socio"
 	Escribir "2. Modificar datos del Socio"
 	Escribir "3. Dar de Baja Socio"
